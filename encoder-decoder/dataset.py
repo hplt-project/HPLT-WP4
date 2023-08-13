@@ -1,24 +1,5 @@
-import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import Dataset
-import pickle
-import gzip
-
-
-class Indexer:
-    def __init__(self, documents):
-        lengths = [len(document) for document in documents]
-        self.cumsum = torch.LongTensor([0] + lengths).cumsum(dim=0)
-
-    def get_indices(self, index):
-        document_index = torch.searchsorted(self.cumsum, index, right=True).item() - 1
-        segment_index = index - self.cumsum[document_index]
-        return document_index, segment_index
-
-    def __len__(self):
-        return self.cumsum[-1].item()
 
 
 class CollateFunctor:
@@ -89,7 +70,7 @@ class SpanMaskingStrategy:
         return input_tokens, output_tokens
    
 
-class Dataset(Dataset):
+class Dataset(torch.utils.data.Dataset):
     def __init__(self, input_file, tokenizer, seq_length=512, mask_p=0.15, short_p=0.1, random_p=0.1, keep_p=0.1):
         self.tokenizer = tokenizer
 
@@ -103,73 +84,23 @@ class Dataset(Dataset):
         self.sep_index = torch.tensor([self.tokenizer.token_to_id("[SEP]")], dtype=torch.long)
         self.pad_index = self.tokenizer.token_to_id("[PAD]")
 
-        # every document contains a list of sentences, which are themselves np arrays of integers
-        with gzip.open(input_file, "rb") as f:
-            self.documents = pickle.load(f)
-
-        self.documents = [
-            [torch.from_numpy(sentence) for sentence in document]
-            for document in self.documents
+        documents = torch.load(input_file)
+        self.segments = [
+            document[offset : offset + seq_length - 2]
+            for document in documents
+            for offset in range(0, len(document), (seq_length - 2) // 2)
+            if len(document) > 0
         ]
-        self.documents = [document for document in self.documents if len(document) > 0]
-        self.indexer = Indexer(self.documents)
 
     def __len__(self):
-        return len(self.indexer)
-
-    def rand(self):
-        return torch.rand(1).item()
-
-    def randint(self, low, high):
-        return torch.randint(low=low, high=high, size=(1,)).item()
+        return len(self.segments)
 
     def __getitem__(self, index):
-        tokens = self.get_segment(index)
-        inputs, outputs = self.masking_strategy(tokens)
+        segment = self.segments[index]
+        segment = torch.cat([self.cls_index, segment, self.sep_index]).long()
+
+        inputs, outputs = self.masking_strategy(segment)
         return inputs, outputs
-
-    def get_segment(self, index):
-        document_index, sentence_index = self.indexer.get_indices(index)
-
-        document = self.documents[document_index]
-        sentence = document[sentence_index]
-
-        if sentence.size(0) == 0:
-            segment = []
-        else:
-            segment = [document[sentence_index]]
-
-        total_length = sentence.size(0)
-        sentence_index += 1
-
-        while total_length <= self.seq_length - 2 and sentence_index < len(document):
-            sentence = document[sentence_index]
-
-            if sentence.size(0) == 0:
-                sentence_index += 1
-                continue
-
-            segment.append(sentence)
-            total_length += sentence.size(0)
-            sentence_index += 1
-
-        tokens = torch.cat(segment)
-
-        target_seq_length = self.seq_length - 2 if self.rand() > self.short_p else self.randint(1, self.seq_length - 2)
-        tokens = tokens[:target_seq_length]
-        segment = torch.cat([self.cls_index, tokens, self.sep_index]).long()
-        return segment
-
-    def truncate_seq_pair(self, tokens_a, tokens_b, max_num_tokens):
-        total_length = len(tokens_a) + len(tokens_b)
-        if total_length <= max_num_tokens:
-            return tokens_a, tokens_b
-        cut = total_length - max_num_tokens
-        cut_left = self.randint(max(0, cut - len(tokens_b) + 1), min(cut + 1, len(tokens_a)))
-        cut_right = cut - cut_left
-        tokens_a = tokens_a[:len(tokens_a) - cut_left]
-        tokens_b = tokens_b[:len(tokens_b) - cut_right]
-        return tokens_a, tokens_b
 
 
 if __name__ == "__main__":

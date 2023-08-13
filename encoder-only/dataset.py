@@ -1,6 +1,4 @@
 import torch
-from torch.utils.data import Dataset
-from smart_open import open
 
 
 class SpanMaskingStrategy:
@@ -54,8 +52,8 @@ class SpanMaskingStrategy:
         return inputs, labels
 
 
-class Dataset(Dataset):
-    def __init__(self, file, offset: int, n_gpus: int, tokenizer, seq_length=512, mask_p=0.15, short_p=0.1, random_p=0.1, keep_p=0.1):
+class Dataset(torch.utils.data.Dataset):
+    def __init__(self, input_file: str, tokenizer, seq_length=512, mask_p=0.15, short_p=0.1, random_p=0.1, keep_p=0.1):
         self.tokenizer = tokenizer
 
         self.seq_length = seq_length
@@ -69,24 +67,16 @@ class Dataset(Dataset):
         self.sep_index = self.tokenizer.token_to_id("[SEP]")
         self.pad_index = self.tokenizer.token_to_id("[PAD]")
 
-        self.segments = []
-        for i, segment in enumerate(open(file, "r")):
-            if i % n_gpus != offset:
-                continue
-
-            segment = segment.strip().split(" ")
-            assert len(segment) <= seq_length - 2, " ".join(segment)
-            segment = [self.tokenizer.token_to_id(token) for token in segment]
-            self.segments.append(segment)
+        documents = torch.load(input_file)
+        self.segments = [
+            document[offset : offset + seq_length - 2]
+            for document in documents
+            for offset in range(0, len(document), (seq_length - 2) // 2)
+            if len(document) > 0
+        ]
 
     def __len__(self):
         return len(self.segments)
-    
-    def rand(self):
-        return torch.rand(1).item()
-
-    def randint(self, low, high):
-        return torch.randint(low=low, high=high, size=(1,)).item()
 
     def __getitem__(self, index):
         tokens = self.segments[index]

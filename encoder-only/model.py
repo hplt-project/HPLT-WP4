@@ -18,23 +18,21 @@ class Bert(nn.Module):
         static_embeddings, relative_embedding = self.embedding(input_ids)
         contextualized_embeddings = self.transformer(static_embeddings, attention_mask.unsqueeze(1).unsqueeze(2), relative_embedding)
         return contextualized_embeddings
-    
-    @torch.no_grad()
-    def get_attention_scores(self, input_ids, attention_mask):
-        static_embeddings, relative_embedding = self.embedding(input_ids)
-        attention_scores = self.transformer.forward_attention_scores(static_embeddings, attention_mask.unsqueeze(1).unsqueeze(2), relative_embedding)
-        return attention_scores
-    
-    @torch.no_grad()
-    def get_second_to_last_hidden_states(self, input_ids, attention_mask):
-        static_embeddings, relative_embedding = self.embedding(input_ids)
-        hidden_states = self.transformer.forward_second_to_last_hidden_states(static_embeddings, attention_mask.unsqueeze(1).unsqueeze(2), relative_embedding)
-        return hidden_states
 
     def forward(self, input_ids, attention_mask, masked_lm_labels=None):
         contextualized_embeddings = self.get_contextualized(input_ids, attention_mask)
         subword_prediction = self.classifier(contextualized_embeddings, masked_lm_labels)
-        return subword_prediction
+
+        gold_labels = masked_lm_labels.flatten()
+        gold_labels = gold_labels[gold_labels != self.pad_id]
+
+        loss = F.cross_entropy(subword_prediction, gold_labels, reduction="none")
+
+        with torch.no_grad():
+            accuracy = (prediction.argmax(-1) == gold_labels).float().mean()
+            perplexity = torch.exp(loss).mean()
+
+        return loss.mean(), perplexity, accuracy
 
 
 class Encoder(nn.Module):
@@ -51,45 +49,10 @@ class Encoder(nn.Module):
     def forward(self, hidden_states, attention_mask, relative_embedding):
         for layer in self.layers:
             if self.activation_checkpointing:
-                hidden_states, _ = checkpoint.checkpoint(layer, hidden_states, attention_mask, relative_embedding)
+                hidden_states = checkpoint.checkpoint(layer, hidden_states, attention_mask, relative_embedding)
             else:
-                hidden_states, _ = layer(hidden_states, attention_mask, relative_embedding)
-        return hidden_states
-    
-    def forward_attention_scores(self, hidden_states, attention_mask, relative_embedding):
-        attention_scores = torch.zeros(hidden_states.size(1), hidden_states.size(0), hidden_states.size(0), device=hidden_states.device, dtype=torch.float32)  # shape: [batch_size, seq_len, seq_len]
+                hidden_states = layer(hidden_states, attention_mask, relative_embedding)
 
-        for layer in self.layers:
-            if self.activation_checkpointing:
-                hidden_states, attention_score = checkpoint.checkpoint(layer, hidden_states, attention_mask, relative_embedding)
-            else:
-                hidden_states, attention_score = layer(hidden_states, attention_mask, relative_embedding)
-            attention_scores += attention_score
-
-        attention_scores /= len(self.layers)
-        return attention_scores
-
-    def forward_all_hidden_states(self, hidden_states, attention_mask, relative_embedding):
-        hidden_states = [hidden_states]
-        attention_scores = torch.zeros(hidden_states[0].size(1), hidden_states[0].size(0), hidden_states[0].size(0), device=hidden_states[0].device, dtype=torch.float32)  # shape: [batch_size, seq_len, seq_len]
-
-        for layer in self.layers:
-            if self.activation_checkpointing:
-                hidden_state, attention_score = checkpoint.checkpoint(layer, hidden_states[-1], attention_mask, relative_embedding)
-            else:
-                hidden_state, attention_score = layer(hidden_states[-1], attention_mask, relative_embedding)
-            hidden_states.append(hidden_state)
-            attention_scores += attention_score
-
-        attention_scores /= len(self.layers)
-        return hidden_states, attention_scores
-    
-    def forward_second_to_last_hidden_states(self, hidden_states, attention_mask, relative_embedding):
-        for layer in self.layers[:-1]:
-            if self.activation_checkpointing:
-                hidden_states, _ = checkpoint.checkpoint(layer, hidden_states, attention_mask, relative_embedding)
-            else:
-                hidden_states, _ = layer(hidden_states, attention_mask, relative_embedding)
         return hidden_states
 
 
@@ -127,10 +90,9 @@ class EncoderLayer(nn.Module):
         self.mlp = FeedForward(config)
 
     def forward(self, x, padding_mask, relative_embedding):
-        x_, attention_scores = self.attention(x, padding_mask, relative_embedding)
-        x = x + x_
+        x = x + self.attention(x, padding_mask, relative_embedding)
         x = x + self.mlp(x)
-        return x, attention_scores
+        return x
 
 
 class GeGLU(nn.Module):
@@ -260,8 +222,6 @@ class Attention(nn.Module):
         attention_scores.add_(torch.einsum("bhqd,qkhd->bhqk", query, key_pos * self.scale))
         attention_scores.add_(torch.einsum("bhkd,qkhd->bhqk", key * self.scale, query_pos))
 
-        returned_attention_scores = attention_scores.detach().clone().mean(dim=1)
-
         attention_probs = MaskedSoftmax.apply(attention_scores, attention_mask, -1)
 
         attention_probs = self.dropout(attention_probs)
@@ -271,7 +231,7 @@ class Attention(nn.Module):
         context = self.post_layer_norm(context)
         context = self.dropout(context)
 
-        return context, returned_attention_scores
+        return context
 
 
 class Embedding(nn.Module):

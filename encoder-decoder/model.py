@@ -36,12 +36,13 @@ class T5(nn.Module):
         gold_labels = gold_labels.flatten()
         gold_labels = gold_labels[gold_labels != self.pad_id]
 
-        loss = F.cross_entropy(prediction, gold_labels)
+        loss = F.cross_entropy(prediction, gold_labels, reduction="none")
 
         with torch.no_grad():
             accuracy = (prediction.argmax(-1) == gold_labels).float().mean()
+            perplexity = torch.exp(loss).mean()
 
-        return loss, accuracy
+        return loss.mean(), perplexity, accuracy
 
 
 class Decoder(nn.Module):
