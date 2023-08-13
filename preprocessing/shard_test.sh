@@ -1,1 +1,0 @@
-python3 shard.py --input_dir ../data/test --output_dir ../data/shard_test --shard_size 10

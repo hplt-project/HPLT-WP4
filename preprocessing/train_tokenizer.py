@@ -1,3 +1,6 @@
+import os
+import json
+from smart_open import open
 import argparse
 from collections import Counter
 import tokenization_scorer
@@ -5,6 +8,20 @@ import tokenization_scorer
 from tokenizers.models import WordPiece
 from tokenizers.trainers import WordPieceTrainer
 from tokenizers import Tokenizer, pre_tokenizers, decoders, processors
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='BERT sharding')
+    parser.add_argument('--input_dir', type=str, default="data/pretrain/bnc/train.md", help='Specify the input filename')
+    parser.add_argument('--validation_file', type=str, default="data/pretrain/bnc/train.md", help='Specify the input filename')
+    parser.add_argument('--num_sampled_files', type=int, default=4)
+    parser.add_argument('--tokenizer_path', type=str, default="data/pretrain/bpe.json", help='Specify the output filename')
+    parser.add_argument('--vocab_size', type=int, default=2**14, help='Number of subwords in the trained tokenizer')
+    parser.add_argument('--min_frequency', type=int, default=10, help='Minimal number of occurences of every candidate subword')
+    parser.add_argument('--do_calculate_stats', action='store_true', help='Calculate statistics about the dataset')
+    args = parser.parse_args()
+
+    return args
 
 
 def initialize_tokenizer(args):
@@ -32,12 +49,13 @@ def initialize_tokenizer(args):
 def calculate_stats(tokenizer, f):
     counter, n_words = Counter(), 0
     tokens = []
-    for sentence in f.readlines():
-        sentence = sentence.strip()
-        n_words += len(sentence.split())
-        if len(sentence) > 0:
-            tokens = tokenizer.encode(sentence).tokens
-            counter.update(tokens)
+    for document in f.readlines():
+        text = json.loads(document)["text"]
+        text = text.rstrip()
+        if len(text) > 0:
+            n_words += len(text.split())
+            tokens = tokenizer.encode(text).tokens
+            counter.update(text)
             tokens += tokens
 
     sorted_subwords = counter.most_common()
@@ -54,28 +72,35 @@ def calculate_stats(tokenizer, f):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='BERT sharding')
-    parser.add_argument('--input_path', type=str, default="data/pretrain/bnc/train.md", help='Specify the input filename')
-    parser.add_argument('--vocab_path', type=str, default="data/pretrain/bpe.json", help='Specify the output filename')
-    parser.add_argument('--vocab_size', type=int, default=2**14, help='Number of subwords in the trained tokenizer')
-    parser.add_argument('--min_frequency', type=int, default=10, help='Minimal number of occurences of every candidate subword')
-    args = parser.parse_args()
+    args = parse_args()
 
     print(f"Initializing a WordPiece tokenizer", flush=True)
     tokenizer, trainer = initialize_tokenizer(args)
 
     print("Training the tokenizer", flush=True)
-    def iterator(file_path: str):
-        for line in open(file_path):
-            line = line.strip()
-            if len(line) == 0:
+    def iterator(dir_path, num_sampled_files):
+        for filename in os.listdir(dir_path):
+            if num_sampled_files == 0:
+                break
+
+            if not filename.endswith(".jsonl") and not filename.endswith(".jsonl.gz"):
                 continue
-            yield line
-    tokenizer.train_from_iterator(iterator(args.input_path), trainer)
+
+            for line in open(os.path.join(dir_path, filename), "rt"):
+                document = json.loads(line)
+                text = document["text"]
+                text = text.rstrip()
+                if len(text) == 0:
+                    continue
+                yield text
+
+            num_sampled_files -= 1
+
+    tokenizer.train_from_iterator(iterator(args.input_dir, args.num_sampled_files), trainer)
 
     print("Saving the tokenizer", flush=True)
-    tokenizer.save(args.vocab_path)
+    tokenizer.save(args.tokenizer_path)
 
-    with open("../data/processed_10M/all.txt") as f:
-        calculate_stats(tokenizer, f)
-
+    if args.do_calculate_stats:
+        with open(args.validation_file, mode='rt') as f:
+            calculate_stats(tokenizer, f)
