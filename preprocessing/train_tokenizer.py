@@ -3,7 +3,6 @@ import json
 from smart_open import open
 import argparse
 from collections import Counter
-import tokenization_scorer
 
 from tokenizers.models import WordPiece
 from tokenizers.trainers import WordPieceTrainer
@@ -12,11 +11,11 @@ from tokenizers import Tokenizer, pre_tokenizers, decoders, processors
 
 def parse_args():
     parser = argparse.ArgumentParser(description='BERT sharding')
-    parser.add_argument('--input_dir', type=str, default="data/pretrain/bnc/train.md", help='Specify the input filename')
-    parser.add_argument('--validation_file', type=str, default="data/pretrain/bnc/train.md", help='Specify the input filename')
+    parser.add_argument('--input_dir', type=str, required=True, help='Specify the input filename')
+    parser.add_argument('--validation_file', type=str, required=True, help='Specify the input filename')
+    parser.add_argument('--tokenizer_path', type=str,required=True, help='Specify the output filename')
     parser.add_argument('--num_sampled_files', type=int, default=4)
-    parser.add_argument('--tokenizer_path', type=str, default="data/pretrain/bpe.json", help='Specify the output filename')
-    parser.add_argument('--vocab_size', type=int, default=2**14, help='Number of subwords in the trained tokenizer')
+    parser.add_argument('--vocab_size', type=int, default=2**15, help='Number of subwords in the trained tokenizer')
     parser.add_argument('--min_frequency', type=int, default=10, help='Minimal number of occurences of every candidate subword')
     parser.add_argument('--do_calculate_stats', action='store_true', help='Calculate statistics about the dataset')
     args = parser.parse_args()
@@ -25,7 +24,8 @@ def parse_args():
 
 
 def initialize_tokenizer(args):
-    special_tokens = ["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]", "[PAR]", "[TAB]"]
+    special_tokens = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"]
+    special_tokens += [f"[MASK_{i}]" for i in range(1, 100)]
 
     tokenizer = Tokenizer(WordPiece(unk_token="[UNK]"))
     tokenizer.pre_tokenizer = pre_tokenizers.Sequence([
@@ -46,17 +46,18 @@ def initialize_tokenizer(args):
     return tokenizer, trainer
 
 
-def calculate_stats(tokenizer, f):
+def calculate_stats(tokenizer, args):
+    import tokenization_scorer
+
     counter, n_words = Counter(), 0
-    tokens = []
-    for document in f.readlines():
+    all_tokens = []
+    for document in open(args.validation_file, mode='rt'):
         text = json.loads(document)["text"]
-        text = text.rstrip()
         if len(text) > 0:
             n_words += len(text.split())
             tokens = tokenizer.encode(text).tokens
-            counter.update(text)
-            tokens += tokens
+            counter.update(tokens)
+            all_tokens += tokens
 
     sorted_subwords = counter.most_common()
 
@@ -65,7 +66,7 @@ def calculate_stats(tokenizer, f):
     print(f"Number of subwords: {n_subwords}", flush=True)
 
     f_95 = sorted_subwords[len(sorted_subwords) * 95 // 100][1]
-    renyi_score = tokenization_scorer.score(' '.join(tokens), metric="renyi", power=2.5)
+    renyi_score = tokenization_scorer.score(' '.join(all_tokens), metric="renyi", power=2.5)
 
     print(f"F_{{95%}} is {f_95}\n")
     print(f"Renyi score is {renyi_score}\n")
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     print("Training the tokenizer", flush=True)
     def iterator(dir_path, num_sampled_files):
         for filename in os.listdir(dir_path):
-            if num_sampled_files == 0:
+            if num_sampled_files <= 0:
                 break
 
             if not filename.endswith(".jsonl") and not filename.endswith(".jsonl.gz"):
@@ -102,5 +103,4 @@ if __name__ == "__main__":
     tokenizer.save(args.tokenizer_path)
 
     if args.do_calculate_stats:
-        with open(args.validation_file, mode='rt') as f:
-            calculate_stats(tokenizer, f)
+        calculate_stats(tokenizer, args)
