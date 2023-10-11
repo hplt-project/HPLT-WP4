@@ -320,10 +320,10 @@ def load_datasets(args, tokenizer, epoch, device):
     train_seed = args.seed + get_rank() + epoch * get_world_size()
 
     train_path = f"{args.input_dir}/train_{train_index}.pt"
-    train_data = Dataset(train_path, tokenizer, seq_length=args.seq_len, mask_p=args.mask_p, short_p=args.short_p)
+    train_data = Dataset(train_path, tokenizer, seq_length=args.seq_length, mask_p=args.mask_p, short_p=args.short_p)
     print(f"Loaded training file {train_index} on GPU {get_rank()}", flush=True)
 
-    valid_data = Dataset(f"{args.input_dir}/validation_0.pt", tokenizer, seq_length=args.seq_len, mask_p=args.mask_p, short_p=args.short_p)
+    valid_data = Dataset(f"{args.input_dir}/validation_0.pt", tokenizer, seq_length=args.seq_length, mask_p=args.mask_p, short_p=args.short_p)
 
     min_length = torch.tensor(len(train_data) // args.batch_size, dtype=torch.long, device=device)
     torch.distributed.all_reduce(min_length, torch.distributed.ReduceOp.MIN)

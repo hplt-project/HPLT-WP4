@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=HPLT_BERT
+#SBATCH --job-name=HPLT_T5
 #SBATCH --account=project_465000498
 #SBATCH --time=8:00:00
 #SBATCH --mem-per-cpu=7G
