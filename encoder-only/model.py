@@ -24,13 +24,13 @@ class Bert(nn.Module):
         subword_prediction = self.classifier(contextualized_embeddings, masked_lm_labels)
 
         gold_labels = masked_lm_labels.flatten()
-        gold_labels = gold_labels[gold_labels != self.pad_id]
+        gold_labels = gold_labels[gold_labels != -100]
 
         loss = F.cross_entropy(subword_prediction, gold_labels, reduction="none")
 
         with torch.no_grad():
-            accuracy = (prediction.argmax(-1) == gold_labels).float().mean()
-            perplexity = torch.exp(loss).mean()
+            accuracy = (subword_prediction.argmax(-1) == gold_labels).float().mean()
+            perplexity = torch.exp(loss.mean())
 
         return loss.mean(), perplexity, accuracy
 

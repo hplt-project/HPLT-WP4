@@ -2,59 +2,81 @@
 
 #SBATCH --job-name=HPLT_BERT
 #SBATCH --account=project_465000498
-#SBATCH --time=8:00:00
-#SBATCH --mem-per-cpu=7G
+#SBATCH --time=3:00:00
 #SBATCH --cpus-per-task=7
-#SBATCH --nodes=16
+#SBATCH --mem=0
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
-#SBATCH --gpus-per-node=8
-#SBATCH --partition=standard-g
-#SBATCH --output=report/%j.out
-#SBATCH --signal=B:TERM
+#SBATCH --gpus-per-node=mi250:8
+#SBATCH --partition=dev-g
+#SBATCH --exclusive=user
+#SBATCH --hint=nomultithread
+#SBATCH --output=logs/bert-%j.out
+#SBATCH --error=logs/bert-%j.err
 
 
-set -o errexit  # Exit the script on any error
-set -o nounset  # Treat any unset variables as an error
+mkdir -p workdir
+wd=$(realpath workdir)
+# if run without sbatch, invoke here
+if [ -z $SLURM_JOB_ID ]; then
+    mkdir -p logs
+    sbatch "$0"
+    exit
+fi
 
+# distributed setup
+export MASTER_ADDR=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
+export MASTER_PORT=9999
+export WORLD_SIZE=$SLURM_NTASKS
 
-# Load modules
-module --quiet purge
-module load LUMI/22.08
-module load cray-python/3.9.12.1
-module load rocm/5.2.3
+# compilers in the container
+export CC=gcc-10
+export CXX=g++-10
 
-# Set the ${PS1} (needed in the source of the virtual environment for some Python versions)
-export PS1=\$
+# singularity setup
+CONTAINER="/users/dasamuel/hplt_scratch/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
+SING_BIND="/scratch/project_465000498,/flash/project_465000498"
 
-export NCCL_SOCKET_IFNAME=hsn
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-export OPENBLAS_VERBOSE=2
+set -euo pipefail
 
-# Load the virtual environment
-source /project/project_465000144/pytorch_1.13.1/bin/activate
+CMD=" \
+    train.py \
+    --input_dir /scratch/project_465000498/processed_data/nn \
+    --output_dir /scratch/project_465000498/hplt_models \
+"
 
-##### Number of total processes 
-echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
-echo "Nodelist:= " $SLURM_JOB_NODELIST
-echo "Number of nodes:= " $SLURM_JOB_NUM_NODES
-echo "Ntasks per node:= "  $SLURM_NTASKS_PER_NODE
-echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
+# Bind masks from Samuel Antao
+c=fe
 
-# ******************* These are read internally it seems ***********************************
-# ******** Master port, address and world size MUST be passed as variables for DDP to work 
-export MASTER_PORT=$(expr 10000 + $(echo -n $SLURM_JOBID | tail -c 4))
-export WORLD_SIZE=$(($SLURM_NNODES * $SLURM_NTASKS_PER_NODE))
-echo "MASTER_PORT"=$MASTER_PORT
-echo "WORLD_SIZE="$WORLD_SIZE
+# Bind mask for one thread per core
+BIND_MASK_1="0x${c}000000000000,0x${c}00000000000000,0x${c}0000,0x${c}000000,0x${c},0x${c}00,0x${c}00000000,0x${c}0000000000"
 
-master_addr=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
-export MASTER_ADDR=$master_addr
-echo "MASTER_ADDR="$MASTER_ADDR
+# Bind mask for two threads per core
+BIND_MASK_2="0x${c}00000000000000${c}000000000000,0x${c}00000000000000${c}00000000000000,0x${c}00000000000000${c}0000,0x${c}00000000000000${c}000000,0x${c}00000000000000${c},0x${c}00000000000000${c}00,0x${c}00000000000000${c}00000000,0x${c}00000000000000${c}0000000000"
 
-export NCCL_NSOCKS_PERTHREAD=4
-export NCCL_SOCKET_NTHREADS=2
-export NCCL_MIN_CHANNELS=32
+BIND_MASK="$BIND_MASK_1"
+echo "Using --cpu-bind=mask_cpu:$BIND_MASK"
 
-export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK 
+echo $CMD
 
-srun -W 0 python3 train.py "$@"
+echo "START $SLURM_JOBID: $(date)"
+
+if [ ! -d $wd/cray-deps ] ; then
+  rm -rf $wd/cray-deps
+  mkdir $wd/cray-deps
+  cp /usr/lib64/libcxi* $wd/cray-deps
+fi
+
+srun \
+    --label \
+    --cpu-bind=mask_cpu:$BIND_MASK \
+    singularity exec \
+    -B /opt/cray:/opt/cray \
+    -B $wd/cray-deps:/opt/cray-deps \
+    -B $wd:/workdir \
+    -B "$SING_BIND" \
+    "$CONTAINER" \
+    ./launch.sh \
+    $CMD
+
+echo "END $SLURM_JOBID: $(date)"
