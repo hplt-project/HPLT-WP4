@@ -3,6 +3,18 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+slurm-*.out
+slurm-*.err
+
+bert-*.out
+bert-*.err
+
+*/workdir/*
+*/wandb/*
+
+*.out
+
+
 # C extensions
 *.so
 
