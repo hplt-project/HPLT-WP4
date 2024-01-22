@@ -37,7 +37,7 @@ LANGUAGE=${1}
 INPUT_DIR="/scratch/project_465000498/one/cleaned/${LANGUAGE}"
 OUTPUT_DIR="/scratch/project_465000498/processed_data/${LANGUAGE}"
 
-## shard size in MB, default 256
+## shard size in MB, default 512
 SHARD_SIZE_MB=${2:-512}
 SAMPLE_POWER=${3:-0.0}
 

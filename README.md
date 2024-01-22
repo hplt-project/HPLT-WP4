@@ -32,3 +32,8 @@ This task implements our consolidated ethics for language modeling, with a focus
 
 - **D4.1 OTHER/PU M30 UTURKU Trained language models (software)**
 - **D4.2 R/PU M35 UTURKU Report on language model evaluation**
+
+
+## How to run
+
+Simply run `./schedule.sh <language-code>` to schedule jobs for creating shards, training a tokenizer, tokenizing shards and training language models. 

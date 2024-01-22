@@ -1,9 +1,6 @@
-# this script is used to shard the data into smaller files
-# it takes in the input directory, output directory, and the shard size
-# the input directory is a directory containing N the jsonl.zst files
-# the shard size is the approximate size of each shard in MB (after compression)
-# the output directory is the directory where the K sharded files for training and an extra validation file will be stored
-# K is calculated to be a power of 2
+# this script is used to schedule the preprocessing and training jobs for a language
+# it takes as input the language, the input directory, the output directory, the shard size and optinally the sample power
+# it then schedules the shard workers, the tokenizer training, the shard tokenization and the BERT training
 
 import argparse
 import os
