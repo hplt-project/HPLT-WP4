@@ -14,7 +14,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='BERT sharding')
     parser.add_argument('--input_dir', type=str, required=True, default="/scratch/project_465000498/processed_data/nn/shards")
     parser.add_argument('--output_dir', type=str, required=True, default="/scratch/project_465000498/processed_data/nn")
-    parser.add_argument('--num_sampled_files', type=int, default=64)
+    parser.add_argument('--num_sampled_files', type=int, default=32)
     parser.add_argument('--vocab_size', type=int, default=2**15, help='Number of subwords in the trained tokenizer')
     parser.add_argument('--min_frequency', type=int, default=10, help='Minimal number of occurences of every candidate subword')
     parser.add_argument('--do_calculate_stats', action='store_true', help='Calculate statistics about the dataset')
@@ -25,7 +25,7 @@ def parse_args():
 
 def initialize_tokenizer(args):
     special_tokens = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]"]
-    special_tokens += [f"[MASK_{i}]" for i in range(1, 100)]
+    special_tokens += [f"[MASK_{i}]" for i in range(1, 100)] + ['█']
 
     number_of_training_shards = len([filename for filename in os.listdir(args.input_dir) if filename.endswith(".jsonl.gz") and "train" in filename])
     if number_of_training_shards == 1:
@@ -76,7 +76,7 @@ def initialize_tokenizer(args):
     trainer = WordPieceTrainer(
         vocab_size=args.vocab_size,
         special_tokens=special_tokens,
-        initial_alphabet=['█'] + pre_tokenizers.ByteLevel.alphabet(),
+        initial_alphabet=pre_tokenizers.ByteLevel.alphabet(),
         min_frequency=args.min_frequency,
         continuing_subword_prefix='',
         show_progress=True
@@ -90,15 +90,23 @@ def calculate_stats(tokenizer, args):
 
     counter, n_words = Counter(), 0
     all_tokens = []
-    for document in open(f"{args.input_dir}/validation.jsonl.gz", "rt"):
+    for i, document in enumerate(open(f"{args.input_dir}/validation.jsonl.gz", "rt")):
         text = json.loads(document)
         text = text.rstrip()
         text = limit_repetitions(text)
         if len(text) > 0:
             n_words += len(text.split())
-            tokens = tokenizer.encode(text).tokens
+            encoding = tokenizer.encode(text)
+            tokens = encoding.tokens
             counter.update(tokens)
             all_tokens += tokens
+
+            if i == 0:
+                print("Example of tokenization:")
+                print(text)
+                print(tokenizer.decode(encoding.ids))
+                for j in encoding.ids:
+                    print(j, tokenizer.id_to_token(j))
 
     sorted_subwords = counter.most_common()
 
@@ -152,13 +160,7 @@ if __name__ == "__main__":
 
     print("Saving the tokenizer", flush=True)
     tokenizer.save(f"{args.output_dir}/tokenizer.json")
-
-    s = """John Bonham (1948–1980) var ein britisk musikar og låtskrivar, mest kjend som trommeslagar i Led Zeppelin.\nBonham er velrenommert for snøggleiken, krafta, den kjappe høgrefoten, den særeigne stilen og kjensla si for grooven. Han vert rekna som ein av dei største trommeslagarane i rockehistoria av mange trommeslagarar, andre musikarar og musikkekspertar."""
-    e = tokenizer.encode(s)
-    print(tokenizer.decode(e.ids))
-    for i in e.ids:
-        print(i, tokenizer.id_to_token(i))
-
+    
     if args.do_calculate_stats:
         calculate_stats(tokenizer, args)
 

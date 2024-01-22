@@ -1,8 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=HPLT_SHARD
 #SBATCH --account=project_465000498
-#SBATCH --time=00:30:00
+#SBATCH --time=24:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
@@ -26,11 +25,8 @@ source /project/project_465000144/pytorch_1.13.1/bin/activate
 
 # process arguments
 ## input and output directories
-INPUT_DIR=${1}
-OUTPUT_DIR=${2}
-## shard size in MB, default 512
-SHARD_SIZE_MB=${3:-256}
+INPUT_FILE=${1}
+OUTPUT_FILE=${2}
 
 # run the script
-echo "Running schedule.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB}"
-python3 schedule.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB}
+python3 analyze_stats.py --input_file ${INPUT_FILE} --output_file ${OUTPUT_FILE}

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=HPLT_SHARD
 #SBATCH --account=project_465000498
-#SBATCH --time=24:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
@@ -29,8 +28,9 @@ source /project/project_465000144/pytorch_1.13.1/bin/activate
 INPUT_PATHS=${1}
 OUTPUT_DIR=${2}
 SHARDS=${3}
-CREATE_VALIDATION=${4:-""}
+SAMPLE_POWER=${4:-"0.0"}
+CREATE_VALIDATION=${5:-""}
 
 # run the script
-echo "Running shard_worker.py --input_paths ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION}"
-python3 shard_worker.py --input_files ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION}
+echo "Running shard_worker.py --input_paths ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION} --sample_power ${SAMPLE_POWER}"
+python3 shard_worker.py --input_files ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION} --sample_power ${SAMPLE_POWER}

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=HPLT_SHARD
 #SBATCH --account=project_465000498
-#SBATCH --time=24:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1

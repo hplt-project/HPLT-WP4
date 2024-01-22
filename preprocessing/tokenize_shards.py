@@ -26,9 +26,9 @@ def limit_repetitions(s):
 
 
 def tokenize(tokenizer, text):
-    text = text.rstrip("\n")
+    text = text.rstrip()
     text = limit_repetitions(text)
-    ids = tokenizer.encode(line, add_special_tokens=False).ids
+    ids = tokenizer.encode(text, add_special_tokens=False).ids
     ids = torch.tensor(ids, dtype=torch.int16)
 
     return ids
@@ -55,11 +55,18 @@ if __name__ == "__main__":
     # tokenize file
     tokenized_documents = []
     n_subwords = 0
-    for line in tqdm(open(input_file)):
+    for i, line in enumerate(tqdm(open(input_file, 'rt'))):
         document = json.loads(line)
         tokenized_document = tokenize(tokenizer, document)
         tokenized_documents.append(tokenized_document)
         n_subwords += len(tokenized_document)
+
+        if i == 0:
+            print("Example tokenized document:")
+            print(document)
+            for token in tokenized_document:
+                print(tokenizer.decode([token]))
+            print(flush=True)
 
     # save the tokenized documents
     with gzip.GzipFile(output_file, 'wb') as f:

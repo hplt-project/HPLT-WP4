@@ -2,9 +2,10 @@
 
 #SBATCH --account=project_465000498
 #SBATCH --time=24:00:00
-#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=7G
+#SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=64
+#SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
 
 
@@ -24,12 +25,8 @@ source /project/project_465000144/pytorch_1.13.1/bin/activate
 
 # process arguments
 ## input and output directories
-INPUT_PATHS=${1}
-OUTPUT_PATHS=${2}
-TOKENIZER_PATH=${3}
-
-export WORLD_SIZE=$SLURM_NTASKS
+INPUT_FILE=${1}
+OUTPUT_FILE=${2}
 
 # run the script
-echo "Running tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH}"
-srun -W 0 python3 tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH}
+python3 check_stats.py --input_file ${INPUT_FILE} --output_file ${OUTPUT_FILE}

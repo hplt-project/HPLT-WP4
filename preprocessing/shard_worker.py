@@ -6,6 +6,8 @@ import zstandard as zstd
 import math
 import json
 from tqdm import tqdm
+import random
+from statistics import mean
 
 
 def parse_args():
@@ -14,10 +16,13 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, required=True)
     parser.add_argument('--shards', type=str, required=True)
     parser.add_argument('--create_validation', action='store_true')
+    parser.add_argument('--sample_power', type=float, default=0.0)
     return parser.parse_args()
 
 
-def shard(input_files, output_dir, shards, create_validation=False):
+def shard(input_files, output_dir, shards, create_validation=False, sample_power=0.0):
+
+    random.seed(42)
 
     # open all shard files
     shard_files = [
@@ -30,6 +35,7 @@ def shard(input_files, output_dir, shards, create_validation=False):
 
     n_validation_documents = 10_000
     n_processed_documents = 0
+    n_rejected_documents = 0
 
     # iterate through all input files
     for filename in input_files:
@@ -40,10 +46,23 @@ def shard(input_files, output_dir, shards, create_validation=False):
             with dctx.stream_reader(f) as reader:
                 text_stream = io.TextIOWrapper(reader, encoding='utf-8')
                 for line in tqdm(text_stream):
-                    document = json.loads(line)["text"].strip()
+                    line = json.loads(line)
+                    document = line["text"].strip()
 
                     if len(document) == 0:
                         continue
+
+                    if sample_power > 0.0:
+                        scores = line["scores"]
+                        scores = [float(score) for score in scores]
+                        mean_score = mean(scores)
+
+                        if random.random() > math.pow(mean_score + 0.2, sample_power):
+                            n_rejected_documents += 1
+                            continue
+
+                    if n_processed_documents == 0:
+                        print(f"\nFirst document: {document}\n\n", flush=True)
 
                     # write to validation file if shard_index < validation_size
                     if create_validation and n_processed_documents < n_validation_documents:
@@ -60,11 +79,14 @@ def shard(input_files, output_dir, shards, create_validation=False):
     if create_validation:
         validation_file.close()
 
+    if sample_power > 0.0:
+        print(f"Rejected {n_rejected_documents} documents ({n_rejected_documents / (n_processed_documents + n_rejected_documents) * 100.0:.2f}%)", flush=True)
 
+ 
 if __name__ == "__main__":
     args = parse_args()
 
     args.input_files = args.input_files.split(",")
     args.shards = [int(shard) for shard in args.shards.split(",")]
 
-    shard(args.input_files, args.output_dir, args.shards, args.create_validation)
+    shard(args.input_files, args.output_dir, args.shards, args.create_validation, args.sample_power)
