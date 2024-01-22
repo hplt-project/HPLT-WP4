@@ -24,41 +24,34 @@ class SpanMaskingStrategy:
         self.mask_token_id = mask_token_id
 
     def __call__(self, tokens):
-        mask_ratios = torch.full_like(tokens, fill_value=1.0, dtype=torch.float32)
         replacement_tokens = tokens.clone()
-
-        n_to_mask = (tokens >= self.n_special_tokens).long().sum()
-        n_masked = 0
+        length = tokens.size(0)
 
         preservation_mask = tokens < self.n_special_tokens
-        mask = torch.zeros_like(tokens, dtype=torch.bool)
-        counter = 256
-        while n_to_mask > n_masked and counter > 0:
-            span_length = torch.tensor([0]).geometric_(0.2) % 11
-            span_length = span_length.clamp(1, 10).long().item()
-            offset = torch.randint(-(span_length - 1), tokens.size(0) + span_length, []).item()
-            sub_mask = torch.zeros_like(tokens, dtype=torch.bool)
-            sub_mask[max(0, offset) : min(mask.size(0)-1, offset + span_length)] = True
-            sub_mask[preservation_mask | mask] = False
 
-            mask_ratios[sub_mask] = n_masked / n_to_mask
+        span_lengths = torch.zeros([length // 2]).geometric_(0.2) % 11
+        span_lengths = span_lengths.clamp(1, 10).long()
+        span_random_numbers_1 = torch.rand([length // 2])
+        span_random_numbers_2 = torch.rand([length // 2])
 
-            random_number = torch.rand([]).item()
-            if random_number < self.random_p:
-                replacement_tokens[sub_mask] = torch.randint(
-                    low=self.n_special_tokens,
-                    high=self.vocab_size,
-                    size=[sub_mask.sum().item()],
-                    dtype=torch.long
-                )
-            elif random_number < (self.random_p + self.keep_p):
-                replacement_tokens[sub_mask] = tokens[sub_mask]
-            else:
-                replacement_tokens[sub_mask] = self.mask_token_id
+        indices = torch.repeat_interleave(torch.arange(span_lengths.size(0)), span_lengths)
+        indices = indices[:length]
+        if indices.size(0) < length:
+            indices = torch.cat([indices, torch.full([length - indices.size(0)], fill_value=length // 2 - 1, dtype=torch.long)])
+        
+        mask_ratios = span_random_numbers_1[indices]
+        mask_ratios[preservation_mask] = 1.0
 
-            mask |= sub_mask
-            n_masked = mask.long().sum()
-            counter -= 1
+        replacement_p = span_random_numbers_2[indices]
+        random_mask = replacement_p < self.random_p
+        replacement_tokens[random_mask] = torch.randint(
+            low=self.n_special_tokens,
+            high=self.vocab_size,
+            size=[random_mask.sum().item()],
+            dtype=torch.long
+        )
+        replacement_tokens[replacement_p > (self.random_p + self.keep_p)] = self.mask_token_id
+
 
         return mask_ratios, replacement_tokens
 
@@ -119,10 +112,11 @@ class Dataset(torch.utils.data.Dataset):
 
         return segment, attention_mask, mask_ratios, replacement_tokens
 
-    def show_random_item(self):
-        inputs, _, mask_ratios, replacement_tokens = self.__getitem__(self.randint(0, len(self)))
-        print(' '.join(self.tokenizer.id_to_token(i) for i in inputs), flush=True)
-        print(' '.join(self.tokenizer.id_to_token(i) for i in replacement_tokens), flush=True)
+    def show_random_item(self, tokenizer):
+        inputs, _, mask_ratios, replacement_tokens = self.__getitem__(torch.randint(0, len(self), []).item())
+        print(' '.join(tokenizer.decode([i], skip_special_tokens=False) for i in inputs.tolist()), flush=True)
+        print(' '.join(str(i) for i in inputs.tolist()), flush=True)
+        print(' '.join(tokenizer.decode([i], skip_special_tokens=False) for i in replacement_tokens.tolist()), flush=True)
         print(mask_ratios, flush=True)
 
 

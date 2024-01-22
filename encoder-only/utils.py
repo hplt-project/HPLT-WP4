@@ -16,6 +16,20 @@ def cosine_schedule_with_warmup(optimizer, num_warmup_steps: int, num_training_s
     return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 
 
+def cosine_schedule_with_warmup_cooldown(optimizer, num_warmup_steps: int, num_cooldown_steps: int, num_training_steps: int, min_factor: float):
+    def lr_lambda(current_step):
+        if current_step < num_warmup_steps:
+            return float(current_step) / float(max(1, num_warmup_steps))
+        elif current_step >= num_training_steps - num_cooldown_steps:
+            return min_factor * float(num_training_steps - current_step) / float(max(1, num_cooldown_steps))
+
+        progress = float(current_step - num_warmup_steps) / float(max(1, num_training_steps - num_warmup_steps))
+        lr = max(min_factor, min_factor + (1 - min_factor) * 0.5 * (1.0 + math.cos(math.pi * progress)))
+        return lr
+
+    return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+
 class CosineWDSchedule(object):
     def __init__(self, optimizer, ref_wd, T_max, final_wd=0.0, step=0):
         self.optimizer = optimizer

@@ -19,7 +19,7 @@ from torch.nn.parallel import DistributedDataParallel
 from lamb import Lamb
 from config import BertConfig
 from model import Bert
-from utils import cosine_schedule_with_warmup, is_main_process, get_rank, seed_everything, get_world_size
+from utils import cosine_schedule_with_warmup_cooldown, is_main_process, get_rank, seed_everything, get_world_size
 from dataset import Dataset, ValidationDataset, apply_mask
 
 
@@ -30,21 +30,20 @@ if int(os.environ["SLURM_PROCID"]) == 0:
 def parse_arguments():
     parser = argparse.ArgumentParser()
 
-    # Required parameters
-    parser.add_argument("--input_dir", default="/scratch/project_465000498/processed_data/nn", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
+    parser.add_argument("--language", default="en", type=str, help="The language to train on.")
+    parser.add_argument("--input_dir", default="/scratch/project_465000498/processed_data/{language}", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
     parser.add_argument("--name", default="bert_base_{language}", type=str)
     parser.add_argument("--config_file", default="configs/base.json", type=str, help="The BERT model config")
     parser.add_argument("--output_dir", default="/scratch/project_465000498/hplt_models", type=str, help="The output directory where the model checkpoints will be written.")
     parser.add_argument("--checkpoint_path", default=None, type=str, help="Path to a previous checkpointed training state.")
-
-    # Other parametersx
     parser.add_argument("--optimizer", default="lamb", type=str)
     parser.add_argument("--seq_length", default=128, help="Sequence length for training.")
-    parser.add_argument("--batch_size", default=64, type=int, help="Total batch size for training per GPUs and per grad accumulation step.")
+    parser.add_argument("--batch_size", default=256, type=int, help="Total batch size for training per GPUs and per grad accumulation step.")
     parser.add_argument("--learning_rate", default=1e-2, type=float, help="The initial learning rate for Adam.")
     parser.add_argument("--max_steps", default=31250, type=int, help="Total number of training steps to perform.")
     parser.add_argument("--validate_every", default=1, type=int, help="Run validation after every X training shards.")
     parser.add_argument("--warmup_proportion", default=0.016, type=float, help="Proportion of training to perform linear learning rate warmup for. E.g., 0.1 = 10%% of training.")
+    parser.add_argument("--cooldown_proportion", default=0.016, type=float, help="Proportion of training to perform linear learning rate cooldown for. E.g., 0.1 = 10%% of training.")
     parser.add_argument('--seed', type=int, default=42, help="random seed for initialization")
     parser.add_argument('--save_every', type=int, default=31250//10, help="save every X steps")
     parser.add_argument('--log_freq', type=int, default=10, help='frequency of logging loss.')
@@ -54,11 +53,14 @@ def parse_arguments():
     parser.add_argument("--mask_keep_p", default=0.1, type=float, help="Masking probability.")
     parser.add_argument("--short_p", default=0.1, type=float, help="Short sequence probability.")
     parser.add_argument("--weight_decay", default=0.1, type=float, help="Short sequence probability.")
+    parser.add_argument("--optimizer_eps", default=1e-6, type=float, help="Optimizer epsilon.")
+    parser.add_argument("--optimizer_beta1", default=0.9, type=float, help="Optimizer beta1.")
+    parser.add_argument("--optimizer_beta2", default=0.98, type=float, help="Optimizer beta2.")
     parser.add_argument("--max_gradient", default=2.0, type=float, help="Max value for gradient clipping.")
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
-    args.language = args.input_dir.split("/")[-1]
+    args.input_dir = args.input_dir.format(language=args.language)
     args.name = args.name.format(language=args.language)
     args.tokenizer_path = f"{args.input_dir}/tokenizer.json"
     args.output_dir = f"{args.output_dir}/{args.name}"
@@ -182,18 +184,24 @@ def prepare_model_and_optimizer(args, device, local_rank, checkpoint):
         optimizer = torch.optim.AdamW(
             optimizer_grouped_parameters,
             lr=args.learning_rate,
-            betas=(0.9, 0.98),
-            eps=1e-6,
+            betas=(args.optimizer_beta1, args.optimizer_beta2),
+            eps=args.optimizer_eps,
         )
     elif args.optimizer == "lamb":
         optimizer = Lamb(
             optimizer_grouped_parameters,
             args.learning_rate,
-            betas=(0.9, 0.98),
-            eps=1e-6,
+            betas=(args.optimizer_beta1, args.optimizer_beta2),
+            eps=args.optimizer_eps,
         )
  
-    scheduler = cosine_schedule_with_warmup(optimizer, int(args.max_steps * args.warmup_proportion), args.max_steps, 0.1)
+    scheduler = cosine_schedule_with_warmup_cooldown(
+        optimizer,
+        int(args.max_steps * args.warmup_proportion),
+        int(args.max_steps * args.cooldown_proportion),
+        args.max_steps,
+        0.1
+    )
 
     model = DistributedDataParallel(
         model,
@@ -232,7 +240,6 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
         grad_norm = nn.utils.clip_grad_norm_(model.parameters(), args.max_gradient)
 
         optimizer.step()
-        optimizer.zero_grad(set_to_none=True)
 
         scheduler.step()
         global_step += 1
@@ -258,9 +265,10 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
                     "stats/grad_norm": grad_norm,
                     "stats/seq_length": args.seq_length,
                     "stats/mask_p": mask_p,
-                },
-                step=global_step,
+                }
             )
+
+        optimizer.zero_grad(set_to_none=True)
 
         if global_step % args.save_every == 0:
             save(model, optimizer, scheduler, global_step, epoch, args)
@@ -270,7 +278,8 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
         # Exiting the training due to hitting max steps
         if global_step >= args.max_steps or local_step >= max_local_steps - 1:
             return global_step
-        
+        if global_step == (args.max_steps // 10 * 7) or global_step == (args.max_steps // 10 * 9):
+            return global_step
 
     return global_step
 
@@ -308,8 +317,7 @@ def validation_epoch(model, valid_dataloader, epoch, args, device):
                 "validation/loss": mean(losses),
                 "validation/accuracy": mean(accuracies) * 100.0,
                 "validation/perplexity": mean(perplexities)
-            },
-            step=global_step,
+            }
         )
 
 
@@ -335,31 +343,33 @@ def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid
     train_seed = args.seed + get_rank() + epoch * get_world_size()
     train_path = f"{args.input_dir}/tokenized_shards/train_{train_index:05d}.pt.gz"
 
-    if global_step / args.max_steps >= 0.9:
+    if (global_step + 1) / args.max_steps >= 0.9:
         args.seq_length = 512
         batch_size = args.batch_size // 4
-    elif global_step / args.max_steps >= 0.7:
+    elif (global_step + 1) / args.max_steps >= 0.7:
         args.seq_length = 256
         batch_size = args.batch_size // 2
     else:
-        args.seq_length = 512
+        args.seq_length = 128
         batch_size = args.batch_size
 
     if train_data is None or train_data.path != train_path or train_data.seq_length != args.seq_length:
         train_data = Dataset(train_path, tokenizer, args)
         print(f"Loaded training file {train_index} on GPU {get_rank()}", flush=True)
+        if is_main_process():
+            train_data.show_random_item(tokenizer)
 
     if valid_data is None:
         valid_data = ValidationDataset(f"{args.input_dir}/tokenized_shards/validation.pt.gz", tokenizer, int(os.environ["SLURM_PROCID"]), int(os.environ["WORLD_SIZE"]), args)
 
-    min_length = torch.tensor(len(train_data) // args.batch_size, dtype=torch.long, device=device)
+    min_length = torch.tensor(len(train_data) // batch_size // 2, dtype=torch.long, device=device)
     torch.distributed.all_reduce(min_length, torch.distributed.ReduceOp.MIN)
 
     train_dataloader = DataLoader(
         train_data,
         shuffle=True,
         batch_size=batch_size,
-        num_workers=3,
+        num_workers=0,  # non-zero num_workers cause segmenation fault
         generator=torch.Generator().manual_seed(train_seed),
         drop_last=True,
         pin_memory=True,
@@ -369,7 +379,7 @@ def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid
         valid_data,
         shuffle=False,
         batch_size=256,
-        num_workers=3,
+        num_workers=0,  # non-zero num_workers cause segmenation fault
         generator=torch.Generator().manual_seed(42),
         drop_last=True,
         pin_memory=True,

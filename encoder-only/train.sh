@@ -2,25 +2,26 @@
 
 #SBATCH --job-name=HPLT_BERT
 #SBATCH --account=project_465000498
-#SBATCH --time=3:00:00
+#SBATCH --time=12:00:00
 #SBATCH --cpus-per-task=7
 #SBATCH --mem=0
-#SBATCH --nodes=1
+#SBATCH --nodes=16
 #SBATCH --ntasks-per-node=8
 #SBATCH --gpus-per-node=mi250:8
-#SBATCH --partition=dev-g
+#SBATCH --partition=standard-g
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
 #SBATCH --output=logs/bert-%j.out
-#SBATCH --error=logs/bert-%j.err
 
+
+cd "$(dirname "$0")"  # Change directory to the one containing this script
 
 mkdir -p workdir
 wd=$(realpath workdir)
 # if run without sbatch, invoke here
 if [ -z $SLURM_JOB_ID ]; then
     mkdir -p logs
-    sbatch "$0"
+    sbatch --job-name "${1}-BERT" --output "logs/${1}-bert-%j.out" "$0" "$@"
     exit
 fi
 
@@ -39,10 +40,11 @@ SING_BIND="/scratch/project_465000498,/flash/project_465000498"
 
 set -euo pipefail
 
+LANGUAGE=${1}
+
 CMD=" \
     train.py \
-    --input_dir /scratch/project_465000498/processed_data/nn \
-    --output_dir /scratch/project_465000498/hplt_models \
+    --language $LANGUAGE \
 "
 
 # Bind masks from Samuel Antao
