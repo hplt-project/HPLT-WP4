@@ -14,8 +14,6 @@
 #SBATCH --output=logs/bert-%j.out
 
 
-cd "$(dirname "$0")"  # Change directory to the one containing this script
-
 mkdir -p workdir
 wd=$(realpath workdir)
 # if run without sbatch, invoke here
