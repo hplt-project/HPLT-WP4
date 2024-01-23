@@ -76,7 +76,6 @@ def log_parameter_histograms(model, step):
                 f"parameters/norm_{name}": torch.linalg.norm(param.data).cpu().item(),
                 f"parameters/std_{name}": param.data.std().cpu().item(),
             },
-            step=step,
             commit=False
         )
         if param.requires_grad and param.grad is not None:
@@ -85,7 +84,6 @@ def log_parameter_histograms(model, step):
                     f"gradients/norm_{name}": torch.linalg.norm(param.grad).cpu().item(),
                     f"gradients/std_{name}": param.grad.std().cpu().item(),
                 },
-                step=step,
                 commit=False
             )
 
@@ -265,7 +263,8 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
                     "stats/grad_norm": grad_norm,
                     "stats/seq_length": args.seq_length,
                     "stats/mask_p": mask_p,
-                }
+                },
+                commit=False
             )
 
         optimizer.zero_grad(set_to_none=True)
@@ -274,6 +273,10 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
             save(model, optimizer, scheduler, global_step, epoch, args)
             validation_epoch(model, valid_dataloader, epoch, args, device)
             model = model.train()
+
+        if is_main_process():
+            wandb.log({"global_step": global_step}, commit=True)
+
 
         # Exiting the training due to hitting max steps
         if global_step >= args.max_steps or local_step >= max_local_steps - 1:
@@ -317,7 +320,8 @@ def validation_epoch(model, valid_dataloader, epoch, args, device):
                 "validation/loss": mean(losses),
                 "validation/accuracy": mean(accuracies) * 100.0,
                 "validation/perplexity": mean(perplexities)
-            }
+            },
+            commit=False
         )
 
 
@@ -338,10 +342,22 @@ def save(model, optimizer, scheduler, global_step, epoch, args):
         )
 
 
-def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid_data):
-    train_index = (get_rank() + epoch * get_world_size()) % args.n_training_files
+def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid_data, shard_offset):
+
+    for i in range(8):
+        train_index = (get_rank() + epoch * get_world_size() + shard_offset) % args.n_training_files
+        train_path = f"{args.input_dir}/tokenized_shards/train_{train_index:05d}.pt.gz"
+
+        if not os.path.exists(train_path):
+            shard_offset += get_world_size()
+            print(f"WARNING: Training shard {train_path} does not exist. Trying {train_index + get_world_size()} instead.")
+        else:
+            break
+    else:
+        print(f"ERROR: None of the shards exist. Exiting.")
+        exit(1)
+
     train_seed = args.seed + get_rank() + epoch * get_world_size()
-    train_path = f"{args.input_dir}/tokenized_shards/train_{train_index:05d}.pt.gz"
 
     if (global_step + 1) / args.max_steps >= 0.9:
         args.seq_length = 512
@@ -385,7 +401,7 @@ def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid
         pin_memory=True,
     )
 
-    return train_data, valid_data, train_dataloader, valid_dataloader, min_length
+    return train_data, valid_data, train_dataloader, valid_dataloader, min_length, shard_offset
 
 
 if __name__ == "__main__":
@@ -404,10 +420,10 @@ if __name__ == "__main__":
     tokenizer = Tokenizer.from_file(args.tokenizer_path)
     device, local_rank = setup_training(args, tokenizer)
     model, config, optimizer, scheduler = prepare_model_and_optimizer(args, device, local_rank, checkpoint)
-    train_data, valid_data = None, None
+    train_data, valid_data, shard_offset = None, None, 0
 
     for epoch in count(initial_epoch):
-        train_data, valid_data, train_dataloader, valid_dataloader, min_length = load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid_data)
+        train_data, valid_data, train_dataloader, valid_dataloader, min_length, shard_offset = load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid_data, shard_offset)
         global_step = training_epoch(model, train_dataloader, valid_dataloader, optimizer, scheduler, global_step, epoch, args, device, min_length)
 
         if global_step >= args.max_steps:
