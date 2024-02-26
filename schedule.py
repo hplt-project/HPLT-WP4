@@ -39,7 +39,7 @@ def schedule(language, input_dir, output_dir, shard_size):
 
     print(f"Total size: {total_size:.2f} MB")
     print(f"Number of shards: {number_of_shards} files, each of roughly {actual_shard_size:.2f} MB", flush=True)
-    
+
     # recursively remove the output directory
     shutil.rmtree(output_dir, ignore_errors=True)
 
@@ -66,6 +66,10 @@ def schedule(language, input_dir, output_dir, shard_size):
         shards = list(range(int(num_scheduled_shards), int(num_scheduled_shards + num_shards)))
         num_scheduled_shards += num_shards
 
+        # if we are at the last file, make sure all shards are created
+        if i == len(filenames) - 1 and shards[-1] < number_of_shards - 1:
+            shards += list(range(shards[-1], number_of_shards))
+
         print(f"Scheduling [{', '.join(current_input_files)}] to shards [{', '.join(map(str, shards))}]", flush=True)
 
         # schedule shards with sbatch
@@ -84,7 +88,19 @@ def schedule(language, input_dir, output_dir, shard_size):
     # schedule tokenizer training
     print(f"Scheduling tokenizer training", flush=True)
 
-    command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir}"
+    additional_args = ""
+    if args.language == "ja":
+        additional_args = "--do_japanese_pretokenization"
+    elif args.language == "ko":
+        additional_args = "--do_korean_pretokenization"
+    elif args.language == "my":
+        additional_args = "--do_burmese_pretokenization"
+    elif args.language == "th":
+        additional_args = "--do_thai_pretokenization"
+    elif args.language == "zh":
+        additional_args = "--do_chinese_pretokenization"
+
+    command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
     bash_output = subprocess.check_output(command, shell=True)
     print(bash_output.decode("utf-8"))
     tokenizer_job_id = bash_output.decode("utf-8").split()[-1]

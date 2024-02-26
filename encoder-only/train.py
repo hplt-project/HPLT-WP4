@@ -33,7 +33,7 @@ def parse_arguments():
     parser.add_argument("--language", default="en", type=str, help="The language to train on.")
     parser.add_argument("--input_dir", default="/scratch/project_465000498/processed_data/{language}", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
     parser.add_argument("--name", default="bert_base_{language}", type=str)
-    parser.add_argument("--config_file", default="configs/base.json", type=str, help="The BERT model config")
+    parser.add_argument("--config_file", default="/scratch/project_465000498/HPLT-WP4/encoder-only/configs/base.json", type=str, help="The BERT model config")
     parser.add_argument("--output_dir", default="/scratch/project_465000498/hplt_models", type=str, help="The output directory where the model checkpoints will be written.")
     parser.add_argument("--checkpoint_path", default=None, type=str, help="Path to a previous checkpointed training state.")
     parser.add_argument("--optimizer", default="lamb", type=str)
@@ -115,6 +115,7 @@ def setup_training(args, tokenizer):
         os.system(f"mkdir -p {args.output_dir}")
 
     args.n_training_files = len(fnmatch.filter(os.listdir(f"{args.input_dir}/tokenized_shards"), "train_*.pt.gz"))
+    args.n_training_files = 2 ** (args.n_training_files - 1).bit_length()
 
     if is_main_process():
         print(f"Training for {args.max_steps:,} steps with {get_world_size()} GPUs")
@@ -349,7 +350,10 @@ def load_datasets(args, tokenizer, epoch, global_step, device, train_data, valid
         train_path = f"{args.input_dir}/tokenized_shards/train_{train_index:05d}.pt.gz"
 
         if not os.path.exists(train_path):
-            shard_offset += get_world_size()
+            if args.n_training_files <= get_world_size():
+                shard_offset += torch.randint(0, args.n_training_files, (1,)).item()
+            else:
+                shard_offset += get_world_size()
             print(f"WARNING: Training shard {train_path} does not exist. Trying {train_index + get_world_size()} instead.")
         else:
             break
