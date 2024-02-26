@@ -57,14 +57,6 @@ class MaskClassifier(nn.Module):
             nn.Dropout(config.hidden_dropout_prob),
             nn.Linear(subword_embedding.size(1), subword_embedding.size(0))
         )
-        self.initialize(config.hidden_size, subword_embedding)
-
-    def initialize(self, hidden_size, embedding):
-        std = math.sqrt(2.0 / (5.0 * hidden_size))
-        nn.init.trunc_normal_(self.nonlinearity[1].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        self.nonlinearity[-1].weight = embedding
-        self.nonlinearity[1].bias.data.zero_()
-        self.nonlinearity[-1].bias.data.zero_()
 
     def forward(self, x, masked_lm_labels=None):
         if masked_lm_labels is not None:
@@ -104,12 +96,6 @@ class FeedForward(nn.Module):
             nn.Linear(config.intermediate_size, config.hidden_size, bias=False),
             nn.Dropout(config.hidden_dropout_prob)
         )
-        self.initialize(config.hidden_size)
-
-    def initialize(self, hidden_size):
-        std = math.sqrt(2.0 / (5.0 * hidden_size))
-        nn.init.trunc_normal_(self.mlp[1].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.mlp[-2].weight, mean=0.0, std=std, a=-2*std, b=2*std)
 
     def forward(self, x):
         return self.mlp(x)
@@ -160,7 +146,6 @@ class Attention(nn.Module):
 
         self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
         self.scale = 1.0 / math.sqrt(3 * self.head_size)
-        self.initialize()
 
     def make_log_bucket_position(self, relative_pos, bucket_size, max_position):
         sign = torch.sign(relative_pos)
@@ -169,15 +154,6 @@ class Attention(nn.Module):
         log_pos = torch.ceil(torch.log(abs_pos / mid) / math.log((max_position-1) / mid) * (mid - 1)).int() + mid
         bucket_pos = torch.where(abs_pos <= mid, relative_pos, log_pos * sign).long()
         return bucket_pos
-
-    def initialize(self):
-        std = math.sqrt(2.0 / (5.0 * self.hidden_size))
-        nn.init.trunc_normal_(self.in_proj_qk.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.in_proj_v.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.out_proj.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        self.in_proj_qk.bias.data.zero_()
-        self.in_proj_v.bias.data.zero_()
-        self.out_proj.bias.data.zero_()
 
     def compute_attention_scores(self, hidden_states, relative_embedding):
         key_len, batch_size, _ = hidden_states.size()
@@ -246,13 +222,6 @@ class Embedding(nn.Module):
         self.relative_embedding = nn.Parameter(torch.empty(2 * config.position_bucket_size - 1, config.hidden_size))
         self.relative_layer_norm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
 
-        self.initialize()
-
-    def initialize(self):
-        std = math.sqrt(2.0 / (5.0 * self.hidden_size))
-        nn.init.trunc_normal_(self.relative_embedding, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.word_embedding.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-
     def forward(self, input_ids):
         word_embedding = self.dropout(self.word_layer_norm(self.word_embedding(input_ids)))
         relative_embeddings = self.relative_layer_norm(self.relative_embedding)
@@ -265,7 +234,6 @@ class Embedding(nn.Module):
 
 class LtgbertPreTrainedModel(PreTrainedModel):
     config_class = LtgbertConfig
-    base_model_prefix = "norbert3"
     supports_gradient_checkpointing = True
 
     def _set_gradient_checkpointing(self, module, value=False):
@@ -273,17 +241,29 @@ class LtgbertPreTrainedModel(PreTrainedModel):
             module.activation_checkpointing = value
 
     def _init_weights(self, module):
-        pass  # everything is already initialized
+        std = math.sqrt(2.0 / (5.0 * self.hidden_size))
+
+        if isinstance(module, nn.Linear):
+            nn.init.trunc_normal_(module.weight.data, mean=0.0, std=std, a=-2*std, b=2*std)
+            if module.bias is not None:
+                module.bias.data.zero_()
+        elif isinstance(module, nn.Embedding):
+            nn.init.trunc_normal_(module.weight.data, mean=0.0, std=std, a=-2*std, b=2*std)
+        elif isinstance(module, nn.LayerNorm):
+            module.bias.data.zero_()
+            module.weight.data.fill_(1.0)
 
 
 class LtgbertModel(LtgbertPreTrainedModel):
     def __init__(self, config, add_mlm_layer=False, gradient_checkpointing=False, **kwargs):
         super().__init__(config, **kwargs)
         self.config = config
+        self.hidden_size = config.hidden_size
 
         self.embedding = Embedding(config)
         self.transformer = Encoder(config, activation_checkpointing=gradient_checkpointing)
         self.classifier = MaskClassifier(config, self.embedding.word_embedding.weight) if add_mlm_layer else None
+
 
     def get_input_embeddings(self):
         return self.embedding.word_embedding
@@ -414,14 +394,6 @@ class Classifier(nn.Module):
             nn.Dropout(drop_out),
             nn.Linear(config.hidden_size, num_labels)
         )
-        self.initialize(config.hidden_size)
-
-    def initialize(self, hidden_size):
-        std = math.sqrt(2.0 / (5.0 * hidden_size))
-        nn.init.trunc_normal_(self.nonlinearity[1].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.nonlinearity[-1].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        self.nonlinearity[1].bias.data.zero_()
-        self.nonlinearity[-1].bias.data.zero_()
 
     def forward(self, x):
         x = self.nonlinearity(x)
