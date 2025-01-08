@@ -1,6 +1,9 @@
 #!/bin/bash
-# Launch script used by slurm scripts, don't invoke directly.
-source /opt/miniconda3/bin/activate pytorch
+source ${HOME}/.bashrc
+export EBU_USER_PREFIX=/projappl/project_465001384/software/
+# the important bit: unload all current modules (just in case) and load only the necessary ones
+module --quiet purge
+module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 # Samuel's fix for apparent error in SLURM initialization 
 if [ $SLURM_LOCALID -eq 0 ]; then
     rm -rf /dev/shm/*
@@ -25,5 +28,4 @@ echo "Launching on $SLURMD_NODENAME ($SLURM_PROCID/$SLURM_JOB_NUM_NODES)," \
      "master $MASTER_ADDR port $MASTER_PORT," \
      "GPUs $SLURM_GPUS_ON_NODE," \
      "CUDA: $(python -c 'import torch; print(torch.cuda.is_available())')"
-# echo "/pfs/lustrep4/scratch/project_462000319/preprocessed_data/final/merged/train"
 python -u "$@"

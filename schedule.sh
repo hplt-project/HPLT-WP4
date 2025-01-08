@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=SCHEDULER
-#SBATCH --account=project_465000498
+#SBATCH --account=project_465001386
 #SBATCH --time=01:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
@@ -20,22 +20,18 @@ fi
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error
 
-# Load modules
+source ${HOME}/.bashrc
+
+export EBU_USER_PREFIX=/projappl/project_465001384/software/
+# the important bit: unload all current modules (just in case) and load only the necessary ones
 module --quiet purge
-module load LUMI/22.08
-module load cray-python/3.9.12.1
-
-# Set the ${PS1} (needed in the source of the virtual environment for some Python versions)
-export PS1=\$
-
-# Load the virtual environment
-source /project/project_465000144/pytorch_1.13.1/bin/activate
+module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
 # process arguments
 ## input and output directories
 LANGUAGE=${1}
-INPUT_DIR="/scratch/project_465000498/one/cleaned/${LANGUAGE}"
-OUTPUT_DIR="/scratch/project_465000498/processed_data/${LANGUAGE}"
+INPUT_DIR="/scratch/project_465001386/one/cleaned/${LANGUAGE}"
+OUTPUT_DIR="/scratch/project_465001386/processed_data/${LANGUAGE}"
 
 ## shard size in MB, default 512
 SHARD_SIZE_MB=${2:-512}

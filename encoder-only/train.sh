@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=HPLT_BERT
-#SBATCH --account=project_465000498
+#SBATCH --account=project_465001386
 #SBATCH --time=14:00:00
 #SBATCH --cpus-per-task=7
 #SBATCH --mem=0
@@ -32,17 +32,13 @@ export WORLD_SIZE=$SLURM_NTASKS
 export CC=gcc-10
 export CXX=g++-10
 
-# singularity setup
-# CONTAINER="/users/dasamuel/hplt_scratch/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
-CONTAINER="/scratch/project_465000498/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
-SING_BIND="/scratch/project_465000498,/flash/project_465000498"
 
 set -euo pipefail
 
 LANGUAGE=${1}
 
 CMD=" \
-    /scratch/project_465000498/HPLT-WP4/encoder-only/train.py \
+    /scratch/project_465001386/HPLT-WP4/encoder-only/train.py \
     --language $LANGUAGE \
 "
 
@@ -76,8 +72,8 @@ srun \
     -B $wd/cray-deps:/opt/cray-deps \
     -B $wd:/workdir \
     -B "$SING_BIND" \
-    "$CONTAINER" \
-    /scratch/project_465000498/HPLT-WP4/encoder-only/launch.sh \
+    $SIF \
+    /scratch/project_465001386/HPLT-WP4/encoder-only/launch.sh \
     $CMD
 
 echo "END $SLURM_JOBID: $(date)"

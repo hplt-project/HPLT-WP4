@@ -12,8 +12,8 @@ from tokenizers import Tokenizer, pre_tokenizers, decoders, processors, Regex, n
 
 def parse_args():
     parser = argparse.ArgumentParser(description='BERT sharding')
-    parser.add_argument('--input_dir', type=str, required=True, default="/scratch/project_465000498/processed_data/nn/shards")
-    parser.add_argument('--output_dir', type=str, required=True, default="/scratch/project_465000498/processed_data/nn")
+    parser.add_argument('--input_dir', type=str, required=True, default="/scratch/project_465001386/processed_data/nn/shards")
+    parser.add_argument('--output_dir', type=str, required=True, default="/scratch/project_465001386/processed_data/nn")
     parser.add_argument('--num_sampled_files', type=int, default=32)
     parser.add_argument('--vocab_size', type=int, default=2**15, help='Number of subwords in the trained tokenizer')
     parser.add_argument('--min_frequency', type=int, default=10, help='Minimal number of occurences of every candidate subword')

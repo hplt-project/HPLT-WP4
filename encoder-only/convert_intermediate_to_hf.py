@@ -12,12 +12,12 @@ def parse_args():
     parser.add_argument(
         "--input_model_directory",
         type=str,
-        default="/scratch/project_465000498/hplt_models",
+        default="/scratch/project_465001386/hplt_models",
     )
     parser.add_argument(
         "--output_model_directory",
         type=str,
-        default="/scratch/project_465000498/hplt_hf_models/intermediate",
+        default="/scratch/project_465001386/hplt_hf_models/intermediate",
     )
     parser.add_argument("--language", type=str, default="en")
     args = parser.parse_args()
@@ -55,7 +55,7 @@ def convert_hf(input_model_directory, output_model_directory, language, template
         torch.save(cur_checkpoint["model"], os.path.join(step_dir, "pytorch_model.bin"))
 
         _ = shutil.copy2(
-            f"/scratch/project_465000498/processed_data/{language}/tokenizer.json",
+            f"/scratch/project_465001386/processed_data/{language}/tokenizer.json",
             step_dir,
         )
 
