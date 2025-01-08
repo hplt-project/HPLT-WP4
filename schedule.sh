@@ -31,11 +31,11 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 ## input and output directories
 LANGUAGE=${1}
 INPUT_DIR="${2}/${LANGUAGE}"
-OUTPUT_DIR="~/processed_data/${LANGUAGE}"
+OUTPUT_DIR="${3}/${LANGUAGE}"
 
 ## shard size in MB, default 512
-SHARD_SIZE_MB=${3:-512}
-SAMPLE_POWER=${4:-0.0}
+SHARD_SIZE_MB=${4:-512}
+SAMPLE_POWER=${5:-0.0}
 
 # run the script
 echo "Running schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}"
