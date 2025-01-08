@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --account=project_465001386
-#SBATCH --time=72:00:00
+#SBATCH --time=12:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=64
-#SBATCH --partition=small
+#SBATCH --partition=standard
 
 
 set -o errexit  # Exit the script on any error
@@ -23,9 +23,10 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 INPUT_PATHS=${1}
 OUTPUT_PATHS=${2}
 TOKENIZER_PATH=${3}
+OTHER_ARGS=${@:4}
 
 export WORLD_SIZE=$SLURM_NTASKS
 
 # run the script
-echo "Running tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH}"
-srun -W 0 python3 tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH}
+echo "Running tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH} ${OTHER_ARGS}"
+srun -W 0 python3 tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH} ${OTHER_ARGS}

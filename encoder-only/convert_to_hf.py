@@ -7,8 +7,8 @@ from transformers import AutoTokenizer
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465001386/hplt_models')
-    parser.add_argument('--output_model_directory', type=str, default='/scratch/project_465001386/hplt_hf_models')
+    parser.add_argument('--input_model_directory', type=str, default='~/hplt_models')
+    parser.add_argument('--output_model_directory', type=str, default='~/hplt_hf_models')
     parser.add_argument('--language', type=str, default='en')
     args = parser.parse_args()
     return args
@@ -32,7 +32,7 @@ def convert_to_hf(input_model_directory, output_model_directory, language):
     checkpoint = torch.load(os.path.join(input_model_directory, "model_step_31250.bin"))
     torch.save(checkpoint['model'], os.path.join(output_model_directory, "pytorch_model.bin"))
 
-    os.system(f"cp /scratch/project_465001386/processed_data/{language}/tokenizer.json {output_model_directory}")
+    os.system(f"cp ~/processed_data/{language}/tokenizer.json {output_model_directory}")
 
     tokenizer = AutoTokenizer.from_pretrained(output_model_directory)
     vocabulary_size = tokenizer.vocab_size

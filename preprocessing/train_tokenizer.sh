@@ -2,8 +2,8 @@
 
 #SBATCH --account=project_465001386
 #SBATCH --time=72:00:00
-#SBATCH --mem-per-cpu=7G
-#SBATCH --cpus-per-task=7
+#SBATCH --mem-per-cpu=64G
+#SBATCH --cpus-per-task=2
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
@@ -23,7 +23,8 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 ## input and output directories
 INPUT_DIR=${1}
 OUTPUT_DIR=${2}
+OTHER_ARGS=${@:3}
 
 # run the script
-echo "Running train_tokenizer.py input_dir ${INPUT_DIR} output_dir ${OUTPUT_DIR} --do_calculate_stats"
-python3 train_tokenizer.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --do_calculate_stats
+echo "Running train_tokenizer.py input_dir ${INPUT_DIR} output_dir ${OUTPUT_DIR} --do_calculate_stats  ${OTHER_ARGS}"
+python3 train_tokenizer.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --do_calculate_stats ${OTHER_ARGS}

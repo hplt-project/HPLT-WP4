@@ -30,8 +30,8 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 # process arguments
 ## input and output directories
 LANGUAGE=${1}
-INPUT_DIR="/scratch/project_465001386/one/cleaned/${LANGUAGE}"
-OUTPUT_DIR="/scratch/project_465001386/processed_data/${LANGUAGE}"
+INPUT_DIR="~/one/cleaned/${LANGUAGE}"
+OUTPUT_DIR="~/processed_data/${LANGUAGE}"
 
 ## shard size in MB, default 512
 SHARD_SIZE_MB=${2:-512}

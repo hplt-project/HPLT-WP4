@@ -13,8 +13,8 @@ import shutil
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--language', type=str, required=True, default="nn")
-    parser.add_argument('--input_dir', type=str, required=True, default="/scratch/project_465001386/one/cleaned/nn")
-    parser.add_argument('--output_dir', type=str, required=True, default="/scratch/project_465001386/processed_data/nn")
+    parser.add_argument('--input_dir', type=str, required=True, default="~/one/cleaned/nn")
+    parser.add_argument('--output_dir', type=str, required=True, default="~/processed_data/nn")
     parser.add_argument('--shard_size_mb', type=int, required=False, default=512)
     parser.add_argument('--sample_power', type=float, required=False, default=0.0)
     return parser.parse_args()

@@ -38,7 +38,7 @@ set -euo pipefail
 LANGUAGE=${1}
 
 CMD=" \
-    /scratch/project_465001386/HPLT-WP4/encoder-only/train.py \
+    ~/HPLT-WP4/encoder-only/train.py \
     --language $LANGUAGE \
 "
 
@@ -73,7 +73,7 @@ srun \
     -B $wd:/workdir \
     -B "$SING_BIND" \
     $SIF \
-    /scratch/project_465001386/HPLT-WP4/encoder-only/launch.sh \
+    ~/HPLT-WP4/encoder-only/launch.sh \
     $CMD
 
 echo "END $SLURM_JOBID: $(date)"

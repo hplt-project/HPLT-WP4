@@ -140,7 +140,7 @@ def main():
         args.epochs = 60
 
     if args.model == "hplt":
-        args.model_path = f"/scratch/project_465001386/hplt_hf_models/{args.language}"
+        args.model_path = f"~/hplt_hf_models/{args.language}"
         if not os.path.exists(args.model_path):
             raise ValueError(f"Model {args.model_path} not found")
     elif args.model == "mbert":
