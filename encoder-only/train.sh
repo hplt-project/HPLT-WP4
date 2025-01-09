@@ -37,8 +37,9 @@ set -euo pipefail
 
 LANGUAGE=${1}
 
+# no need for the long path if slurm is run with chdir
 CMD=" \
-    ~/HPLT-WP4/encoder-only/train.py \
+    train.py \
     --language $LANGUAGE \
 "
 
