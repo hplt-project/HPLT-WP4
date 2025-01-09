@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_465001386
-#SBATCH --time=47:00:00
+#SBATCH --time=30:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
@@ -29,4 +29,4 @@ CREATE_VALIDATION=${5:-""}
 
 # run the script
 echo "Running shard_worker.py --input_paths ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION} --sample_power ${SAMPLE_POWER}"
-python3 shard_worker.py --input_files ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION} --sample_power ${SAMPLE_POWER}
+srun singularity exec $SIF python3 shard_worker.py --input_files ${INPUT_PATHS} --output_dir ${OUTPUT_DIR} --shards ${SHARDS} ${CREATE_VALIDATION} --sample_power ${SAMPLE_POWER}

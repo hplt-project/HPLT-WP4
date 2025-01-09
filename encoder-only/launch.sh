@@ -28,4 +28,4 @@ echo "Launching on $SLURMD_NODENAME ($SLURM_PROCID/$SLURM_JOB_NUM_NODES)," \
      "master $MASTER_ADDR port $MASTER_PORT," \
      "GPUs $SLURM_GPUS_ON_NODE," \
      "CUDA: $(python -c 'import torch; print(torch.cuda.is_available())')"
-python -u "$@"
+srun singularity exec $SIF python3 "$@"

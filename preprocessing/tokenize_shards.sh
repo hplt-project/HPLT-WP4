@@ -29,4 +29,4 @@ export WORLD_SIZE=$SLURM_NTASKS
 
 # run the script
 echo "Running tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH} ${OTHER_ARGS}"
-srun -W 0 python3 tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH} ${OTHER_ARGS}
+srun singularity exec $SIF python3 tokenize_shards.py --input_files=${INPUT_PATHS} --output_files=${OUTPUT_PATHS} --tokenizer_path=${TOKENIZER_PATH} ${OTHER_ARGS}
