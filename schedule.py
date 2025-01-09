@@ -17,6 +17,7 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, required=True, default="~/processed_data/nn")
     parser.add_argument('--shard_size_mb', type=int, required=False, default=512)
     parser.add_argument('--sample_power', type=float, required=False, default=0.0)
+    parser.add_argument('--do_calculate_train_tok_stats', action='store_true')
     return parser.parse_args()
 
 
@@ -99,6 +100,8 @@ def schedule(language, input_dir, output_dir, shard_size):
         additional_args = "--do_thai_pretokenization"
     elif args.language == "zh":
         additional_args = "--do_chinese_pretokenization"
+    if args.do_calculate_train_tok_stats:
+        additional_args += " --do_calculate_stats"
 
     command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
     bash_output = subprocess.check_output(command, shell=True)

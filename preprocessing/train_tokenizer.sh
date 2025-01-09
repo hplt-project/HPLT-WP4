@@ -26,5 +26,5 @@ OUTPUT_DIR=${2}
 OTHER_ARGS=${@:3}
 
 # run the script
-echo "Running train_tokenizer.py input_dir ${INPUT_DIR} output_dir ${OUTPUT_DIR} --do_calculate_stats  ${OTHER_ARGS}"
-srun singularity exec $SIF python3 train_tokenizer.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --do_calculate_stats ${OTHER_ARGS}
+echo "Running train_tokenizer.py input_dir ${INPUT_DIR} output_dir ${OUTPUT_DIR} ${OTHER_ARGS}"
+srun singularity exec $SIF python3 train_tokenizer.py --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} ${OTHER_ARGS}
