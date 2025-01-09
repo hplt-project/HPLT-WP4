@@ -147,7 +147,7 @@ def schedule(language, input_dir, output_dir, shard_size):
 
     # schedule BERT training
     print(f"Scheduling BERT training", flush=True)
-    command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language}"
+    command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
     bash_output = subprocess.check_output(command, shell=True)
     print(bash_output.decode("utf-8"), flush=True)
 
