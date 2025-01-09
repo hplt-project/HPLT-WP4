@@ -83,7 +83,9 @@ def initialize_tokenizer(args):
     ])
     tokenizer.decoder = decoders.Sequence([
         decoders.ByteLevel(add_prefix_space=False, use_regex=False),
-        decoders.Metaspace(add_prefix_space=False),
+        decoders.Metaspace(
+            #add_prefix_space=False
+        ),
         decoders.Strip(' ', 1, 0),
         decoders.Replace(Regex("█ "), "\n"),
         decoders.Replace(Regex("█"), "\n")
