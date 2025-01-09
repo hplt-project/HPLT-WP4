@@ -64,7 +64,7 @@ def parse_arguments():
     args.name = args.name.format(language=args.language)
     args.tokenizer_path = f"{args.input_dir}/tokenizer.json"
     args.output_dir = os.path.join(args.output_dir, 'hplt_models', args.name)
-
+    args.config_file = os.path.expanduser(args.config_file)
     return args
 
 
