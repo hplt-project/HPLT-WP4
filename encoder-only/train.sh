@@ -71,7 +71,6 @@ srun \
     -B /opt/cray:/opt/cray \
     -B $wd/cray-deps:/opt/cray-deps \
     -B $wd:/workdir \
-    -B "$SING_BIND" \
     $SIF \
     ~/HPLT-WP4/encoder-only/launch.sh \
     $CMD
