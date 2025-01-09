@@ -39,4 +39,4 @@ SAMPLE_POWER=${5:-0.0}
 
 # run the script
 echo "Running schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}"
-srun singularity exec $SIF python3 schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}
+python3 schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}
