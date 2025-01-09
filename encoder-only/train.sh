@@ -36,11 +36,14 @@ export CXX=g++-10
 set -euo pipefail
 
 LANGUAGE=${1}
+PROCESSED_DIR=${2}
 
 # no need for the long path if slurm is run with chdir
 CMD=" \
     train.py \
     --language $LANGUAGE \
+    --input_dir $PROCESSED_DIR \
+    --output_dir $PROCESSED_DIR \
 "
 
 # Bind masks from Samuel Antao
