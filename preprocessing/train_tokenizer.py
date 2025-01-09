@@ -55,7 +55,8 @@ def initialize_tokenizer(args):
 
         # split on any whitespace character
         pre_tokenizers.Metaspace(
-            add_prefix_space=not args.do_japanese_pretokenization),
+            #add_prefix_space=not args.do_japanese_pretokenization
+        ),
 
         # split digits
         pre_tokenizers.Split(
