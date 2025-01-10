@@ -31,7 +31,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--language", default="en", type=str, help="The language to train on.")
-    parser.add_argument("--input_dir", default="~/processed_data/{language}", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
+    parser.add_argument("--input_dir", default="/scratch/project_465001386/hplt-2-0-output", type=str, help="The input data dir. Should contain .pt.gz files for the task.")
     parser.add_argument("--name", default="bert_base_{language}", type=str)
     parser.add_argument("--config_file", default="~/HPLT-WP4/encoder-only/configs/base.json", type=str, help="The BERT model config")
     parser.add_argument("--output_dir", default="/scratch/project_465001386/hplt-2-0-output", type=str, help="The output directory where the model checkpoints will be written.")
@@ -60,11 +60,12 @@ def parse_arguments():
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
-    args.input_dir = args.input_dir.format(language=args.language)
     args.name = args.name.format(language=args.language)
     args.tokenizer_path = f"{args.input_dir}/tokenizer.json"
+    args.input_dir = os.path.join(args.input_dir, args.language)
     args.output_dir = os.path.join(args.output_dir, 'hplt_models', args.name)
     args.config_file = os.path.expanduser(args.config_file)
+    print(args)
     return args
 
 
