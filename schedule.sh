@@ -36,7 +36,8 @@ OUTPUT_DIR="${3}/${LANGUAGE}"
 ## shard size in MB, default 512
 SHARD_SIZE_MB=${4:-512}
 SAMPLE_POWER=${5:-0.0}
+OTHER_ARGS=${@:6}
 
 # run the script
 echo "Running schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}"
-python3 schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER}
+python3 schedule.py --language ${LANGUAGE} --input_dir ${INPUT_DIR} --output_dir ${OUTPUT_DIR} --shard_size_mb ${SHARD_SIZE_MB} --sample_power ${SAMPLE_POWER} ${OTHER_ARGS}

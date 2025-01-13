@@ -18,6 +18,7 @@ def parse_args():
     parser.add_argument('--shard_size_mb', type=int, required=False, default=512)
     parser.add_argument('--sample_power', type=float, required=False, default=0.0)
     parser.add_argument('--do_calculate_train_tok_stats', action='store_true')
+    parser.add_argument('--first_file_only', action='store_true')
     return parser.parse_args()
 
 
@@ -55,7 +56,10 @@ def schedule(language, input_dir, output_dir, shard_size):
     has_scheduled_validation = False
     shard_job_ids = []
 
-    filenames = [filename for filename in os.listdir(input_dir) if filename.endswith(".jsonl.zst")]
+    if not args.first_file_only:
+        filenames = [filename for filename in os.listdir(input_dir) if filename.endswith(".jsonl.zst")]
+    else:
+        filenames = [os.path.join(input_dir, f"{args.language}_1.jsonl.zst")]
     for i, filename in enumerate(sorted(filenames)):
         current_input_files.append(filename)
         current_input_file_size += os.path.getsize(os.path.join(input_dir, filename)) / 1024 / 1024
