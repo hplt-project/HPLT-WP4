@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=project_465001386
-#SBATCH --time=72:00:00
+#SBATCH --time=12:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=128
