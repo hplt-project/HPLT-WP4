@@ -100,6 +100,7 @@ if __name__ == "__main__":
             print(flush=True)
 
         if not timer.has_time_remaining():
+            print("No time remaining, breaking")
             break
 
         if (i + 1) % 10_000 == 0:
