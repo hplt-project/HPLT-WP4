@@ -8,12 +8,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
-#SBATCH --output=logs/schedule-%j.out
+#SBATCH --output=/scratch/project_465001386/hplt-2-0-output/logs/schedule-%j.out # has no effect?
 
 
 if [ -z $SLURM_JOB_ID ]; then
-    mkdir -p logs
-    sbatch --job-name "${1}-SCHEDULE" --output "logs/${1}-schedule-%j.out" "$0" "$@"
+    mkdir -p /scratch/project_465001386/hplt-2-0-output/logs
+    sbatch --job-name "${1}-SCHEDULE" --output "/scratch/project_465001386/hplt-2-0-output/logs/${1}-schedule-%j.out" "$0" "$@"
     exit
 fi
 

@@ -79,7 +79,7 @@ def schedule(language, input_dir, output_dir, shard_size):
 
         # schedule shards with sbatch
         current_input_files = [os.path.join(input_dir, filename) for filename in current_input_files]
-        command = f"sbatch --job-name {language}-SHARD --chdir preprocessing --output logs/{language}-shard-%j.out preprocessing/shard_worker.sh {','.join(current_input_files)} {shard_dir} {','.join(map(str, shards))} {args.sample_power} {'--create_validation' if not has_scheduled_validation else ''}"
+        command = f"sbatch --job-name {language}-SHARD --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-shard-%j.out preprocessing/shard_worker.sh {','.join(current_input_files)} {shard_dir} {','.join(map(str, shards))} {args.sample_power} {'--create_validation' if not has_scheduled_validation else ''}"
         bash_output = subprocess.check_output(command, shell=True)
         print(bash_output.decode("utf-8"))
         has_scheduled_validation = True
@@ -107,7 +107,7 @@ def schedule(language, input_dir, output_dir, shard_size):
     if args.do_calculate_train_tok_stats:
         additional_args += " --do_calculate_stats"
 
-    command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
+    command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
     bash_output = subprocess.check_output(command, shell=True)
     print(bash_output.decode("utf-8"))
     tokenizer_job_id = bash_output.decode("utf-8").split()[-1]
@@ -132,7 +132,7 @@ def schedule(language, input_dir, output_dir, shard_size):
         input_shard_files = ",".join(input_shard_files)
         output_shard_files = ",".join(output_shard_files)
         tokenizer_path = os.path.join(output_dir, "tokenizer.json")
-        command = f"sbatch --job-name {language}-TOKENIZE --chdir preprocessing --output logs/{language}-tokenize-%j.out --dependency=afterok:{tokenizer_job_id} preprocessing/tokenize_shards.sh {input_shard_files} {output_shard_files} {tokenizer_path}"
+        command = f"sbatch --job-name {language}-TOKENIZE --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-tokenize-%j.out --dependency=afterok:{tokenizer_job_id} preprocessing/tokenize_shards.sh {input_shard_files} {output_shard_files} {tokenizer_path}"
         bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
         print(bash_output)
         tokenization_job_ids.append(bash_output.split()[-1])
@@ -143,7 +143,7 @@ def schedule(language, input_dir, output_dir, shard_size):
     input_shard_file = os.path.join(shard_dir, "validation.jsonl.gz")
     output_shard_file = os.path.join(tokenized_shard_dir, "validation.pt.gz")
     tokenizer_path = os.path.join(output_dir, "tokenizer.json")
-    command = f"sbatch --job-name {language}-TOKENIZE --chdir preprocessing --output logs/{language}-tokenize-%j.out --dependency=afterok:{tokenizer_job_id} preprocessing/tokenize_shards.sh {input_shard_file} {output_shard_file} {tokenizer_path}"
+    command = f"sbatch --job-name {language}-TOKENIZE --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-tokenize-%j.out --dependency=afterok:{tokenizer_job_id} preprocessing/tokenize_shards.sh {input_shard_file} {output_shard_file} {tokenizer_path}"
     bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
     print(bash_output)
     tokenization_job_ids.append(bash_output.split()[-1])
@@ -151,7 +151,7 @@ def schedule(language, input_dir, output_dir, shard_size):
 
     # schedule BERT training
     print(f"Scheduling BERT training", flush=True)
-    command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
+    command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
     bash_output = subprocess.check_output(command, shell=True)
     print(bash_output.decode("utf-8"), flush=True)
 
