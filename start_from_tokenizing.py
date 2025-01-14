@@ -11,7 +11,7 @@ import subprocess
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--language', type=str, required=True, default="itaL")
-    parser.add_argument('--output_dir', type=str, required=True, default="/scratch/project_465001386/hplt-2-0-output/")
+    parser.add_argument('--output_dir', type=str, default="/scratch/project_465001386/hplt-2-0-output/")
     return parser.parse_args()
 
 

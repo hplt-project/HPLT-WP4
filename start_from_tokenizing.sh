@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=SCHEDULER
 #SBATCH --account=project_465001386
-#SBATCH --time=00:30:00
+#SBATCH --time=00:15:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
@@ -28,5 +28,8 @@ module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
 # run the script
-echo "Running schedule.py"
-python3 start_from_tokenizing.py
+for lang in catL itaL
+do
+  echo "Running schedule.py"
+  python3 start_from_tokenizing.py --language $lang
+done
