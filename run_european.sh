@@ -5,5 +5,5 @@ for lang in tur_Latn fin_Latn fao_Latn lit_Latn lij_Latn ron_Latn gle_Latn tat_C
 do
      rename_lang=${lang:0:3}${lang:4:1}
      echo $rename_lang
-     ./schedule.sh $rename_lang /scratch/project_465001386/hplt-2-0-full/  /scratch/project_465001386/hplt-2-0-output --first_file_only
+     ./schedule.sh $rename_lang /scratch/project_465001386/hplt-2-0-full  /scratch/project_465001386/hplt-2-0-output 512 0.0 --first_file_only
 done
