@@ -26,6 +26,8 @@ from dataset import Dataset, ValidationDataset, apply_mask
 if int(os.environ["SLURM_PROCID"]) == 0:
     import wandb
 
+FREQUENT_CHECKPOINTING = ('engL', 'ellG', 'hebH', 'indL', 'jpnJ',  'korH', 'pesA', 'rusC', 'zhoH', 'turL', 'vieL')
+FREQUENT_CHECKPOINTING_STEPS = (0, 30, 300, 760, 2290, 3050)
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -270,7 +272,8 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
 
         optimizer.zero_grad(set_to_none=True)
 
-        if global_step % args.save_every == 0:
+        frequent_checkpointing = (args.language in FREQUENT_CHECKPOINTING) and (global_step in FREQUENT_CHECKPOINTING_STEPS)
+        if (global_step % args.save_every == 0) or frequent_checkpointing:
             save(model, optimizer, scheduler, global_step, epoch, args)
             validation_epoch(model, valid_dataloader, epoch, args, device)
             model = model.train()
