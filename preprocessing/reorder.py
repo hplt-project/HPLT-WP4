@@ -28,11 +28,18 @@ if __name__ == '__main__':
                 if 'validation' in file_path:
                     print("Validation file does not exist!")
             else:
+                with gzip.GzipFile(new_path, 'rb') as f:
+                    try:
+                        documents = torch.load(f)
+                    except EOFError:
+                        print(f"Broken file {file_path}, removing")
+                        os.remove(file_path)
+                        continue
+
                 if 'train' in file_path:
+                    number_of_train_docs += len(documents)
                     new_path = os.path.join(problematic_folder, f'train_{current_number:05d}.pt.gz')
                     os.rename(file_path, new_path)
                     current_number += 1
-                    with gzip.GzipFile(new_path, 'rb') as f:
-                        documents = torch.load(f)
-                        number_of_train_docs += len(documents)
+
         print(f"{number_of_train_docs} training documents in {problematic_folder}")
