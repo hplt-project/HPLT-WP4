@@ -2,6 +2,8 @@ import os
 import torch
 import argparse
 import json
+
+from torch.utils.checkpoint import checkpoint
 from transformers import AutoTokenizer
 
 
@@ -29,7 +31,11 @@ def convert_to_hf(input_model_directory, output_model_directory, language):
     prototype_directory = "huggingface_prototype"
     os.system(f"cp {prototype_directory}/* {output_model_directory}")
 
-    checkpoint = torch.load(os.path.join(input_model_directory, "model_step_31250.bin"))
+    last_checkpoint_name = os.path.join(input_model_directory, "model_step_31250.bin")
+    if torch.cuda.is_available():
+        checkpoint = torch.load(last_checkpoint_name)
+    else:
+        checkpoint = torch.load(last_checkpoint_name, map_location=torch.device('cpu'))
     torch.save(checkpoint['model'], os.path.join(output_model_directory, "pytorch_model.bin"))
 
     os.system(f"cp ~/processed_data/{language}/tokenizer.json {output_model_directory}")
