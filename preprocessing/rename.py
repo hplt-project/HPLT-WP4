@@ -22,12 +22,13 @@ if __name__ == '__main__':
                 continue # dir already processed
             
             new_dir_path = f"{args.dir}/{lang}"
-            try:
-            	os.rename(dir_path, new_dir_path)
-            except OSError as e: # ongoing download
-                print(e)
-                continue
-            for fn in glob(f"{new_dir_path}/*.jsonl.zst"):
-                new_fn = os.path.join(new_dir_path, f"{lang}_{os.path.split(fn)[-1].split('_')[-1]}")
-                print(new_fn)
-                os.rename(fn, new_fn)
+            if not os.path.exists(new_dir_path):
+                try:
+                    os.rename(dir_path, new_dir_path)
+                except OSError as e: # ongoing download
+                    print(e)
+                    continue
+                for fn in glob(f"{new_dir_path}/*.jsonl.zst"):
+                    new_fn = os.path.join(new_dir_path, f"{lang}_{os.path.split(fn)[-1].split('_')[-1]}")
+                    print(new_fn)
+                    os.rename(fn, new_fn)
