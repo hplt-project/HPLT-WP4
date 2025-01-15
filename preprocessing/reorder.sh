@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=reorder
 #SBATCH --account=project_465001386
-#SBATCH --time=01:00:00
+#SBATCH --time=00:10:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
@@ -19,4 +19,5 @@ export EBU_USER_PREFIX=/projappl/project_465001384/software/
 # the important bit: unload all current modules (just in case) and load only the necessary ones
 module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
-srun singularity exec $SIF python3 reorder.py
+OTHER_ARGS=${@}
+srun singularity exec $SIF python3 reorder.py ${OTHER_ARGS}
