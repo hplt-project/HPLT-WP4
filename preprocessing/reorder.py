@@ -29,7 +29,7 @@ if __name__ == '__main__':
                     print("Validation file does not exist!")
             else:
                 if 'train' in file_path:
-                    new_path = os.path.join(args.problematic_folder, f'train_{current_number:05d}.pt.gz')
+                    new_path = os.path.join(args.problematic_folders, f'train_{current_number:05d}.pt.gz')
                     os.rename(file_path, new_path)
                     current_number += 1
                     with gzip.GzipFile(new_path, 'rb') as f:
