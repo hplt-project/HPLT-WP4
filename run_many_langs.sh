@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LANGS=${1}
+LANGS=${@}
 for lang in LANGS
 do
      rename_lang=${lang:0:3}${lang:4:1}
