@@ -12,7 +12,11 @@
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
 #SBATCH --output=logs/bert-%j.out
-
+source ${HOME}/.bashrc
+export EBU_USER_PREFIX=/projappl/project_465001384/software/
+# the important bit: unload all current modules (just in case) and load only the necessary ones
+module --quiet purge
+module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
 mkdir -p workdir
 wd=$(realpath workdir)
