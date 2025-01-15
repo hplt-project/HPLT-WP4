@@ -28,7 +28,7 @@ if __name__ == '__main__':
                 if 'validation' in file_path:
                     print("Validation file does not exist!")
             else:
-                with gzip.GzipFile(new_path, 'rb') as f:
+                with gzip.GzipFile(file_path, 'rb') as f:
                     try:
                         documents = torch.load(f)
                     except EOFError:
