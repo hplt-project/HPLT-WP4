@@ -26,9 +26,9 @@ export EBU_USER_PREFIX=/projappl/project_465001384/software/
 # the important bit: unload all current modules (just in case) and load only the necessary ones
 module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
-
+LANGS=${@}
 # run the script
-for lang in catL itaL
+for lang in $LANGS
 do
   echo "Running schedule.py"
   python3 start_from_tokenizing.py --language $lang
