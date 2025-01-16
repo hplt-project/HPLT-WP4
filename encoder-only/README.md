@@ -9,9 +9,14 @@ List of models for some languages that are present in [UD 2.15](https://universa
 | 5  |Macedonian|mkd-Cyrl| ready                                                        |                                                                   |
 | 6  |Portuguese| | ready                                                        |                                                                   |
 | 7  |Icelandic| | ready                                                        |                                                                   |
-| 8  |Faroese|fao-Latn| training                                                     |                                                                   |
-| 9  |Scottish Gaelic|gla-Latn| training                                                     |                                                                   |
-| 10 |Luxembourgish|ltz-Latn| training                                                     |                                                                   |
-| 11 | Irish| gle-Latn| training                                                     |                                                                   |
+| 8  |Faroese|fao-Latn| ready                                                        |                                                                   |
+| 9  |Scottish Gaelic|gla-Latn| ready                                                        |                                                                   |
+| 10 |Luxembourgish|ltz-Latn| ready                                                        |                                                                   |
+| 11 | Irish| gle-Latn| ready                                                        |                                                                   |
 | 12 |Ligurian| lij-Latn| not enough data to train (<=10 000 docs)                     | None                                                              |
 | 13 |Latgalian| ltg-Latn| not enough data to train (<=10 000 docs)                     | None                                                                 |
+|14|Czech| |training| |
+|15|Maltese|mlt-Latn|training||
+|16|Tatar|tat-Cyrl|training| |
+|17|Norwegian Nynorsk|nno-Latn|training||
+|18|Basque|eus-Latn|training| |
