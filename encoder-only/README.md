@@ -15,9 +15,10 @@ List of models for some languages that are present in [UD 2.15](https://universa
 | 11 | Irish| gle-Latn| ready                                                        |                                                                   |
 | 12 |Ligurian| lij-Latn| not enough data to train (<=10 000 docs)                     | None                                                              |
 | 13 |Latgalian| ltg-Latn| not enough data to train (<=10 000 docs)                     | None                                                                 |
-|14|Czech| | training                                                     | |
+|14|Czech| | ready                                                        | |
 |15|Maltese|mlt-Latn| ready                                                        ||
 |16|Tatar|tat-Cyrl| ready                                                        | |
 |17|Norwegian Nynorsk|nno-Latn| ready                                                        ||
 |18|Basque|eus-Latn| ready                                                        | |
-|19|Catalan| cat-Latn| training | |
+|19|Catalan| cat-Latn| training                                                     | |
+|20|Romanian|ron-Latn| training                                                     | |
