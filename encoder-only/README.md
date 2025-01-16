@@ -19,4 +19,5 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |15|Maltese|mlt-Latn| ready                                                        ||
 |16|Tatar|tat-Cyrl| ready                                                        | |
 |17|Norwegian Nynorsk|nno-Latn| ready                                                        ||
-|18|Basque|eus-Latn| training                                                     | |
+|18|Basque|eus-Latn| ready                                                        | |
+|19|Catalan| cat-Latn| training | |
