@@ -91,26 +91,27 @@ def schedule(language, input_dir, output_dir, shard_size):
 
 
     # schedule tokenizer training
-    print(f"Scheduling tokenizer training", flush=True)
+    if not os.path.exists(os.path.join(output_dir, 'tokenizer.json')):
+        print(f"Scheduling tokenizer training", flush=True)
 
-    additional_args = ""
-    if args.language == "ja":
-        additional_args = "--do_japanese_pretokenization"
-    elif args.language == "ko":
-        additional_args = "--do_korean_pretokenization"
-    elif args.language == "my":
-        additional_args = "--do_burmese_pretokenization"
-    elif args.language == "th":
-        additional_args = "--do_thai_pretokenization"
-    elif args.language == "zh":
-        additional_args = "--do_chinese_pretokenization"
-    if args.do_calculate_train_tok_stats:
-        additional_args += " --do_calculate_stats"
+        additional_args = ""
+        if args.language == "ja":
+            additional_args = "--do_japanese_pretokenization"
+        elif args.language == "ko":
+            additional_args = "--do_korean_pretokenization"
+        elif args.language == "my":
+            additional_args = "--do_burmese_pretokenization"
+        elif args.language == "th":
+            additional_args = "--do_thai_pretokenization"
+        elif args.language == "zh":
+            additional_args = "--do_chinese_pretokenization"
+        if args.do_calculate_train_tok_stats:
+            additional_args += " --do_calculate_stats"
 
-    command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
-    bash_output = subprocess.check_output(command, shell=True)
-    print(bash_output.decode("utf-8"))
-    tokenizer_job_id = bash_output.decode("utf-8").split()[-1]
+        command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
+        bash_output = subprocess.check_output(command, shell=True)
+        print(bash_output.decode("utf-8"))
+        tokenizer_job_id = bash_output.decode("utf-8").split()[-1]
 
     # schedule shard tokenization, batch together 64 jobs
     tokenized_shard_dir = os.path.join(output_dir, "tokenized_shards")
