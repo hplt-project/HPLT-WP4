@@ -22,3 +22,6 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |18|Basque|eus-Latn| ready                                                        | |
 |19|Catalan| cat-Latn| training                                                     | |
 |20|Romanian|ron-Latn| training                                                     | |
+|21|Lithuanian |lit-Latn| training                                                     | |
+|22|Slovenian|slv-Latn| training                                                     | |
+
