@@ -25,4 +25,5 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |21|Lithuanian |lit-Latn| training                                                     | |
 |22|Slovenian|slv-Latn| training                                                     | |
 |23|Latvian|lvs-Latn| training                                                     | |
+|24|German|deu-Latn| training| |
 
