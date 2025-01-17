@@ -13,15 +13,9 @@ samples = {
 La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo il 5 [MASK] 2025 ed è stata nuovamente trasmessa in diretta dalla rete CBS.
  È stata presentata dalla comica Nikki Glaser.
 """, # https://it.wikipedia.org/wiki/Golden_Globe_2025
-'cesL':    """
-    82. ročník udílení Zlatých glóbů se bude konat dne 5. [MASK] 2025.
-     Ceremoniál bude vysílán živě na CBS ve Spojených státech a bude ho moderovat stand-up komička Nikki Glaser.
-    """,
-'porL': """
-A cerimónia de entrega dos prémios foi programada para ocorrer no dia 5 de [MASK] de 2025 tendo como anfitriã Nikki Glaser e transmitida em direto pela CBS.""",
-    'glgL': """
-    David Keith Lynch, nado en Missoula (Montana) o 20 de xaneiro de 1946 e finado nos Ánxeles o 16 de [MASK] de 2025,
-     coñecido como David Lynch, foi un director de cine estadounidense. """,
+'cesL': "V lednu 2025 oznámil rezignaci na funkci předsedy Liberální strany i [MASK] země.", # https://cs.wikipedia.org/wiki/Justin_Trudeau
+'porL': "Em 6 de janeiro de 2025, após muita pressão política, Trudeau anunciou sua intenção de apresentar sua renúncia como [MASK] do Partido Liberal.", # https://pt.wikipedia.org/wiki/Justin_Trudeau
+'glgL': "David Keith Lynch, nado en Missoula (Montana) o 20 de xaneiro de 1946 e finado nos Ánxeles o 16 de xaneiro de 2025, coñecido como David Lynch, foi un [MASK] de cine estadounidense.", # https://gl.wikipedia.org/wiki/David_Lynch
 "mkdC": """Така, во византискиот календар, којшто времето го мери од создавањето на светот според Библијата,
  на 1 [MASK] 5509 г. п.н.е. според продолжениот јулијански календар, истата трае во текот на 7533 и 7534 година.""",
     "nnoL": """Bulgaria og Romania blei [MASK] av Schengen-området.""",
