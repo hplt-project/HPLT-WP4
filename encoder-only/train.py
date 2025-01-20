@@ -27,7 +27,7 @@ if int(os.environ["SLURM_PROCID"]) == 0:
     import wandb
 
 FREQUENT_CHECKPOINTING = ('engL', 'ellG', 'hebH', 'indL', 'jpnJ',  'korH', 'pesA', 'rusC', 'zhoH', 'turL', 'vieL')
-FREQUENT_CHECKPOINTING_STEPS = (0, 30, 300, 760, 2290, 3050)
+FREQUENT_CHECKPOINTING_STEPS = (30, 300, 760, 2290, 3050)
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -221,6 +221,9 @@ def prepare_model_and_optimizer(args, device, local_rank, checkpoint):
 
 
 def training_epoch(model, train_dataloader, valid_dataloader, optimizer, scheduler, global_step, epoch, args, device, max_local_steps):
+    if (global_step == 0) and (args.language in FREQUENT_CHECKPOINTING):
+        save(model, optimizer, scheduler, global_step, epoch, args)
+        validation_epoch(model, valid_dataloader, epoch, args, device)
     model = model.train()
     optimizer.zero_grad(set_to_none=True)
 
