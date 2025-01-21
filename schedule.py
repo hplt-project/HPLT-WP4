@@ -19,11 +19,11 @@ def parse_args():
         type=int,
         required=False,
         default=512,
-        help='pass 0 to skip sharding',
     )
     parser.add_argument('--sample_power', type=float, required=False, default=0.0)
     parser.add_argument('--do_calculate_train_tok_stats', action='store_true')
     parser.add_argument('--first_file_only', action='store_true')
+    parser.add_argument('--skip_sharding', action='store_true')
     return parser.parse_args()
 
 
@@ -47,21 +47,19 @@ def schedule(language, input_dir, output_dir, shard_size):
     print(f"Total size: {total_size:.2f} MB")
     print(f"Number of shards: {number_of_shards} files, each of roughly {actual_shard_size:.2f} MB", flush=True)
 
-    # recursively remove the output directory
-    shutil.rmtree(output_dir, ignore_errors=True)
-
-    # make sure the output directory exists
-    os.makedirs(output_dir, exist_ok=True)
     shard_dir = os.path.join(output_dir, "text_shards")
-
-    if shard_size > 0:
+    shard_job_ids = []
+    if not args.skip_sharding:
+        # recursively remove the output directory
+        shutil.rmtree(output_dir, ignore_errors=True)
+        # make sure the output directory exists
+        os.makedirs(output_dir, exist_ok=True)
         os.makedirs(shard_dir, exist_ok=True)
 
         # schedule shard workers
         num_scheduled_shards = 0.0
         current_input_files, current_input_file_size = [], 0
         has_scheduled_validation = False
-        shard_job_ids = []
 
         if not args.first_file_only:
             filenames = [filename for filename in os.listdir(input_dir) if filename.endswith(".jsonl.zst")]
@@ -115,7 +113,11 @@ def schedule(language, input_dir, output_dir, shard_size):
         if args.do_calculate_train_tok_stats:
             additional_args += " --do_calculate_stats"
 
-        command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-train-tokenizer-%j.out --dependency=afterok:{':'.join(shard_job_ids)} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
+        dependency = ''
+        if shard_job_ids:
+            dependency = f"--dependency=afterok:{':'.join(shard_job_ids)}"
+
+        command = f"sbatch --job-name {language}-TRAIN-TOKENIZER --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-train-tokenizer-%j.out {dependency} preprocessing/train_tokenizer.sh {shard_dir} {output_dir} {additional_args}"
         bash_output = subprocess.check_output(command, shell=True)
         print(bash_output.decode("utf-8"))
         tokenizer_job_id = bash_output.decode("utf-8").split()[-1]
