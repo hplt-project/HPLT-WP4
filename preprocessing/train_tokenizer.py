@@ -170,10 +170,12 @@ if __name__ == "__main__":
     def iterator(dir_path, num_sampled_files: int, args):
         if args.do_japanese_pretokenization:
             from fugashi import Tagger
+            print("Japanese pretokenization")
             tagger = Tagger('-Owakati')
             pretokenize = lambda text: [word.surface for word in tagger(text)]
         elif args.do_korean_pretokenization:
             from kiwipiepy import Kiwi
+            print("Korean pretokenization")
             tagger = Kiwi()
             pretokenize = lambda text: [word.form for word in
                                         tagger.tokenize(text)]
@@ -186,6 +188,7 @@ if __name__ == "__main__":
             pretokenize = lambda text: pds.tokenize(text, form="word")
         elif args.do_chinese_pretokenization:
             from jieba import cut
+            print("Chinese pretokenization")
             pretokenize = lambda text: cut(text, cut_all=False)
 
         for filename in sorted(os.listdir(dir_path)):

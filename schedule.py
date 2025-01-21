@@ -4,7 +4,6 @@
 
 import argparse
 import os
-import gzip
 import math
 import subprocess
 import shutil
@@ -15,7 +14,13 @@ def parse_args():
     parser.add_argument('--language', type=str, required=True, default="nn")
     parser.add_argument('--input_dir', type=str, required=True, default="~/one/cleaned/nn")
     parser.add_argument('--output_dir', type=str, required=True, default="~/processed_data/nn")
-    parser.add_argument('--shard_size_mb', type=int, required=False, default=512)
+    parser.add_argument(
+        '--shard_size_mb',
+        type=int,
+        required=False,
+        default=512,
+        help='pass 0 to skip sharding',
+    )
     parser.add_argument('--sample_power', type=float, required=False, default=0.0)
     parser.add_argument('--do_calculate_train_tok_stats', action='store_true')
     parser.add_argument('--first_file_only', action='store_true')
@@ -48,46 +53,48 @@ def schedule(language, input_dir, output_dir, shard_size):
     # make sure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
     shard_dir = os.path.join(output_dir, "text_shards")
-    os.makedirs(shard_dir, exist_ok=True)
 
-    # schedule shard workers
-    num_scheduled_shards = 0.0
-    current_input_files, current_input_file_size = [], 0
-    has_scheduled_validation = False
-    shard_job_ids = []
+    if shard_size > 0:
+        os.makedirs(shard_dir, exist_ok=True)
 
-    if not args.first_file_only:
-        filenames = [filename for filename in os.listdir(input_dir) if filename.endswith(".jsonl.zst")]
-    else:
-        filenames = [os.path.join(input_dir, f"{args.language}_1.jsonl.zst")]
-    for i, filename in enumerate(sorted(filenames)):
-        current_input_files.append(filename)
-        current_input_file_size += os.path.getsize(os.path.join(input_dir, filename)) / 1024 / 1024
-
-        if current_input_file_size < 32 * actual_shard_size and i != len(filenames) - 1:
-            continue
-
-        num_shards = current_input_file_size / actual_shard_size
-        shards = list(range(int(num_scheduled_shards), int(num_scheduled_shards + num_shards)))
-        num_scheduled_shards += num_shards
-
-        # if we are at the last file, make sure all shards are created
-        if i == len(filenames) - 1 and shards[-1] < number_of_shards - 1:
-            shards += list(range(shards[-1], number_of_shards))
-
-        print(f"Scheduling [{', '.join(current_input_files)}] to shards [{', '.join(map(str, shards))}]", flush=True)
-
-        # schedule shards with sbatch
-        current_input_files = [os.path.join(input_dir, filename) for filename in current_input_files]
-        command = f"sbatch --job-name {language}-SHARD --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-shard-%j.out preprocessing/shard_worker.sh {','.join(current_input_files)} {shard_dir} {','.join(map(str, shards))} {args.sample_power} {'--create_validation' if not has_scheduled_validation else ''}"
-        bash_output = subprocess.check_output(command, shell=True)
-        print(bash_output.decode("utf-8"))
-        has_scheduled_validation = True
-
-        job_id = bash_output.decode("utf-8").split()[-1]
-        shard_job_ids.append(job_id)
-
+        # schedule shard workers
+        num_scheduled_shards = 0.0
         current_input_files, current_input_file_size = [], 0
+        has_scheduled_validation = False
+        shard_job_ids = []
+
+        if not args.first_file_only:
+            filenames = [filename for filename in os.listdir(input_dir) if filename.endswith(".jsonl.zst")]
+        else:
+            filenames = [os.path.join(input_dir, f"{args.language}_1.jsonl.zst")]
+        for i, filename in enumerate(sorted(filenames)):
+            current_input_files.append(filename)
+            current_input_file_size += os.path.getsize(os.path.join(input_dir, filename)) / 1024 / 1024
+
+            if current_input_file_size < 32 * actual_shard_size and i != len(filenames) - 1:
+                continue
+
+            num_shards = current_input_file_size / actual_shard_size
+            shards = list(range(int(num_scheduled_shards), int(num_scheduled_shards + num_shards)))
+            num_scheduled_shards += num_shards
+
+            # if we are at the last file, make sure all shards are created
+            if i == len(filenames) - 1 and shards[-1] < number_of_shards - 1:
+                shards += list(range(shards[-1], number_of_shards))
+
+            print(f"Scheduling [{', '.join(current_input_files)}] to shards [{', '.join(map(str, shards))}]", flush=True)
+
+            # schedule shards with sbatch
+            current_input_files = [os.path.join(input_dir, filename) for filename in current_input_files]
+            command = f"sbatch --job-name {language}-SHARD --chdir preprocessing --output /scratch/project_465001386/hplt-2-0-output/logs/{language}-shard-%j.out preprocessing/shard_worker.sh {','.join(current_input_files)} {shard_dir} {','.join(map(str, shards))} {args.sample_power} {'--create_validation' if not has_scheduled_validation else ''}"
+            bash_output = subprocess.check_output(command, shell=True)
+            print(bash_output.decode("utf-8"))
+            has_scheduled_validation = True
+
+            job_id = bash_output.decode("utf-8").split()[-1]
+            shard_job_ids.append(job_id)
+
+            current_input_files, current_input_file_size = [], 0
 
 
     # schedule tokenizer training
