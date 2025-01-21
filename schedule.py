@@ -95,15 +95,15 @@ def schedule(language, input_dir, output_dir, shard_size):
         print(f"Scheduling tokenizer training", flush=True)
 
         additional_args = ""
-        if args.language == "ja":
+        if (args.language == "ja") or (args.language.startswith('jpn')): # not to be confused with Javanese in 2.0
             additional_args = "--do_japanese_pretokenization"
-        elif args.language == "ko":
+        elif (args.language == "ko") or (args.language.startswith('kor')): # not to be confused with Kongo in 2.0
             additional_args = "--do_korean_pretokenization"
         elif args.language == "my":
             additional_args = "--do_burmese_pretokenization"
         elif args.language == "th":
             additional_args = "--do_thai_pretokenization"
-        elif args.language == "zh":
+        elif args.language.startswith("zh"):
             additional_args = "--do_chinese_pretokenization"
         if args.do_calculate_train_tok_stats:
             additional_args += " --do_calculate_stats"
