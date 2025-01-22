@@ -201,35 +201,33 @@ if __name__ == "__main__":
 
             training_filename = os.path.join(dir_path, filename)
             try:
-                training_file = open(training_filename, "rt")
+                for line in tqdm(open(training_filename, "rt")):
+                    text = json.loads(line)
+                    text = text.rstrip()
+                    text = limit_repetitions(text)
+                    if len(text) == 0:
+                        continue
+
+                    if not args.do_japanese_pretokenization and not args.do_korean_pretokenization and not args.do_thai_pretokenization and not args.do_burmese_pretokenization and not args.do_chinese_pretokenization:
+                        yield text
+                    else:
+                        for i, paragraph in enumerate(text.split('\n')):
+                            for j, segment in enumerate(paragraph.split(' ')):
+                                if i > 0 and j == 0:
+                                    prefix = '\n'
+                                elif j > 0:
+                                    prefix = ' '
+                                else:
+                                    prefix = ''
+
+                                try:
+                                    for word in pretokenize(segment):
+                                        yield f"{prefix}{word}"
+                                except:
+                                    continue
             except BadGzipFile as e:
                 print(f"{e} on {training_filename}, skipping")
                 continue
-            for line in tqdm(training_file):
-                text = json.loads(line)
-                text = text.rstrip()
-                text = limit_repetitions(text)
-                if len(text) == 0:
-                    continue
-
-                if not args.do_japanese_pretokenization and not args.do_korean_pretokenization and not args.do_thai_pretokenization and not args.do_burmese_pretokenization and not args.do_chinese_pretokenization:
-                    yield text
-                else:
-                    for i, paragraph in enumerate(text.split('\n')):
-                        for j, segment in enumerate(paragraph.split(' ')):
-                            if i > 0 and j == 0:
-                                prefix = '\n'
-                            elif j > 0:
-                                prefix = ' '
-                            else:
-                                prefix = ''
-
-                            try:
-                                for word in pretokenize(segment):
-                                    yield f"{prefix}{word}"
-                            except:
-                                continue
-
             num_sampled_files -= 1
 
 
