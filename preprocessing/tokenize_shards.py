@@ -8,10 +8,11 @@ import os
 import argparse
 import re
 from smart_open import open
-import time
 import torch
 import gzip
 from tqdm import tqdm
+
+from timer import Timer
 
 
 def parse_args():
@@ -33,18 +34,6 @@ def tokenize(tokenizer, text):
     ids = torch.tensor(ids, dtype=torch.int16)
 
     return ids
-
-
-class Timer:
-    def __init__(self, max_time):
-        self.max_time = max_time
-        self.start_time = time.time()
-
-    def time_remaining(self):
-        return self.max_time - (time.time() - self.start_time)
-
-    def has_time_remaining(self):
-        return self.time_remaining() > 0
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ import argparse
 import re
 from collections import Counter
 from tqdm import tqdm
+from gzip import BadGzipFile
 
 from tokenizers.models import WordPiece
 from tokenizers.trainers import WordPieceTrainer
@@ -198,7 +199,13 @@ if __name__ == "__main__":
             if not filename.endswith(".jsonl.gz") or "train" not in filename:
                 continue
 
-            for line in tqdm(open(os.path.join(dir_path, filename), "rt")):
+            training_filename = os.path.join(dir_path, filename)
+            try:
+                training_file = open(training_filename, "rt")
+            except BadGzipFile as e:
+                print(f"{e} on {training_filename}, skipping")
+                continue
+            for line in tqdm(training_file):
                 text = json.loads(line)
                 text = text.rstrip()
                 text = limit_repetitions(text)
