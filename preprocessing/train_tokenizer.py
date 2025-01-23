@@ -165,7 +165,7 @@ if __name__ == "__main__":
     args = parse_args()
 
     print(
-        f"Initializing a WordPiece tokenizer {time.strftime("%Y-%m-%d %H:%M")}",
+        f"Initializing a WordPiece tokenizer {time.strftime('%Y-%m-%d %H:%M')}",
         flush=True,
     )
     tokenizer, trainer = initialize_tokenizer(args)
