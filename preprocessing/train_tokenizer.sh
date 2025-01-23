@@ -2,8 +2,8 @@
 
 #SBATCH --account=project_465001386
 #SBATCH --time=72:00:00
-#SBATCH --mem-per-cpu=64G
-#SBATCH --cpus-per-task=2
+#SBATCH --mem-per-cpu=7G
+#SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small

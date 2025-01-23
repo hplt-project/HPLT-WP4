@@ -1,16 +1,18 @@
+import time
 import os
 import json
 from smart_open import open
 import argparse
 import re
 from collections import Counter
-from tqdm import tqdm
 from gzip import BadGzipFile
 
 from tokenizers.models import WordPiece
 from tokenizers.trainers import WordPieceTrainer
 from tokenizers import Tokenizer, pre_tokenizers, decoders, processors, Regex, \
     normalizers
+
+from timer import Timer
 
 
 def parse_args():
@@ -156,12 +158,22 @@ def calculate_stats(tokenizer, args):
 
 
 if __name__ == "__main__":
+    print(f"Starting training tokenizer at {time.strftime('%Y-%m-%d %H:%M')}. End time: {os.getenv('SLURM_JOB_END_TIME')}")
+    print(f"The job {os.getenv('SLURM_JOB_NAME')} numbered {os.getenv('SLURM_JOB_ID')} is running on the nodes {os.getenv('SLURM_JOB_NODELIST')}")
+    # start a timer for 71 hours; if the timer runs out, the job will stop and the tokenized files will be saved
+    timer = Timer(8 * 60 * 60)
     args = parse_args()
 
-    print(f"Initializing a WordPiece tokenizer", flush=True)
+    print(
+        f"Initializing a WordPiece tokenizer {time.strftime("%Y-%m-%d %H:%M")}",
+        flush=True,
+    )
     tokenizer, trainer = initialize_tokenizer(args)
 
-    print("Training the tokenizer", flush=True)
+    print(
+        f"Training the tokenizer {time.strftime('%Y-%m-%d %H:%M')}",
+        flush=True,
+    )
 
 
     def limit_repetitions(s):
@@ -193,7 +205,8 @@ if __name__ == "__main__":
             pretokenize = lambda text: cut(text, cut_all=False)
 
         for filename in sorted(os.listdir(dir_path)):
-            if num_sampled_files <= 0:
+            print(f"Files left: {num_sampled_files} at {time.strftime('%Y-%m-%d %H:%M')}")
+            if (num_sampled_files <= 0) or (not timer.has_time_remaining()):
                 break
 
             if not filename.endswith(".jsonl.gz") or "train" not in filename:
@@ -201,7 +214,7 @@ if __name__ == "__main__":
 
             training_filename = os.path.join(dir_path, filename)
             try:
-                for line in tqdm(open(training_filename, "rt")):
+                for line in open(training_filename, "rt"):
                     text = json.loads(line)
                     text = text.rstrip()
                     text = limit_repetitions(text)
