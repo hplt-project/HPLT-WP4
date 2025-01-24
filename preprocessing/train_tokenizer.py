@@ -205,7 +205,7 @@ if __name__ == "__main__":
             pretokenize = lambda text: cut(text, cut_all=False)
 
         for filename in sorted(os.listdir(dir_path)):
-            print(f"Files left: {num_sampled_files} at {time.strftime('%Y-%m-%d %H:%M')}")
+            print(f"Files left: {num_sampled_files} at {time.strftime('%Y-%m-%d %H:%M')}", flush=True)
             if (num_sampled_files <= 0) or (not timer.has_time_remaining()):
                 break
 
