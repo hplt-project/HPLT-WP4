@@ -130,6 +130,7 @@ def main():
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/")
     parser.add_argument("--version", type=str, default="2_0")
+    parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:
@@ -142,7 +143,7 @@ def main():
         args.epochs = 60
 
     if args.model == "hplt":
-        args.model_path = f"~/hplt_hf_models/{args.language}"
+        args.model_path = os.path.join(args.models_path, args.language)
         if not os.path.exists(args.model_path):
             raise ValueError(f"Model {args.model_path} not found")
     elif args.model == "mbert":
