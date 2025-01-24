@@ -82,11 +82,11 @@ class CollateFunctor:
         }
 
 def load_data(args, tokenizer):
-    language_treebank_mapping = json.load(open("language_treebank_mapping.json", "r"))
+    language_treebank_mapping = json.load(open(f"language_treebank_mapping_{args.version}.json", "r"))
     treebank = language_treebank_mapping[args.language]
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
-    treebank_path = f"ud-treebanks-v2.13/{treebank}"
+    treebank_path = os.path.join(args.treebank_path, treebank)
 
     # find train, dev, test filenames
     train_filename, dev_filename, test_filename = None, None, None
@@ -128,6 +128,8 @@ def main():
     parser.add_argument("--min_count", action="store", type=int, default=3)
     parser.add_argument("--ema_decay", action="store", type=float, default=0.995)
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/")
+    parser.add_argument("--version", type=str, default="2_0")
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:

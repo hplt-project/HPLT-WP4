@@ -23,8 +23,6 @@ export EBU_USER_PREFIX=/projappl/project_465001384/software/
 module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
-source /project/project_465000144/pytorch_1.13.1/bin/activate
-
 export NCCL_SOCKET_IFNAME=hsn
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OPENBLAS_VERBOSE=2
