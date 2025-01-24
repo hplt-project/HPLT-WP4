@@ -33,7 +33,11 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--language", default="en", type=str, help="The language to train on.")
-    parser.add_argument("--input_dir", default="/scratch/project_465001386/hplt-2-0-output", type=str, help="The input data dir. Should contain .pt.gz files for the task.")
+    parser.add_argument(
+        "--input_dir", default="/scratch/project_465001386/hplt-2-0-output",
+        type=str,
+        help="The input data dir. Should contain tokenized_shards/ folder with .pt.gz files for the task.",
+    )
     parser.add_argument("--name", default="bert_base_{language}", type=str)
     parser.add_argument("--config_file", default="~/HPLT-WP4/encoder-only/configs/base.json", type=str, help="The BERT model config")
     parser.add_argument("--output_dir", default="/scratch/project_465001386/hplt-2-0-output", type=str, help="The output directory where the model checkpoints will be written.")
