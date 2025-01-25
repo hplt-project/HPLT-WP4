@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=reorder
 #SBATCH --account=project_465001386
-#SBATCH --time=00:10:00
+#SBATCH --time=01:30:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1

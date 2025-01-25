@@ -27,7 +27,7 @@ if __name__ == '__main__':
     config = BertConfig('configs/base.json')
     lang_dir = os.path.join(args.input_dir, args.language)
     tokenizer_path = os.path.join(lang_dir, 'tokenizer.json')
-    tokenizer = Tokenizer.from_file(args.tokenizer_path)
+    tokenizer = Tokenizer.from_file(tokenizer_path)
     config.vocab_size = tokenizer.get_vocab_size()
     model = Bert(config)
     checkpoint_path = f"{lang_dir}/hplt_models/bert_base_{args.language}/model_step_0.bin"
