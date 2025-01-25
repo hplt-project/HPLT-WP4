@@ -28,7 +28,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |24| German             | deu-Latn      | ready                                                                                       | |
 |25| Bulgarian          | bul-Cyrl      | ready                                                                                       | |
 |26| Greek              | ell_Grek      | ready                                                                                       | |
-|27| Japanese           |               | ready, bad tokenization?                                                                    | |
+|27| Japanese           |  jpn_Jpan     | ready, bad tokenization?                                                                    | |
 |28| Vietnamese         | vie-Latn      | ready                                                                                       ||
 |29| Indonesian         | ind-Latn      | ready                                                                                       ||
 |30| Spanish            | spa-Latn      | ready                                                                                       ||
@@ -42,7 +42,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |38| Slovak             | slk-Latn      | ready                                                                                       ||
 |39| Swedish            | swe-Latn      | ready                                                                                       ||
 |40| Polish             | pol-Latn      | ready                                                                                       ||
-|41| Korean             | kor_Hang      | tokenizing failed, restarting                                                               ||
+|41| Korean             | kor_Hang      | ready                                                                                       ||
 |42| English            | eng_Latn      | ready                                                                                       ||
 |43| Finnish            | fin_Latn      | ready                                                                                       ||
 |44| Estonian           | est-Latn      | ready                                                                                       ||
@@ -50,7 +50,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |46| Persian            | pes_Arab      | ready                                                                                       ||
 |47| Russian            | rus_Cyrl      | ready                                                                                       ||
 |48| Simplified Chinese | zho_Hans      | training                                                                                    ||
-|49| Turkish            | tur_Latn      | training                                                                                    ||
+|49| Turkish            | tur_Latn      | ready                                                                                       ||
 |50| Hungarian          | hun-Latn      | ready                                                                                       ||
 |51|Welsh|               | scheduled                                                                                   ||
 |52|Danish|               | scheduled                                                                                   ||

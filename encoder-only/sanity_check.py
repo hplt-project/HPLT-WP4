@@ -6,17 +6,21 @@ from transformers import AutoTokenizer, AutoModelForMaskedLM
 
 # all samples from wikipedia
 samples = {
-'belC':"""
+    'belC': """
         82-я цырымонія ўручэння прэміі «Залаты глобус» — цырымонія ўзнагароджання за заслугі ў галіне кінематографа і тэлебачання за 2024 год,
-         якая адбылася 5 [MASK] 2025 года. Транслявалася каналам CBS. Вядучай цырымоніі была комік Нікі Глейзер""", # https://be.wikipedia.org/wiki/%D0%97%D0%B0%D0%BB%D0%B0%D1%82%D1%8B_%D0%B3%D0%BB%D0%BE%D0%B1%D1%83%D1%81_(%D0%BF%D1%80%D1%8D%D0%BC%D1%96%D1%8F,_2025)
-'itaL': """
+         якая адбылася 5 [MASK] 2025 года. Транслявалася каналам CBS. Вядучай цырымоніі была комік Нікі Глейзер""",
+    # https://be.wikipedia.org/wiki/%D0%97%D0%B0%D0%BB%D0%B0%D1%82%D1%8B_%D0%B3%D0%BB%D0%BE%D0%B1%D1%83%D1%81_(%D0%BF%D1%80%D1%8D%D0%BC%D1%96%D1%8F,_2025)
+    'itaL': """
 La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo il 5 [MASK] 2025 ed è stata nuovamente trasmessa in diretta dalla rete CBS.
  È stata presentata dalla comica Nikki Glaser.
-""", # https://it.wikipedia.org/wiki/Golden_Globe_2025
-'cesL': "V lednu 2025 oznámil rezignaci na funkci předsedy Liberální strany i [MASK] země.", # https://cs.wikipedia.org/wiki/Justin_Trudeau
-'porL': "Em 6 de janeiro de 2025, após muita pressão política, Trudeau anunciou sua intenção de apresentar sua renúncia como [MASK] do Partido Liberal.", # https://pt.wikipedia.org/wiki/Justin_Trudeau
-'glgL': "David Keith Lynch, nado en Missoula (Montana) o 20 de xaneiro de 1946 e finado nos Ánxeles o 16 de xaneiro de 2025, coñecido como David Lynch, foi un [MASK] de cine estadounidense.", # https://gl.wikipedia.org/wiki/David_Lynch
-"mkdC": """Така, во византискиот календар, којшто времето го мери од создавањето на светот според Библијата,
+""",  # https://it.wikipedia.org/wiki/Golden_Globe_2025
+    'cesL': "V lednu 2025 oznámil rezignaci na funkci předsedy Liberální strany i [MASK] země.",
+    # https://cs.wikipedia.org/wiki/Justin_Trudeau
+    'porL': "Em 6 de janeiro de 2025, após muita pressão política, Trudeau anunciou sua intenção de apresentar sua renúncia como [MASK] do Partido Liberal.",
+    # https://pt.wikipedia.org/wiki/Justin_Trudeau
+    'glgL': "David Keith Lynch, nado en Missoula (Montana) o 20 de xaneiro de 1946 e finado nos Ánxeles o 16 de xaneiro de 2025, coñecido como David Lynch, foi un [MASK] de cine estadounidense.",
+    # https://gl.wikipedia.org/wiki/David_Lynch
+    "mkdC": """Така, во византискиот календар, којшто времето го мери од создавањето на светот според Библијата,
  на 1 [MASK] 5509 г. п.н.е. според продолжениот јулијански календар, истата трае во текот на 7533 и 7534 година.""",
     "nnoL": """Bulgaria og Romania blei [MASK] av Schengen-området.""",
     'islL': "Justin Trudeau segir af sér sem [MASK] Kanada.",
@@ -26,7 +30,7 @@ La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo 
     'gleL': "Féile chultúrtha is ea an tOireachtas."
             " Is é an aidhm atá leis an Oireachtas ná [MASK] dúchasacha na hÉireann a chur chun cinn agus a cheiliúradh trí mheán na Gaeilge—idir amhránaíocht,"
             " ceol, rince, scéalaíocht agus drámaíocht.",
-'alsL': """Thanas Papa (1931 - 3 gusht 2022) ishte një [MASK] i njohur shqiptar. 
+    'alsL': """Thanas Papa (1931 - 3 gusht 2022) ishte një [MASK] i njohur shqiptar. 
          I lindur në fshatin Paftal të Beratit, ai është vlerësuar si i pari"
           skulptor shqiptar i diplomuar në Akademinë e Arteve të Bukura në Repin të Leningradit (sot Shën Petersburg),
            ku përfundoi studimet me medalje ari në vitin 1957.""",
@@ -40,9 +44,14 @@ La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo 
     'eusL': "Zientzialari talde batek eman du [MASK]: kurlinta mokomehea desagertu da. Azken aldiz 1995ean ikusi zuten Marokon.",
 }
 
-def predict(lang):
-    models_path = '/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/'
-    current_model_path = os.path.join(models_path, lang)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
+    return parser.parse_args()
+
+
+def predict(lang, args):
+    current_model_path = os.path.join(args.models_path, lang)
     print(current_model_path)
     tokenizer = AutoTokenizer.from_pretrained(current_model_path)
     model = AutoModelForMaskedLM.from_pretrained(current_model_path,
@@ -52,12 +61,16 @@ def predict(lang):
     input_text = tokenizer(sample, return_tensors="pt")
     print(sample)
     output_p = model(**input_text)
-    output_text = torch.where(input_text.input_ids == mask_id,
-                              output_p.logits.argmax(-1),
-                              input_text.input_ids)
+    output_text = torch.where(
+        input_text.input_ids == mask_id,
+        output_p.logits.argmax(-1),
+        input_text.input_ids,
+    )
     toks = output_text[0].tolist()
     print('_'.join([tokenizer.decode([tok]) for tok in toks]))
 
+
 if __name__ == '__main__':
+    args = parse_args()
     for lang in samples.keys():
-        predict(lang)
+        predict(lang, args)
