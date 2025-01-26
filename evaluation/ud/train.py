@@ -131,6 +131,7 @@ def main():
     parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/")
     parser.add_argument("--version", type=str, default="2_0")
     parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
+    parser.add_argument("--results_path", default="/scratch/project_465001386/hplt-2-0-output/results/")
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:
@@ -374,7 +375,7 @@ def main():
 
                 # save results; lock and rewrite results.json
                 test_results[f"{args.language}_{args.model}"] = results
-                with open(f"results/{args.language}_{args.model}.jsonl", "w") as f:
+                with open(f"{args.results_path}{args.language}_{args.model}.jsonl", "w") as f:
                     json.dump(test_results, f)
                 
 
