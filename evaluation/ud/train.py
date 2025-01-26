@@ -131,6 +131,7 @@ def main():
     parser.add_argument("--version", type=str, default="2_0")
     parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
     parser.add_argument("--results_path", default="/scratch/project_465001386/hplt-2-0-output/results/")
+    parser.add_argument("--checkpoints_path", default="/scratch/project_465001386/hplt-2-0-output/checkpoints/")
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:
@@ -282,7 +283,7 @@ def main():
                 "model": ema_model.state_dict(),
                 "dataset": train_data.state_dict()
             },
-            f"checkpoints/ud-{args.language}-{args.model}.bin"
+            f"{args.checkpoints_path}ud-{args.language}-{args.model}.bin"
         )
 
         # eval
