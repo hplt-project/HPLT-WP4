@@ -28,4 +28,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OPENBLAS_VERBOSE=2
 
 export TOKENIZERS_PARALLELISM=false
-python3 train.py "$@"
+srun singularity exec $SIF python3 train.py "$@"

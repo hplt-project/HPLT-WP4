@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
-#SBATCH --output=/scratch/project_465001386/hplt-2-0-output/logs/reorder-%j.out
+#SBATCH --output=/scratch/project_465001386/hplt-2-0-output/logs/sanity-%j.out
 
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error
