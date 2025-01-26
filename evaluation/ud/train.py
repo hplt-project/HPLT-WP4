@@ -8,7 +8,6 @@ import copy
 import os
 import torch
 import torch.nn.functional as F
-import numpy as np
 from torch import nn
 from torch.utils.data import DataLoader
 from argparse import ArgumentParser
@@ -83,7 +82,7 @@ class CollateFunctor:
 
 def load_data(args, tokenizer):
     language_treebank_mapping = json.load(open(f"language_treebank_mapping_{args.version}.json", "r"))
-    treebank = language_treebank_mapping.get(args.language)
+    treebank = language_treebank_mapping.get(args.language.split('_')[0])
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
     treebank_path = os.path.join(args.treebank_path, treebank)
