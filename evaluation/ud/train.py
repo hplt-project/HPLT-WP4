@@ -83,7 +83,7 @@ class CollateFunctor:
 
 def load_data(args, tokenizer):
     language_treebank_mapping = json.load(open(f"language_treebank_mapping_{args.version}.json", "r"))
-    treebank = language_treebank_mapping[args.language]
+    treebank = language_treebank_mapping.get(args.language)
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
     treebank_path = os.path.join(args.treebank_path, treebank)
