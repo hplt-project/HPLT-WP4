@@ -52,6 +52,8 @@ def parse_args():
 
 def predict(lang, args):
     current_model_path = os.path.join(args.models_path, lang)
+    if not os.path.exists(current_model_path):
+        current_model_path += '_31250'
     print(current_model_path)
     tokenizer = AutoTokenizer.from_pretrained(current_model_path)
     model = AutoModelForMaskedLM.from_pretrained(current_model_path,
