@@ -25,7 +25,7 @@ La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo 
     "nnoL": """Bulgaria og Romania blei [MASK] av Schengen-området.""",
     'islL': "Justin Trudeau segir af sér sem [MASK] Kanada.",
     'faoL': "Fyri sínar eyðsýndu listarligu gávur og tey mongu listaverkini, hon hevur evnað til hegnisliga, [MASK] Hansina Iversen Mentanarvirðisløn landsins 2022.",
-    "tatL": "2025 (ике мең егерме бишенче) [MASK] — кәбисә булмаган ел, милади тәкъвим буенча чәршәмбе көнне башлана."
+    "tatC": "2025 (ике мең егерме бишенче) [MASK] — кәбисә булмаган ел, милади тәкъвим буенча чәршәмбе көнне башлана."
             " Бу безнең эраның 2025 елы, III меңьеллыкның 25 елы, XXI гасырның 25 елы, XXI гасырның 3 унъеллыгының 5 елы, 2020 елларның 6 елы.",
     'gleL': "Féile chultúrtha is ea an tOireachtas."
             " Is é an aidhm atá leis an Oireachtas ná [MASK] dúchasacha na hÉireann a chur chun cinn agus a cheiliúradh trí mheán na Gaeilge—idir amhránaíocht,"

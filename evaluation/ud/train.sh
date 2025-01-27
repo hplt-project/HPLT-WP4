@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=UD_EVAL
 #SBATCH --account=project_465001386
-#SBATCH --time=24:00:00
+#SBATCH --time=3:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
