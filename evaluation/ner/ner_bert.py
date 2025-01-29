@@ -21,7 +21,7 @@ import evaluate
 import numpy as np
 import torch
 import transformers
-from datasets import load_from_disk, load_dataset
+from datasets import load_dataset
 from transformers import (
     AutoConfig,
     AutoModelForTokenClassification,
@@ -33,6 +33,7 @@ from transformers import (
     TrainingArguments,
 )
 from numpyencoder import NumpyEncoder
+from constants import LANGS_MAPPING
 from tsa_utils import ModelArguments, DataTrainingArguments
 from tsa_utils import tsa_eval
 
@@ -47,7 +48,7 @@ hf_parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TrainingArg
 default_params = {  # Add entries here that you want to change or just track the value of
     "model_name_or_path": "ltg/norbert3-small",
     "trust_remote_code": True,
-    "dataset_name": "wikiann/no",
+    "dataset_name": "wikiann/",
     "max_seq_length": 256,
     "seed": 101,
     "per_device_train_batch_size": 64,
@@ -179,6 +180,8 @@ text_column_name = data_args.text_column_name
 label_column_name = data_args.label_column_name
 assert data_args.label_all_tokens is False, "Our script only labels first subword token"
 ds, lang = data_args.dataset_name.split("/")
+if len(lang) > 2:
+    lang = LANGS_MAPPING[lang]
 dsd = load_dataset(ds, lang)
 transformers.logging.set_verbosity_warning()
 
