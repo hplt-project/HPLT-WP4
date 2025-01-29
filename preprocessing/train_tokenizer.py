@@ -6,6 +6,7 @@ import argparse
 import re
 from collections import Counter
 from gzip import BadGzipFile
+from zlib import error
 
 from tokenizers.models import WordPiece
 from tokenizers.trainers import WordPieceTrainer
@@ -238,7 +239,7 @@ if __name__ == "__main__":
                                         yield f"{prefix}{word}"
                                 except:
                                     continue
-            except BadGzipFile as e:
+            except (BadGzipFile, error) as e:
                 print(f"{e} on {training_filename}, skipping")
                 continue
             num_sampled_files -= 1

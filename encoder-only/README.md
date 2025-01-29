@@ -49,10 +49,12 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |45| French             | fra_Latn      | ready                                                                                       ||
 |46| Persian            | pes_Arab      | ready                                                                                       ||
 |47| Russian            | rus_Cyrl      | ready                                                                                       ||
-|48| Simplified Chinese | zho_Hans      | training                                                                                    ||
+|48| Simplified Chinese | zho_Hans      | ready                                                                                       ||
 |49| Turkish            | tur_Latn      | ready                                                                                       ||
 |50| Hungarian          | hun-Latn      | ready                                                                                       ||
-|51|Welsh|               | scheduled                                                                                   ||
-|52|Danish|               | scheduled                                                                                   ||
-|53|Latin|               | if time remains                                                                             ||
-
+|51| Welsh              |               | ready                                                                                       ||
+|52| Danish             |               | ready                                                                                       ||
+|53| Latin, Esperanto   |               | if time remains (no)                                                                        ||
+|54| Bosnian            | | training||
+|55| Croatian           | |training||
+|56|Bosnian-Croatian| |sharded||

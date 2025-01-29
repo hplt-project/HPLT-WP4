@@ -76,7 +76,6 @@ srun \
     --label \
     --cpu-bind=mask_cpu:$BIND_MASK \
     singularity exec \
-    -B /opt/cray:/opt/cray \
     -B $wd/cray-deps:/opt/cray-deps \
     -B $wd:/workdir \
     $SIF \
