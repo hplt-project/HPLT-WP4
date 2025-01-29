@@ -6,7 +6,6 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=128
 #SBATCH --partition=standard
-#SBATCH --mem-per-cpu=1750
 
 
 set -o errexit  # Exit the script on any error
