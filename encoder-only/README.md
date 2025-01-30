@@ -28,7 +28,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |24| German             | deu-Latn      | ready                                                                                       | |
 |25| Bulgarian          | bul-Cyrl      | ready                                                                                       | |
 |26| Greek              | ell_Grek      | ready                                                                                       | |
-|27| Japanese           |  jpn_Jpan     | ready, bad tokenization?                                                                    | |
+|27| Japanese           |  jpn_Jpan     | ready                                                                 | |
 |28| Vietnamese         | vie-Latn      | ready                                                                                       ||
 |29| Indonesian         | ind-Latn      | ready                                                                                       ||
 |30| Spanish            | spa-Latn      | ready                                                                                       ||
@@ -55,6 +55,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |51| Welsh              |               | ready                                                                                       ||
 |52| Danish             |               | ready                                                                                       ||
 |53| Latin, Esperanto   |               | if time remains (no)                                                                        ||
-|54| Bosnian            | | training||
-|55| Croatian           | |training||
-|56|Bosnian-Croatian| |sharded||
+|54| Bosnian            | | ready                                                                                       ||
+|55| Croatian           | | ready                                                                                       ||
+|56|Bosnian-Croatian| | ready                                                                                       ||
+|57|Serbian| |failed on training the tokenizer||
