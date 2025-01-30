@@ -163,7 +163,7 @@ class EdgeClassifier(nn.Module):
             weight_matrix_mod = weight_matrix.clone()
             weight_matrix_mod[:i+1, 0] = torch.nan
             weight_matrix_mod[i+2:, 0] = torch.nan
-            parents, score = dependency_decoding.chu_liu_edmonds(weight_matrix_mod.numpy().astype(float))
+            parents, score = chu_liu_edmonds(weight_matrix_mod.numpy().astype(float))
             parents = parents[1:]
 
             if score > best_score:
