@@ -295,8 +295,10 @@ def main():
                 ema_model.eval()
 
                 dev_file = parse(open(dataset.path, "r").read())
-
-                prediction_path = f"tmp/{args.language}_{args.model}_{loader_index}.conllu"
+                prediction_folder = os.path.join(args.results_path, 'tmp')
+                if not os.path.exists(prediction_folder):
+                    os.makedirs(prediction_folder)
+                prediction_path = f"{prediction_folder}/{args.language}_{args.model}_{loader_index}.conllu"
                 with open(prediction_path, "w") as f:
                     for batch in loader:
                         lemma_p, upos_p, xpos_p, feats_p, _, __, dep_p, head_p = ema_model(
