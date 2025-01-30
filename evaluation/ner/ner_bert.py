@@ -181,7 +181,8 @@ label_column_name = data_args.label_column_name
 assert data_args.label_all_tokens is False, "Our script only labels first subword token"
 ds, lang = data_args.dataset_name.split("/")
 if len(lang) > 2:
-    lang = LANGS_MAPPING[lang]
+    lang = LANGS_MAPPING[lang.split("_")[0]]
+print(f"loading {ds} for lang {lang}")
 dsd = load_dataset(ds, lang)
 transformers.logging.set_verbosity_warning()
 
