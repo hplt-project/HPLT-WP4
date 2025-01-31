@@ -37,7 +37,7 @@ LANGS_MAPPING = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "ltzL": "lb",
     "mkdC": "mk",
     "mltL": "mt",
-    "nobL": "nb",
+    "nobL": "no",
     "nldL": "nl",
     "nnoL": "nn",
     "polL": "pl",
