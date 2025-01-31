@@ -1,6 +1,7 @@
 LANGS_MAPPING = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "alsL": "sq",
     "belC": "be",
+    "bosL": "hr", # or bs, but for the first paper will be hr as it is the only present in UD
     "bulC": "bg",
     "catL": "ca",
     "cesL": "cs",

@@ -28,7 +28,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |24| German             | deu-Latn      | ready                                                                                       | |
 |25| Bulgarian          | bul-Cyrl      | ready                                                                                       | |
 |26| Greek              | ell_Grek      | ready                                                                                       | |
-|27| Japanese           |  jpn_Jpan     | ready                                                                 | |
+|27| Japanese           |  jpn_Jpan     | ready                                                                                       | |
 |28| Vietnamese         | vie-Latn      | ready                                                                                       ||
 |29| Indonesian         | ind-Latn      | ready                                                                                       ||
 |30| Spanish            | spa-Latn      | ready                                                                                       ||
@@ -43,7 +43,7 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |39| Swedish            | swe-Latn      | ready                                                                                       ||
 |40| Polish             | pol-Latn      | ready                                                                                       ||
 |41| Korean             | kor_Hang      | ready                                                                                       ||
-|42| English            | eng_Latn      | ready                                                                                       ||
+|42| English            | eng_Latn      | ready, eval on NER failed on dataset length                                                 ||
 |43| Finnish            | fin_Latn      | ready                                                                                       ||
 |44| Estonian           | est-Latn      | ready                                                                                       ||
 |45| French             | fra_Latn      | ready                                                                                       ||
@@ -58,4 +58,4 @@ List of models for some languages that are present in [UD 2.15](https://universa
 |54| Bosnian            | | ready                                                                                       ||
 |55| Croatian           | | ready                                                                                       ||
 |56|Bosnian-Croatian| | ready                                                                                       ||
-|57|Serbian| |failed on training the tokenizer||
+|57|Serbian| | failed on training the tokenizer                                                            ||
