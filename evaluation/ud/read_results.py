@@ -17,7 +17,7 @@ if __name__ == '__main__':
     for file_path in glob("/scratch/project_465001386/hplt-2-0-output/results/*.jsonl"):
         with open(file_path, 'r', encoding='utf8') as results_file:
             results = json.loads(results_file.readlines()[0])
-            for k, v in results:
+            for k, v in results.items():
                 data['lang'].append(k)
                 data[ALL_TAGS].append(v[ALL_TAGS])
                 data[LEMMAS].append(v[LEMMAS])
