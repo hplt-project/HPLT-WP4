@@ -158,15 +158,15 @@ def main():
         args.model_path = f"xlm-roberta-base"
     else:
         raise ValueError(f"Unknown model {args.model}")
-
+    print(args)
     seed_everything(args.seed)
 
     if args.log_wandb:
         wandb.init(name=f"{args.model.split('/')[-1]}_{args.language}", config=args, project="HPLT_UD", entity="ltg", tags=[args.language, args.model])
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    tokenizer = AutoTokenizer.from_pretrained(args.model_path)
+    print(f"Loading model {args.model_path}")
+    tokenizer = AutoTokenizer.from_pretrained(args.model_path, use_fast=False)
     train_data, dev_data, test_data = load_data(args, tokenizer)
 
     # build and pad with loaders
