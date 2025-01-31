@@ -30,7 +30,7 @@ LANGS_MAPPING = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "islL": "is",
     "itaL": "it",
     "jpnJ": "ja",
-    "katL": "ka",
+    "katG": "ka",
     "korH": "ko",
     "litL": "lt",
     "lvsL": "lv",
