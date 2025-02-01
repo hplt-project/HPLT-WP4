@@ -323,7 +323,13 @@ gold = predict_dataset[
 gold = [[labelnames[p] for p in sent] for sent in gold]
 
 for g, pred in zip(gold, true_predictions):
-    assert len(g) == len(pred), (len(g), len(pred))
+    try:
+        assert (len(g) == len(pred))
+    except AssertionError:
+        print((len(g), len(pred)))
+        print(g)
+        print(pred)
+        raise AssertionError
 
 
 batista_f1 = tsa_eval(gold, true_predictions)
