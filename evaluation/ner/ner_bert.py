@@ -99,11 +99,11 @@ def compute_metrics(p):
 
     # Remove ignored index (special tokens)
     cur_true_predictions = [
-        [labelnames[p] for (p, el) in zip(prediction, label) if el != -100]
+        [labelnames[p] for (p, el) in zip(prediction, label) if el not in {-100, -101}]
         for prediction, label in zip(cur_predictions, cur_labels)
     ]
     true_labels = [
-        [labelnames[el] for (p, el) in zip(prediction, label) if el != -100]
+        [labelnames[el] for (p, el) in zip(prediction, label) if el not in {-100, -101}]
         for prediction, label in zip(cur_predictions, cur_labels)
     ]
 
@@ -161,7 +161,7 @@ def tokenize_and_align_labels(examples):
             # We set the label to -100, so they are automatically
             # ignored in the loss function.
             if word_idx is None or word_idx == previous_word_idx:
-                label_ids.append(-100)
+                label_ids.append(-101)
             # We set the label for the first token of each word only.
             else:  # New word
                 label_ids.append(label_to_id[label[word_idx]])
@@ -313,7 +313,7 @@ predictions = np.argmax(predictions, axis=2)
 
 # Remove ignored index (special tokens)
 true_predictions = [
-    [labelnames[p] for (p, el) in zip(prediction, label) if el != -100]
+    [labelnames[p] for (p, el) in zip(prediction, label) if el != -101]
     for prediction, label in zip(predictions, labels)
 ]
 
