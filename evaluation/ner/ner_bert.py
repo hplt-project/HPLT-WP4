@@ -99,11 +99,11 @@ def compute_metrics(p):
 
     # Remove ignored index (special tokens)
     cur_true_predictions = [
-        [labelnames[p] for (p, el) in zip(prediction, label) if el not in {-100, -101}]
+        [labelnames[p] for (p, el) in zip(prediction, label) if el != -100]
         for prediction, label in zip(cur_predictions, cur_labels)
     ]
     true_labels = [
-        [labelnames[el] for (p, el) in zip(prediction, label) if el not in {-100, -101}]
+        [labelnames[el] for (p, el) in zip(prediction, label) if el != -100]
         for prediction, label in zip(cur_predictions, cur_labels)
     ]
 
@@ -161,7 +161,7 @@ def tokenize_and_align_labels(examples):
             # We set the label to -100, so they are automatically
             # ignored in the loss function.
             if word_idx is None or word_idx == previous_word_idx:
-                label_ids.append(-101)
+                label_ids.append(-100)
             # We set the label for the first token of each word only.
             else:  # New word
                 label_ids.append(label_to_id[label[word_idx]])
@@ -313,7 +313,7 @@ predictions = np.argmax(predictions, axis=2)
 
 # Remove ignored index (special tokens)
 true_predictions = [
-    [labelnames[p] for (p, el) in zip(prediction, label) if el != -101]
+    [labelnames[p] for (p, el) in zip(prediction, label) if el != -100]
     for prediction, label in zip(predictions, labels)
 ]
 
@@ -322,12 +322,15 @@ gold = predict_dataset[
 ]  # Note: Will not work if dataset has ints, and the text labels in metadata
 gold = [[labelnames[p] for p in sent] for sent in gold]
 
-for g, pred in zip(gold, true_predictions):
+for i, (g, pred) in enumerate(zip(gold, true_predictions)):
     try:
         assert (len(g) == len(pred))
     except AssertionError:
         print((len(g), len(pred)))
         print(g)
+        print(predictions[i])
+        print(labels[i])
+        print(gold[i])
         print(pred)
         raise AssertionError
 
