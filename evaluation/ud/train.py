@@ -115,7 +115,7 @@ def load_data(args, tokenizer):
 def main():
     parser = ArgumentParser()
     parser.add_argument("--bidirectional", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--model", default="hplt")
+    parser.add_argument("--model", default="hplt", choices=("hplt", "mbert", "xlmr"))
     parser.add_argument("--language", action="store", type=str, default="cs")
     parser.add_argument("--batch_size", action="store", type=int, default=32)
     parser.add_argument("--lr", action="store", type=float, default=0.0005)
@@ -127,8 +127,8 @@ def main():
     parser.add_argument("--min_count", action="store", type=int, default=3)
     parser.add_argument("--ema_decay", action="store", type=float, default=0.995)
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/") # 2.15 for Albanian!
-    parser.add_argument("--version", type=str, default="2_0", choices=('2_0', '1_2'))
+    parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/") # 2.15 for Albanian, Georgian!
+    parser.add_argument("--version", type=str, default="2_0", choices=('2_0', '1_2')) # model trained on data of version
     parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
     parser.add_argument("--results_path", default="/scratch/project_465001386/hplt-2-0-output/results/")
     parser.add_argument("--checkpoints_path", default="/scratch/project_465001386/hplt-2-0-output/checkpoints/")
@@ -166,7 +166,7 @@ def main():
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Loading model {args.model_path}")
-    tokenizer = AutoTokenizer.from_pretrained(args.model_path, use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_path)
     train_data, dev_data, test_data = load_data(args, tokenizer)
 
     # build and pad with loaders
