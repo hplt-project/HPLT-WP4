@@ -254,7 +254,7 @@ padding = "max_length" if data_args.pad_to_max_length else False
 with training_args.main_process_first(desc="train dataset map pre-processing"):
     train_dataset = dsd["train"].map(
         tokenize_and_align_labels,
-        batched=True,
+        batched=False,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=False,
         desc="Running tokenizer on train dataset",
@@ -262,7 +262,7 @@ with training_args.main_process_first(desc="train dataset map pre-processing"):
 with training_args.main_process_first(desc="validation dataset map pre-processing"):
     eval_dataset = dsd["validation"].map(
         tokenize_and_align_labels,
-        batched=True,
+        batched=False,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=not data_args.overwrite_cache,
         desc="Running tokenizer on validation dataset",
@@ -270,7 +270,7 @@ with training_args.main_process_first(desc="validation dataset map pre-processin
 with training_args.main_process_first(desc="validation dataset map pre-processing"):
     predict_dataset = dsd["test"].map(
         tokenize_and_align_labels,
-        batched=True,
+        batched=False,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=not data_args.overwrite_cache,
         desc="Running tokenizer on test dataset",
