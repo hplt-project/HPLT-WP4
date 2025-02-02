@@ -49,7 +49,7 @@ default_params = {  # Add entries here that you want to change or just track the
     "model_name_or_path": "ltg/norbert3-small",
     "trust_remote_code": True,
     "dataset_name": "wikiann/",
-    "max_seq_length": 256,
+    "max_seq_length": 400,
     "seed": 101,
     "per_device_train_batch_size": 64,
     "task_name": "ner",
@@ -168,7 +168,8 @@ def tokenize_and_align_labels(examples):
             # We do not keep the option to label the subsequent subword tokens here.
 
             previous_word_idx = word_idx
-
+        if word_ids[-2] + 1  < len(examples[label_column_name]): #last is None for SEP
+            examples[label_column_name] = examples[label_column_name][:word_ids[-2]+1] # truncate gold data as well
         cur_labels.append(label_ids)
     tokenized_inputs["labels"] = cur_labels
     return tokenized_inputs
@@ -327,11 +328,6 @@ for i, (g, pred) in enumerate(zip(gold, true_predictions)):
         assert (len(g) == len(pred))
     except AssertionError:
         print((len(g), len(pred)))
-        print(g)
-        print(predictions[i])
-        print(labels[i])
-        print(gold[i])
-        print(pred)
         raise AssertionError
 
 
