@@ -32,7 +32,7 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from numpyencoder import NumpyEncoder
+#from numpyencoder import NumpyEncoder
 from constants import LANGS_MAPPING
 from tsa_utils import ModelArguments, DataTrainingArguments
 from tsa_utils import tsa_eval
@@ -152,10 +152,11 @@ def tokenize_and_align_labels(examples):
         is_split_into_words=True,
     )
     cur_labels = []
-    for i, label in enumerate(examples[label_column_name]):
+    for i, labels_list in enumerate(examples[label_column_name]):
         word_ids = tokenized_inputs.word_ids(batch_index=i)
         previous_word_idx = None
         label_ids = []
+        last_word_id = 0
         for word_idx in word_ids:
             # Special tokens have a word id that is None.
             # We set the label to -100, so they are automatically
@@ -164,12 +165,17 @@ def tokenize_and_align_labels(examples):
                 label_ids.append(-100)
             # We set the label for the first token of each word only.
             else:  # New word
-                label_ids.append(label_to_id[label[word_idx]])
+                label_ids.append(label_to_id[labels_list[word_idx]])
+                last_word_id = word_idx
             # We do not keep the option to label the subsequent subword tokens here.
 
             previous_word_idx = word_idx
-        if word_ids[-2] + 1  < len(examples[label_column_name]): #last is None for SEP
-            tokenized_inputs[label_column_name] = examples[label_column_name][:word_ids[-2]+1] # truncate gold data as well
+        if word_ids[-2] is not None:  # not padded. -1 is None for SEP
+            if last_word_id + 1 < len(
+                    examples[label_column_name][i]):  # truncated
+                gold_truncated = examples[label_column_name][i][
+                                 :last_word_id + 1]  # truncate gold data as well
+                examples[label_column_name][i] = gold_truncated
         cur_labels.append(label_ids)
     tokenized_inputs["labels"] = cur_labels
     return tokenized_inputs
@@ -254,7 +260,7 @@ padding = "max_length" if data_args.pad_to_max_length else False
 with training_args.main_process_first(desc="train dataset map pre-processing"):
     train_dataset = dsd["train"].map(
         tokenize_and_align_labels,
-        batched=False,
+        batched=True,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=False,
         desc="Running tokenizer on train dataset",
@@ -262,7 +268,7 @@ with training_args.main_process_first(desc="train dataset map pre-processing"):
 with training_args.main_process_first(desc="validation dataset map pre-processing"):
     eval_dataset = dsd["validation"].map(
         tokenize_and_align_labels,
-        batched=False,
+        batched=True,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=not data_args.overwrite_cache,
         desc="Running tokenizer on validation dataset",
@@ -270,7 +276,7 @@ with training_args.main_process_first(desc="validation dataset map pre-processin
 with training_args.main_process_first(desc="validation dataset map pre-processing"):
     predict_dataset = dsd["test"].map(
         tokenize_and_align_labels,
-        batched=False,
+        batched=True,
         num_proc=data_args.preprocessing_num_workers,
         load_from_cache_file=not data_args.overwrite_cache,
         desc="Running tokenizer on test dataset",
