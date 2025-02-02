@@ -169,7 +169,7 @@ def tokenize_and_align_labels(examples):
 
             previous_word_idx = word_idx
         if word_ids[-2] + 1  < len(examples[label_column_name]): #last is None for SEP
-            examples[label_column_name] = examples[label_column_name][:word_ids[-2]+1] # truncate gold data as well
+            tokenized_inputs[label_column_name] = examples[label_column_name][:word_ids[-2]+1] # truncate gold data as well
         cur_labels.append(label_ids)
     tokenized_inputs["labels"] = cur_labels
     return tokenized_inputs
