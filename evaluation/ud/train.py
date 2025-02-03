@@ -85,7 +85,7 @@ def load_data(args, tokenizer):
     treebank = language_treebank_mapping.get(args.language.split('_')[0])
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
-    treebank_path = os.path.join(args.treebank_path, treebank)
+    treebank_path = os.path.join(os.path.expanduser(args.treebank_path), treebank)
 
     # find train, dev, test filenames
     train_filename, dev_filename, test_filename = None, None, None

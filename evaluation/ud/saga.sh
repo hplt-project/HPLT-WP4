@@ -29,7 +29,7 @@ module load nlpl-llmtools/04-foss-2022b-Python-3.10.8
 module load nlpl-torchmetrics/1.2.1-foss-2022b-Python-3.10.8
 module list    # For easier debugging
 
-cd ~/HPLT-WP4/
+cd ~/HPLT-WP4/evaluation/ud
 
 
 python3 train.py "$@"
