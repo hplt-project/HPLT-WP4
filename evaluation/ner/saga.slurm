@@ -20,14 +20,14 @@ set -o nounset  # Treat any unset variables as an error
 module --quiet purge  # Reset the modules to the system default
 module --force swap StdEnv Zen2Env
 module use -a /cluster/shared/nlpl/software/eb/etc/all/
-module load nlpl-numpy/1.24.4-foss-2022b-Python-3.10.8
-module load nlpl-pytorch/2.1.2-foss-2022b-cuda-12.0.0-Python-3.10.8
+
 module load nlpl-accelerate/0.27.2-foss-2022b-Python-3.10.8
 module load nlpl-sentencepiece/0.1.99-foss-2022b-Python-3.10.8 # for mt5-base, mdeberta
 module load nlpl-wandb/0.15.2-foss-2022b-Python-3.10.8
-module load nlpl-llmtools/04-foss-2022b-Python-3.10.8
+module load nlpl-transformers/4.38.2-foss-2022b-Python-3.10.8
 module load nlpl-torchmetrics/1.2.1-foss-2022b-Python-3.10.8
-module load nlpl-nlptools/04-foss-2022b-Python-3.10.8
+module load nlpl-nlptools/02-foss-2022b-Python-3.10.8
+
 module list    # For easier debugging
 
 cd ~/HPLT-WP4/evaluation/ud
