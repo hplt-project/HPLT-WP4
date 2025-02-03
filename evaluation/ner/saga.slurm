@@ -30,7 +30,7 @@ module load nlpl-nlptools/02-foss-2022b-Python-3.10.8
 
 module list    # For easier debugging
 
-cd ~/HPLT-WP4/evaluation/ud
+cd ~/HPLT-WP4/evaluation/ner
 export NUMEXPR_MAX_THREADS=$SLURM_CPUS_PER_TASK
 
 MODEL=${1}  # BERT model (e.g. /cluster/projects/nn9851k/models/norlm/norbert3-small/)
