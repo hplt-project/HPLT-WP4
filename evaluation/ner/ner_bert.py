@@ -334,6 +334,7 @@ for i, (g, pred) in enumerate(zip(gold, true_predictions)):
         assert (len(g) == len(pred))
     except AssertionError:
         print((len(g), len(pred)))
+        print(labels[i])
         raise AssertionError
 
 
