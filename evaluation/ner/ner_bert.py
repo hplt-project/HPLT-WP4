@@ -32,7 +32,7 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-#from numpyencoder import NumpyEncoder
+# from numpyencoder import NumpyEncoder
 from constants import LANGS_MAPPING
 from tsa_utils import ModelArguments, DataTrainingArguments
 from tsa_utils import tsa_eval
@@ -181,6 +181,12 @@ def tokenize_and_align_labels(examples):
     return tokenized_inputs
 
 
+def replace_special(examples):
+    examples[text_column_name] = [tok.replace('\u200e', tokenizer.unk_token).replace('\xad', tokenizer.unk_token)
+                                  for tok in examples[text_column_name]]
+    return examples
+
+
 model_args, data_args, training_args = hf_parser.parse_dict(args_dict)
 
 text_column_name = data_args.text_column_name
@@ -192,7 +198,6 @@ if len(lang) > 2:
 print(f"loading {ds} for lang {lang}")
 dsd = load_dataset(ds, lang)
 transformers.logging.set_verbosity_warning()
-
 
 label_list = get_label_list(dsd["train"][data_args.label_column_name])
 label_to_id = {l: i for i, l in enumerate(label_list)}
@@ -246,7 +251,7 @@ model = AutoModelForTokenClassification.from_pretrained(
 print(f"Our label2id: {label_to_id}")
 
 assert (model.config.label2id == PretrainedConfig(num_labels=num_labels).label2id) or (
-    model.config.label2id == label_to_id
+        model.config.label2id == label_to_id
 ), "Model seems to have been fine-tuned on other labels already. Our script does not adapt to that."
 
 # Set the correspondences label/ID inside the model config
@@ -274,7 +279,11 @@ with training_args.main_process_first(desc="validation dataset map pre-processin
         desc="Running tokenizer on validation dataset",
     )
 with training_args.main_process_first(desc="validation dataset map pre-processing"):
-    predict_dataset = dsd["test"].map(
+    predict_dataset = dsd['test'].map(
+        replace_special,
+        num_proc=data_args.preprocessing_num_workers,
+    )
+    predict_dataset = predict_dataset.map(
         tokenize_and_align_labels,
         batched=True,
         num_proc=data_args.preprocessing_num_workers,
@@ -291,7 +300,6 @@ data_collator = DataCollatorForTokenClassification(
 # Metrics
 metric = evaluate.load("seqeval")  #
 labelnames = ["O", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"]
-
 
 trainer = Trainer(
     model=model,
@@ -311,7 +319,6 @@ trainer.save_metrics("train", metrics)
 
 # Evaluate
 print("\nEvaluation,", model_args.model_name_or_path)
-
 
 trainer_predict = trainer.predict(predict_dataset, metric_key_prefix="predict")
 predictions, labels, metrics = trainer_predict
@@ -336,7 +343,6 @@ for i, (g, pred) in enumerate(zip(gold, true_predictions)):
         print((len(g), len(pred)))
         print(labels[i])
         raise AssertionError
-
 
 batista_f1 = tsa_eval(gold, true_predictions)
 print("batista_f1", batista_f1)
