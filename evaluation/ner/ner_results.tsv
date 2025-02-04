@@ -52,3 +52,7 @@
 /scratch/project_465001386/hplt-2-0-output/hplt_hf_models/polL/	wikiann/pl	0.896
 /scratch/project_465001386/hplt-2-0-output/hplt_hf_models/zhoH_31250/	wikiann/zh	0.745
 /scratch/project_465001386/hplt-2-0-output/hplt_hf_models/jpnJ_31250/	wikiann/ja	0.672
+bert-base-multilingual-cased	wikiann/sq	0.923
+xlm-roberta-base	wikiann/sq	0.929
+xlm-roberta-base	wikiann/ka	0.047
+bert-base-multilingual-cased	wikiann/ka	0.872
