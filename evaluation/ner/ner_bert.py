@@ -177,13 +177,22 @@ def tokenize_and_align_labels(examples):
                                  :last_word_id + 1]  # truncate gold data as well
                 examples[label_column_name][i] = gold_truncated
         cur_labels.append(label_ids)
+        tok_len = len([x for x in cur_labels[i] if x != -100])
+        if len(labels_list) != tok_len:
+            print(i)  # for debug
+            print(len(labels_list))
+            raise AssertionError
     tokenized_inputs["labels"] = cur_labels
     return tokenized_inputs
 
 
 def replace_special(examples):
-    examples[text_column_name] = [tok.replace('\u200e', tokenizer.unk_token).replace('\xad', tokenizer.unk_token)
-                                  for tok in examples[text_column_name]]
+    unk = tokenizer.unk_token
+    examples[text_column_name] = [
+        tok.replace('\u200e', unk).replace('\xad', unk).replace('\xad', unk).replace('\u200f\u200f', unk).replace(
+            '\u200f', unk)
+        for tok in examples[text_column_name]
+    ]
     return examples
 
 
