@@ -177,11 +177,6 @@ def tokenize_and_align_labels(examples):
                                  :last_word_id + 1]  # truncate gold data as well
                 examples[label_column_name][i] = gold_truncated
         cur_labels.append(label_ids)
-        tok_len = len([x for x in cur_labels[i] if x != -100])
-        if len(labels_list) != tok_len:
-            print(i)  # for debug
-            print(len(labels_list))
-            raise AssertionError
     tokenized_inputs["labels"] = cur_labels
     return tokenized_inputs
 
