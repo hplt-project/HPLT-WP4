@@ -48,6 +48,7 @@ CMD=" \
     --language $LANGUAGE \
     --input_dir $PROCESSED_DIR \
     --output_dir $PROCESSED_DIR \
+    $@
 "
 
 # Bind masks from Samuel Antao
