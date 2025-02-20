@@ -12,7 +12,6 @@ import fnmatch
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torch.nn.parallel import DistributedDataParallel
 
@@ -26,8 +25,6 @@ from dataset import Dataset, ValidationDataset, apply_mask
 if int(os.environ["SLURM_PROCID"]) == 0:
     import wandb
 
-FREQUENT_CHECKPOINTING = ('engL', 'ellG', 'hebH', 'indL', 'jpnJ',  'korH', 'pesA', 'rusC', 'zhoH', 'turL', 'vieL')
-FREQUENT_CHECKPOINTING_STEPS = (30, 300, 760, 2290, 3050)
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -64,6 +61,7 @@ def parse_arguments():
     parser.add_argument("--optimizer_beta2", default=0.98, type=float, help="Optimizer beta2.")
     parser.add_argument("--max_gradient", default=2.0, type=float, help="Max value for gradient clipping.")
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--additional_checkpoint_steps", default='', type=str, help="e.g. 30,300 ... to checkpoint also after these steps")
     args = parser.parse_args()
 
     args.name = args.name.format(language=args.language)
@@ -225,7 +223,8 @@ def prepare_model_and_optimizer(args, device, local_rank, checkpoint):
 
 
 def training_epoch(model, train_dataloader, valid_dataloader, optimizer, scheduler, global_step, epoch, args, device, max_local_steps):
-    if (global_step == 0) and (args.language in FREQUENT_CHECKPOINTING):
+    additional_checkpoint_steps = {int(step) for step in args.additional_checkpoint_steps.split(",")}
+    if (global_step == 0) and additional_checkpoint_steps:
         save(model, optimizer, scheduler, global_step, epoch, args)
         validation_epoch(model, valid_dataloader, epoch, args, device)
     model = model.train()
@@ -279,7 +278,7 @@ def training_epoch(model, train_dataloader, valid_dataloader, optimizer, schedul
 
         optimizer.zero_grad(set_to_none=True)
 
-        frequent_checkpointing = (args.language in FREQUENT_CHECKPOINTING) and (global_step in FREQUENT_CHECKPOINTING_STEPS)
+        frequent_checkpointing = global_step in additional_checkpoint_steps
         if (global_step % args.save_every == 0) or frequent_checkpointing:
             save(model, optimizer, scheduler, global_step, epoch, args)
             validation_epoch(model, valid_dataloader, epoch, args, device)
