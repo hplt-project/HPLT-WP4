@@ -121,7 +121,7 @@ def setup_training(args, tokenizer):
         os.system(f"mkdir -p {args.output_dir}")
 
     args.n_training_files = len(fnmatch.filter(os.listdir(f"{args.input_dir}/tokenized_shards"), "train_*.pt.gz"))
-    args.n_training_files = 2 ** (args.n_training_files - 1).bit_length()
+    #args.n_training_files = 2 ** (args.n_training_files - 1).bit_length()
 
     if is_main_process():
         print(f"Training for {args.max_steps:,} steps with {get_world_size()} GPUs")
