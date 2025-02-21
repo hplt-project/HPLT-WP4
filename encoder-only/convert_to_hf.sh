@@ -22,8 +22,13 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 
 INPUT_PATH=${1}
 OUTPUT_DIR=${2}
-LANGS=${@:3}
+ALL_CHECKPOINTS=${3} # 1 if convert all checkpoints
+LANGS=${@:4}
 for LANG in $LANGS
   do
-    srun singularity exec $SIF python3 convert_to_hf.py --input_model_directory $INPUT_PATH --output_model_directory $OUTPUT_DIR --language $LANG
+    if [ $ALL_CHECKPOINTS != "1" ]; then
+      srun singularity exec $SIF python3 convert_to_hf.py --input_model_directory $INPUT_PATH --output_model_directory $OUTPUT_DIR --language $LANG
+    else
+      srun singularity exec $SIF python3 convert_to_hf.py --input_model_directory $INPUT_PATH --output_model_directory $OUTPUT_DIR --language $LANG --all_checkpoints
+    fi
   done

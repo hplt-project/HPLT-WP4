@@ -1,11 +1,12 @@
-import os
-import torch
 import argparse
 import json
+import os
+import re
 
+import torch
 from transformers import AutoTokenizer
 
-from train import FREQUENT_CHECKPOINTING, FREQUENT_CHECKPOINTING_STEPS
+STEP_PATTERN = re.compile(r"\d+")
 
 
 def parse_args():
@@ -13,16 +14,27 @@ def parse_args():
     parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465001386/hplt-2-0-output/')
     parser.add_argument('--output_model_directory', type=str, default='~/hplt_hf_models')
     parser.add_argument('--language', type=str, default='en')
+    parser.add_argument('--all_checkpoints', action='store_true')
     args = parser.parse_args()
     return args
 
 
-def convert_to_hf(input_model_directory, output_model_directory, language):
+def convert_to_hf(
+        input_model_directory,
+        output_model_directory,
+        language,
+        all_checkpoints,
+):
     checkpointing_steps = [31250]
-    if language in FREQUENT_CHECKPOINTING:
-        checkpointing_steps += list(FREQUENT_CHECKPOINTING_STEPS) + [0]
+    checkpoints_directory = os.path.join(
+        input_model_directory, f"{language}/hplt_models/bert_base_{language}",
+    )
+    if all_checkpoints:
+        checkpointing_steps = [
+            int(re.match(STEP_PATTERN, bin_name).group(0)) for bin_name in os.listdir(checkpoints_directory)
+        ]
+        print(f"Saving steps {checkpointing_steps}")
     for step in checkpointing_steps:
-        checkpoints_directory = os.path.join(input_model_directory, f"{language}/hplt_models/bert_base_{language}")
         step_output_model_directory = os.path.join(output_model_directory, language+f'_{step}')
         checkpoint_path = os.path.join(
             checkpoints_directory, f"model_step_{step}.bin",
@@ -59,7 +71,12 @@ def convert_to_hf(input_model_directory, output_model_directory, language):
 
 def main():
     args = parse_args()
-    convert_to_hf(args.input_model_directory, args.output_model_directory, args.language)
+    convert_to_hf(
+        args.input_model_directory,
+        args.output_model_directory,
+        args.language,
+        args.all_checkpoints,
+    )
 
 
 if __name__ == "__main__":
