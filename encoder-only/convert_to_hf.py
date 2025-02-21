@@ -30,8 +30,9 @@ def convert_to_hf(
         input_model_directory, f"{language}/hplt_models/bert_base_{language}",
     )
     if all_checkpoints:
+        print(f"Files in the checkpoints_directory: {os.listdir(checkpoints_directory)}")
         checkpointing_steps = [
-            int(re.match(STEP_PATTERN, bin_name).group(0)) for bin_name in os.listdir(checkpoints_directory)
+            int(re.search(STEP_PATTERN, bin_name).group(0)) for bin_name in os.listdir(checkpoints_directory)
         ]
         print(f"Saving steps {checkpointing_steps}")
     for step in checkpointing_steps:
