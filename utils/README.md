@@ -7,5 +7,6 @@ Utils to validate data
 
 Utils to upload models to Huggingface
 
-`mass_copy.py` # ensure correct naming, copy model card, replace English with a correct language in it
+`mass_copy.py` # ensure correct naming, copy model card, replace English with a correct language in it, upload
 `upload.py` # upload a single model 
+`collection.py` # add to a HF collection

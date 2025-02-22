@@ -1,3 +1,5 @@
+import json
+
 LANGS_MAPPING = { 
     "alsL": "als-Latn",
     "belC": "bel-Cyrl",
@@ -78,7 +80,7 @@ LANGS_MAPPING_IETF = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "gleL": "ga",
     "glgL": "gl",
     "hrvL": "hr",
-    "bhrL": "hr",
+    "bhrL": "bs\n- hr",
     "hebH": "he",
     "hinD": "hi",
     "hunL": "hu",
@@ -111,3 +113,13 @@ LANGS_MAPPING_IETF = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "vieL": "vi",
     "zhoH": "zh",
 }
+
+
+LANGUAGES = {}
+
+with open("ISO-639-1-language.json") as f:
+    lang_code2word = json.load(f)
+for line in lang_code2word:
+    code = line["code"]
+    name = line["name"]
+    LANGUAGES[code] = name

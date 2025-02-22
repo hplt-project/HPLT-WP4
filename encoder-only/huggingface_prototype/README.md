@@ -18,7 +18,7 @@ datasets:
 This is one of the encoder-only monolingual language models trained as a second release by the [HPLT project](https://hplt-project.org/).
 It is a so called masked language model. In particular, we used the modification of the classic BERT model named [LTG-BERT](https://aclanthology.org/2023.findings-eacl.146/).
 
-A monolingual LTG-BERT model is trained for some languages in the [HPLT 2.0 data release](https://hplt-project.org/datasets/v2.0) (*52* models total).
+A monolingual LTG-BERT model is trained for some languages in the [HPLT 2.0 data release](https://hplt-project.org/datasets/v2.0).
 
 All the HPLT encoder-only models use the same hyper-parameters, roughly following the BERT-base setup:
 - hidden size: 768
