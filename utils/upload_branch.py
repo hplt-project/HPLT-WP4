@@ -12,7 +12,7 @@ print(modelpath)
 model = os.path.split(modelpath)[-1].replace("-intermediate", "")
 print(model)
 # Create branch we want to push to
-try: # exists_ok is broken in 
+try: # exists_ok is broken in huggingface-hub==0.26.5
     create_branch(repo_id=f"HPLT/{model}", branch=branch)
 except HfHubHTTPError:
     print(f"{branch} exists")
