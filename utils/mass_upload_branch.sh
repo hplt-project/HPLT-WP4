@@ -2,12 +2,11 @@
 
 # Mass uploading intermediate checkpoints to HF as branches
 #
-for i in hplt*/
+CHECKPOINTS_PATH=${1}
+for checkpoint_path in $CHECKPOINTS_PATH/*
 do
-    echo ${i}
-    for step in step3125 step6250 step9375 step12500 step15625 step18750 step21875 step25000 step28125 step31250       	
+    for step in step3125 step6250 step9375 step12500 step15625 step18750 step21875 step25000 step28125       	
     	do
-		echo ${i}${step}
-		python3 upload_branch.py ${i} ${step}
+		python3 upload_branch.py ${checkpoint_path} ${step}
 	done
 done
