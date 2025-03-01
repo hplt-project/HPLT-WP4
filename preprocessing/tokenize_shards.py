@@ -12,6 +12,8 @@ import torch
 import gzip
 from tqdm import tqdm
 
+from timer import Timer
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -37,6 +39,9 @@ def tokenize(tokenizer, text):
 if __name__ == "__main__":
     args = parse_args()
 
+    # start a timer for 71 hours; if the timer runs out, the job will stop and the tokenized files will be saved
+    timer = Timer(8 * 60 * 60)
+
     # load the tokenizer
     tokenizer = Tokenizer.from_file(args.tokenizer_path)
 
@@ -48,15 +53,30 @@ if __name__ == "__main__":
 
     if rank >= len(args.input_files):
         exit(0)
-    
+
     input_file = args.input_files[rank]
     output_file = args.output_files[rank]
+
+    # check if the output file already exists
+    if os.path.exists(output_file):
+        print(f"Output file {output_file} already exists, skipping")
+        exit(0)
 
     # tokenize file
     tokenized_documents = []
     n_subwords = 0
-    for i, line in enumerate(tqdm(open(input_file, 'rt'))):
-        document = json.loads(line)
+
+    if rank == 0:
+        generator = tqdm(open(input_file, 'rt'))
+    else:
+        generator = open(input_file, 'rt')
+
+    for i, line in enumerate(generator):
+        try:
+            document = json.loads(line)
+        except:
+            print(f"Error parsing line {i} of {input_file}, skipping")
+            continue
         tokenized_document = tokenize(tokenizer, document)
         tokenized_documents.append(tokenized_document)
         n_subwords += len(tokenized_document)
@@ -68,6 +88,14 @@ if __name__ == "__main__":
                 print(tokenizer.decode([token]))
             print(flush=True)
 
+        if not timer.has_time_remaining():
+            print("No time remaining, breaking")
+            break
+
+        if (i + 1) % 10_000 == 0:
+            with gzip.GzipFile(output_file, 'wb') as f:
+                torch.save(tokenized_documents, f)
+
     # save the tokenized documents
     with gzip.GzipFile(output_file, 'wb') as f:
         torch.save(tokenized_documents, f)
@@ -75,4 +103,5 @@ if __name__ == "__main__":
     # remove the original file
     os.remove(input_file)
 
-    print(f"Tokenized {len(tokenized_documents)} documents with {n_subwords} subwords in total")
+    print(
+        f"Tokenized {len(tokenized_documents)} documents with {n_subwords} subwords in total")

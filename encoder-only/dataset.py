@@ -72,7 +72,11 @@ class Dataset(torch.utils.data.Dataset):
 
         with gzip.GzipFile(input_file, 'rb') as f:
             documents = torch.load(f)
-
+        try:
+            assert len(documents) > 0
+        except AssertionError:
+            print(f"{input_file} is empty")
+            raise AssertionError
         self.segments = [
             document[offset : offset + self.seq_length - 2]
             for document in documents

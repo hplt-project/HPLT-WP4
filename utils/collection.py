@@ -1,26 +1,35 @@
 #!/bin/env python3
 
-import sys
+import argparse
+
 from huggingface_hub import HfApi
-from huggingface_hub import create_repo
-import json
-import os
 
-with open("ISO-639-1-language.json") as f:
-    a = json.load(f)
+from constants import LANGUAGES, LANGS_MAPPING
 
-languages = {}
 
-for el in a:
-    code = el["code"]
-    name = el["name"]
-    languages[code] = name
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--version', default='2_0', choices=('2_0', '1_2'))
+    parser.add_argument('--collection_slug', default="HPLT/hplt-20-bert-models-67ba52ae96b1fb8aae673493")
+    return parser.parse_args()
 
-api = HfApi()
+if __name__ == '__main__':
+    args = parse_args()
+    if args.version == '1_2':
+        languages = LANGUAGES
+    elif args.version == '2_0':
+        languages = tuple(LANGS_MAPPING.values())
 
-for lang in languages:
-    print(lang)
-    try:
-        api.add_collection_item(collection_slug="HPLT/hplt-bert-models-6625a8f3e0f8ed1c9a4fa96d", item_id=f"HPLT/hplt_bert_base_{lang}", item_type="model", exists_ok=True)
-    except:
-        print("doesn't exist")
+    api = HfApi()
+
+    for lang in languages:
+        print(lang)
+        try:
+            api.add_collection_item(
+                collection_slug=args.collection_slug,
+                item_id=f"HPLT/hplt_bert_base_{lang}", 
+                item_type="model",
+                exists_ok=True,
+                )
+        except:
+            print("doesn't exist")

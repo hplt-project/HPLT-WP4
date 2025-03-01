@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=HPLT_BERT
-#SBATCH --account=project_465000498
+#SBATCH --account=project_465001386
 #SBATCH --time=14:00:00
 #SBATCH --cpus-per-task=7
 #SBATCH --mem=0
@@ -12,7 +12,11 @@
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
 #SBATCH --output=logs/bert-%j.out
-
+source ${HOME}/.bashrc
+export EBU_USER_PREFIX=/projappl/project_465001384/software/
+# the important bit: unload all current modules (just in case) and load only the necessary ones
+module --quiet purge
+module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
 mkdir -p workdir
 wd=$(realpath workdir)
@@ -32,18 +36,18 @@ export WORLD_SIZE=$SLURM_NTASKS
 export CC=gcc-10
 export CXX=g++-10
 
-# singularity setup
-# CONTAINER="/users/dasamuel/hplt_scratch/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
-CONTAINER="/scratch/project_465000498/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
-SING_BIND="/scratch/project_465000498,/flash/project_465000498"
 
 set -euo pipefail
 
 LANGUAGE=${1}
+PROCESSED_DIR=${2}
 
+# no need for the long path if slurm is run with chdir
 CMD=" \
-    /scratch/project_465000498/HPLT-WP4/encoder-only/train.py \
+    train.py \
     --language $LANGUAGE \
+    --input_dir $PROCESSED_DIR \
+    --output_dir $PROCESSED_DIR \
 "
 
 # Bind masks from Samuel Antao
@@ -72,12 +76,10 @@ srun \
     --label \
     --cpu-bind=mask_cpu:$BIND_MASK \
     singularity exec \
-    -B /opt/cray:/opt/cray \
     -B $wd/cray-deps:/opt/cray-deps \
     -B $wd:/workdir \
-    -B "$SING_BIND" \
-    "$CONTAINER" \
-    /scratch/project_465000498/HPLT-WP4/encoder-only/launch.sh \
+    $SIF \
+    ~/HPLT-WP4/encoder-only/launch.sh \
     $CMD
 
 echo "END $SLURM_JOBID: $(date)"

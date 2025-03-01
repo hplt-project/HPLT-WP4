@@ -8,7 +8,6 @@ import copy
 import os
 import torch
 import torch.nn.functional as F
-import numpy as np
 from torch import nn
 from torch.utils.data import DataLoader
 from argparse import ArgumentParser
@@ -82,11 +81,11 @@ class CollateFunctor:
         }
 
 def load_data(args, tokenizer):
-    language_treebank_mapping = json.load(open("language_treebank_mapping.json", "r"))
-    treebank = language_treebank_mapping[args.language]
+    language_treebank_mapping = json.load(open(f"language_treebank_mapping_{args.version}.json", "r"))
+    treebank = language_treebank_mapping.get(args.language.split('_')[0])
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
-    treebank_path = f"ud-treebanks-v2.13/{treebank}"
+    treebank_path = os.path.join(os.path.expanduser(args.treebank_path), treebank)
 
     # find train, dev, test filenames
     train_filename, dev_filename, test_filename = None, None, None
@@ -116,7 +115,7 @@ def load_data(args, tokenizer):
 def main():
     parser = ArgumentParser()
     parser.add_argument("--bidirectional", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--model", default="hplt")
+    parser.add_argument("--model", default="hplt", choices=("hplt", "mbert", "xlmr"))
     parser.add_argument("--language", action="store", type=str, default="cs")
     parser.add_argument("--batch_size", action="store", type=int, default=32)
     parser.add_argument("--lr", action="store", type=float, default=0.0005)
@@ -128,6 +127,11 @@ def main():
     parser.add_argument("--min_count", action="store", type=int, default=3)
     parser.add_argument("--ema_decay", action="store", type=float, default=0.995)
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/") # 2.15 for Albanian, Georgian!
+    parser.add_argument("--version", type=str, default="2_0", choices=('2_0', '1_2')) # model trained on data of version
+    parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
+    parser.add_argument("--results_path", default="/scratch/project_465001386/hplt-2-0-output/results/")
+    parser.add_argument("--checkpoints_path", default="/scratch/project_465001386/hplt-2-0-output/checkpoints/")
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:
@@ -140,7 +144,12 @@ def main():
         args.epochs = 60
 
     if args.model == "hplt":
-        args.model_path = f"/scratch/project_465000498/hplt_hf_models/{args.language}"
+        if args.version == '1_2':
+            args.model_path = os.path.join(
+                args.models_path, f"hplt_bert_base_{args.language}",
+            )
+        else:
+            args.model_path = os.path.join(args.models_path, args.language)
         if not os.path.exists(args.model_path):
             raise ValueError(f"Model {args.model_path} not found")
     elif args.model == "mbert":
@@ -149,14 +158,14 @@ def main():
         args.model_path = f"xlm-roberta-base"
     else:
         raise ValueError(f"Unknown model {args.model}")
-
+    print(args)
     seed_everything(args.seed)
 
     if args.log_wandb:
         wandb.init(name=f"{args.model.split('/')[-1]}_{args.language}", config=args, project="HPLT_UD", entity="ltg", tags=[args.language, args.model])
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+    print(f"Loading model {args.model_path}")
     tokenizer = AutoTokenizer.from_pretrained(args.model_path)
     train_data, dev_data, test_data = load_data(args, tokenizer)
 
@@ -279,7 +288,7 @@ def main():
                 "model": ema_model.state_dict(),
                 "dataset": train_data.state_dict()
             },
-            f"checkpoints/ud-{args.language}-{args.model}.bin"
+            f"{args.checkpoints_path}ud-{args.language}-{args.model}.bin"
         )
 
         # eval
@@ -291,8 +300,10 @@ def main():
                 ema_model.eval()
 
                 dev_file = parse(open(dataset.path, "r").read())
-
-                prediction_path = f"tmp/{args.language}_{args.model}_{loader_index}.conllu"
+                prediction_folder = os.path.join(args.results_path, 'tmp')
+                if not os.path.exists(prediction_folder):
+                    os.makedirs(prediction_folder)
+                prediction_path = f"{prediction_folder}/{args.language}_{args.model}_{loader_index}.conllu"
                 with open(prediction_path, "w") as f:
                     for batch in loader:
                         lemma_p, upos_p, xpos_p, feats_p, _, __, dep_p, head_p = ema_model(
@@ -371,7 +382,7 @@ def main():
 
                 # save results; lock and rewrite results.json
                 test_results[f"{args.language}_{args.model}"] = results
-                with open(f"results/{args.language}_{args.model}.jsonl", "w") as f:
+                with open(f"{args.results_path}{args.language}_{args.model}.jsonl", "w") as f:
                     json.dump(test_results, f)
                 
 

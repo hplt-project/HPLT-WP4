@@ -177,8 +177,13 @@ class Attention(nn.Module):
 
         attention_scores = torch.bmm(query, key.transpose(1, 2) * self.scale)
 
-        pos = self.in_proj_qk(self.dropout(relative_embedding))  # shape: [2T-1, 2D]
-        query_pos, key_pos = pos.view(-1, self.num_heads, 2*self.head_size).chunk(2, dim=2)
+        query_pos, key_pos = self.in_proj_qk(
+            self.dropout(relative_embedding)).chunk(2,
+                                                    dim=-1)  # shape: [2T-1, D]
+        query_pos = query_pos.view(-1, self.num_heads,
+                                            self.head_size)  # shape: [2T-1, H, D]
+        key_pos = key_pos.view(-1, self.num_heads,
+                                        self.head_size)  # shape: [2T-1, H, D]
         query = query.view(batch_size, self.num_heads, query_len, self.head_size)
         key = key.view(batch_size, self.num_heads, query_len, self.head_size)
 
