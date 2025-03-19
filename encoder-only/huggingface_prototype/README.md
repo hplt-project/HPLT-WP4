@@ -89,38 +89,17 @@ print([b.name for b in out.branches])
     url = "https://aclanthology.org/2023.findings-eacl.146",
     doi = "10.18653/v1/2023.findings-eacl.146",
     pages = "1954--1974"
-})
+}
 ```
 
 ```bibtex
-@inproceedings{de-gibert-etal-2024-new-massive,
-    title = "A New Massive Multilingual Dataset for High-Performance Language Technologies",
-    author = {de Gibert, Ona  and
-      Nail, Graeme  and
-      Arefyev, Nikolay  and
-      Ba{\~n}{\'o}n, Marta  and
-      van der Linde, Jelmer  and
-      Ji, Shaoxiong  and
-      Zaragoza-Bernabeu, Jaume  and
-      Aulamo, Mikko  and
-      Ram{\'\i}rez-S{\'a}nchez, Gema  and
-      Kutuzov, Andrey  and
-      Pyysalo, Sampo  and
-      Oepen, Stephan  and
-      Tiedemann, J{\"o}rg},
-    editor = "Calzolari, Nicoletta  and
-      Kan, Min-Yen  and
-      Hoste, Veronique  and
-      Lenci, Alessandro  and
-      Sakti, Sakriani  and
-      Xue, Nianwen",
-    booktitle = "Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING 2024)",
-    month = may,
-    year = "2024",
-    address = "Torino, Italia",
-    publisher = "ELRA and ICCL",
-    url = "https://aclanthology.org/2024.lrec-main.100",
-    pages = "1116--1128",
-    abstract = "We present the HPLT (High Performance Language Technologies) language resources, a new massive multilingual dataset including both monolingual and bilingual corpora extracted from CommonCrawl and previously unused web crawls from the Internet Archive. We describe our methods for data acquisition, management and processing of large corpora, which rely on open-source software tools and high-performance computing. Our monolingual collection focuses on low- to medium-resourced languages and covers 75 languages and a total of {\mbox{$\approx$}} 5.6 trillion word tokens de-duplicated on the document level. Our English-centric parallel corpus is derived from its monolingual counterpart and covers 18 language pairs and more than 96 million aligned sentence pairs with roughly 1.4 billion English tokens. The HPLT language resources are one of the largest open text corpora ever released, providing a great resource for language modeling and machine translation training. We publicly release the corpora, the software, and the tools used in this work.",
+@misc{burchell2025expandedmassivemultilingualdataset,
+      title={An Expanded Massive Multilingual Dataset for High-Performance Language Technologies},
+      author={Laurie Burchell and Ona de Gibert and Nikolay Arefyev and Mikko Aulamo and Marta Bañón and Pinzhen Chen and Mariia Fedorova and Liane Guillou and Barry Haddow and Jan Hajič and Jindřich Helcl and Erik Henriksson and Mateusz Klimaszewski and Ville Komulainen and Andrey Kutuzov and Joona Kytöniemi and Veronika Laippala and Petter Mæhlum and Bhavitvya Malik and Farrokh Mehryary and Vladislav Mikhailov and Nikita Moghe and Amanda Myntti and Dayyán O'Brien and Stephan Oepen and Proyag Pal and Jousia Piha and Sampo Pyysalo and Gema Ramírez-Sánchez and David Samuel and Pavel Stepachev and Jörg Tiedemann and Dušan Variš and Tereza Vojtěchová and Jaume Zaragoza-Bernabeu},
+      year={2025},
+      eprint={2503.10267},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2503.10267},
 }
 ```
