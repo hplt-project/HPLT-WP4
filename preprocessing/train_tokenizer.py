@@ -56,12 +56,6 @@ def initialize_tokenizer(args):
 
     tokenizer = Tokenizer(WordPiece(unk_token="[UNK]"))
     tokenizer.pre_tokenizer = pre_tokenizers.Sequence([
-
-        # split on any whitespace character
-        pre_tokenizers.Metaspace(
-            #add_prefix_space=not args.do_japanese_pretokenization
-        ),
-
         # split digits
         pre_tokenizers.Split(
             Regex("▁{0,1}\d{1}"),
@@ -86,10 +80,7 @@ def initialize_tokenizer(args):
         normalizers.Replace(Regex(" +"), " "),
     ])
     tokenizer.decoder = decoders.Sequence([
-        decoders.ByteLevel(add_prefix_space=False, use_regex=False),
-        decoders.Metaspace(
-            #add_prefix_space=False
-        ),
+        decoders.ByteLevel(),
         decoders.Strip(' ', 1, 0),
         decoders.Replace(Regex("█ "), "\n"),
         decoders.Replace(Regex("█"), "\n")
