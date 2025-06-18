@@ -255,8 +255,10 @@ class LtgbertPreTrainedModel(PreTrainedModel):
         elif isinstance(module, nn.Embedding):
             nn.init.trunc_normal_(module.weight.data, mean=0.0, std=std, a=-2*std, b=2*std)
         elif isinstance(module, nn.LayerNorm):
-            module.bias.data.zero_()
-            module.weight.data.fill_(1.0)
+            if module.bias is not None:
+                module.bias.data.zero_()
+            if module.weight is not None:
+                module.weight.data.fill_(1.0)
 
 
 class LtgbertModel(LtgbertPreTrainedModel):
