@@ -23,8 +23,6 @@ export EBU_USER_PREFIX=/projappl/project_465001925/software/
 # the important bit: unload all current modules (just in case) and load only the necessary ones
 module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
-module load rocm/5.2.3
-
 
 
 export NCCL_SOCKET_IFNAME=hsn
@@ -42,8 +40,8 @@ echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
 
 # ******************* These are read internally it seems ***********************************
 # ******** Master port, address and world size MUST be passed as variables for DDP to work 
-export MASTER_PORT=$(expr 10000 + $(echo -n $SLURM_JOBID | tail -c 4))
-export WORLD_SIZE=$(($SLURM_NNODES * $SLURM_NTASKS_PER_NODE))
+export MASTER_PORT=9999
+export WORLD_SIZE=$SLURM_NTASKS
 echo "MASTER_PORT"=$MASTER_PORT
 echo "WORLD_SIZE="$WORLD_SIZE
 
@@ -51,10 +49,8 @@ master_addr=$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)
 export MASTER_ADDR=$master_addr
 echo "MASTER_ADDR="$MASTER_ADDR
 
-export NCCL_NSOCKS_PERTHREAD=4
-export NCCL_SOCKET_NTHREADS=2
-export NCCL_MIN_CHANNELS=32
+# compilers in the container
+export CC=gcc-10
+export CXX=g++-10
 
-export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK 
-
-srun -W 0 python3 train.py "$@"
+srun -W 0 singularity exec $SIF python3 train.py "$@"

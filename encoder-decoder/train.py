@@ -5,6 +5,7 @@ import os.path
 import argparse
 import fnmatch
 from tqdm import tqdm
+from datetime import timedelta
 from itertools import count
 from socket import gethostname
 from statistics import mean
@@ -32,9 +33,9 @@ def parse_arguments():
 
     # Required parameters
     parser.add_argument("--input_dir", default="../bert-lumi/data/pretrain/tokenized", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
-    parser.add_argument("--name", default="base_narrow", type=str)
-    parser.add_argument("--config_file", default="configs/base_narrow.json", type=str, help="The BERT model config")
-    parser.add_argument("--output_dir", default="checkpoints/base_narrow", type=str, help="The output directory where the model checkpoints will be written.")
+    parser.add_argument("--name", default="base", type=str)
+    parser.add_argument("--config_file", default="configs/base.json", type=str, help="The BERT model config")
+    parser.add_argument("--output_dir", default="checkpoints/base", type=str, help="The output directory where the model checkpoints will be written.")
     parser.add_argument("--tokenizer_path", default="../bert-lumi/data/wordpiece.json", type=str, help="The vocabulary the BERT model will train on.")
     parser.add_argument("--checkpoint_path", default=None, type=str, help="Path to a previous checkpointed training state.")
 
@@ -53,6 +54,7 @@ def parse_arguments():
     parser.add_argument("--weight_decay", default=0.1, type=float, help="Short sequence probability.")
     parser.add_argument("--max_gradient", default=2.0, type=float, help="Max value for gradient clipping.")
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--data_format", default="pt.gz")
     args = parser.parse_args()
 
     return args
@@ -84,7 +86,7 @@ def setup_training(args):
     if is_main_process():
         os.system(f"mkdir -p {args.output_dir}")
 
-    args.n_training_files = len(fnmatch.filter(os.listdir(args.input_dir), "train_*.pt"))
+    args.n_training_files = len(fnmatch.filter(os.listdir(args.input_dir), f"train_*.{args.data_format}"))
     if is_main_process():
         print(f"Training for {args.max_steps:,} steps with {get_world_size()} GPUs")
         print(f"In total, the model will be trained on 'steps'({args.max_steps:,}) x 'GPUs'({get_world_size()}) x 'batch_size'({args.batch_size:,}) x 'seq_len'({args.seq_length:,}) = {args.max_steps * get_world_size() * args.batch_size * args.seq_length:,} subword instances")
@@ -237,7 +239,7 @@ def training_epoch(model, train_dataloader, optimizer, scheduler, grad_scaler, g
             loss, perplexity, accuracy = metrics.tolist()
 
         if is_main_process():
-            train_iter.set_postfix_str(f"loss: {loss.item():.2f}, accuracy: {accuracy.item() * 100.0:.2f}, grad_norm: {grad_norm:.2f}, lr: {optimizer.param_groups[0]['lr']:.5f}")
+            train_iter.set_postfix_str(f"loss: {loss:.2f}, accuracy: {accuracy * 100.0:.2f}, grad_norm: {grad_norm:.2f}, lr: {optimizer.param_groups[0]['lr']:.5f}")
 
             if global_step % 100 == 0:
                 log_parameter_histograms(model, global_step)
@@ -245,12 +247,12 @@ def training_epoch(model, train_dataloader, optimizer, scheduler, grad_scaler, g
             wandb.log(
                 {
                     "epoch": epoch,
-                    "train/loss": loss.item(),
-                    "train/perplexity": perplexity.item(),
-                    "train/accuracy": accuracy.item() * 100.0,
+                    "train/loss": loss,
+                    "train/perplexity": perplexity,
+                    "train/accuracy": accuracy * 100.0,
                     "stats/learning_rate": optimizer.param_groups[0]['lr'],
                     "stats/grad_norm": grad_norm,
-                    "stats/seq_length": data.seq_length,
+                    "stats/seq_length": args.seq_length,
                     "stats/grad_scale": grad_scaler.get_scale()
                 },
                 step=global_step,
@@ -280,9 +282,9 @@ def validation_epoch(model, valid_dataloader, epoch, args, device):
         with torch.cuda.amp.autocast(args.mixed_precision, dtype=torch.bfloat16):
             loss, perplexity, accuracy = model(input_ids, target_ids, attention_mask)
 
-            losses.append(loss.item())
-            perplexities.append(perplexity.item())
-            accuracies.append(accuracy.item())
+            losses.append(loss)
+            perplexities.append(perplexity)
+            accuracies.append(accuracy)
 
     if is_main_process():
         wandb.log(
@@ -323,13 +325,21 @@ def load_datasets(args, tokenizer, epoch, device):
     train_index = (get_rank() + epoch * get_world_size()) % args.n_training_files
     train_seed = args.seed + get_rank() + epoch * get_world_size()
 
-    train_path = f"{args.input_dir}/train_{train_index}.pt"
+    train_path = f"{args.input_dir}/train_{train_index:05d}.{args.data_format}"
     train_data = Dataset(train_path, tokenizer, seq_length=args.seq_length, mask_p=args.mask_p, short_p=args.short_p)
     print(f"Loaded training file {train_index} on GPU {get_rank()}", flush=True)
 
-    valid_data = Dataset(f"{args.input_dir}/validation_0.pt", tokenizer, seq_length=args.seq_length, mask_p=args.mask_p, short_p=args.short_p)
+    valid_data = Dataset(
+        f"{args.input_dir}/validation.{args.data_format}",
+        tokenizer,
+        seq_length=args.seq_length,
+        mask_p=args.mask_p,
+        short_p=args.short_p,
+    )
+    print(f"Loaded validation file on GPU {get_rank()}", flush=True)
 
     min_length = torch.tensor(len(train_data) // args.batch_size, dtype=torch.long, device=device)
+    print(f"Min length: {min_length}", flush=True)
     torch.distributed.all_reduce(min_length, torch.distributed.ReduceOp.MIN)
 
     train_dataloader = DataLoader(

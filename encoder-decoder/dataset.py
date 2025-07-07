@@ -1,3 +1,5 @@
+import gzip
+
 import torch
 import torch.nn.functional as F
 
@@ -33,7 +35,7 @@ class SpanMaskingStrategy:
         self.tokenizer = tokenizer
         self.n_special_tokens = n_special_tokens
         self.padding_label_id = padding_label_id
-        self.mask_indices = [self.tokenizer.token_to_id(f"[MASK_{i}]") for i in range(100)]
+        self.mask_indices = [self.tokenizer.token_to_id(f"[MASK]") for i in range(100)]
 
     def __call__(self, tokens):
         n_masked = torch.binomial((tokens >= self.n_special_tokens).float().sum(dim=0, keepdim=True), torch.FloatTensor([self.mask_p])).item()
@@ -64,8 +66,8 @@ class SpanMaskingStrategy:
 
         output_tokens.append(self.mask_indices[span_i])
 
-        input_tokens = torch.tensor(input_tokens)
-        output_tokens = torch.tensor(output_tokens)
+        input_tokens = torch.tensor(input_tokens, dtype=torch.long)
+        output_tokens = torch.tensor(output_tokens, dtype=torch.long)
 
         return input_tokens, output_tokens
    
@@ -84,7 +86,16 @@ class Dataset(torch.utils.data.Dataset):
         self.sep_index = torch.tensor([self.tokenizer.token_to_id("[SEP]")], dtype=torch.long)
         self.pad_index = self.tokenizer.token_to_id("[PAD]")
 
-        documents = torch.load(input_file)
+        if not ".gz" in input_file:
+            documents = torch.load(input_file)
+        else:
+            with gzip.GzipFile(input_file, 'rb') as f:
+                documents = torch.load(f)
+        try:
+            assert len(documents) > 0
+        except AssertionError:
+            print(f"{input_file} is empty")
+            raise AssertionError
         self.segments = [
             document[offset : offset + seq_length - 2]
             for document in documents
