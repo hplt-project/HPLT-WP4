@@ -11,7 +11,7 @@ from constants import LANGS_MAPPING, LANGS_MAPPING_IETF, LANGUAGES
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--languages', default='engL,belC')
-    parser.add_argument('--hf_models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
+    parser.add_argument('--hf_models_path', default='/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/')
     return parser.parse_args()
 
 

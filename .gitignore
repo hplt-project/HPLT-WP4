@@ -172,3 +172,5 @@ cython_debug/
 .idea/
 utils/after.txt
 utils/before.txt
+wandb/
+core

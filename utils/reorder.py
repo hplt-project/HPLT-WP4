@@ -10,8 +10,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--problematic_folders',
-        default='/scratch/project_465001386/hplt-2-0-output/fraL/tokenized_shards,'
-                '/scratch/project_465001386/hplt-2-0-output/cesL/tokenized_shards,'
+        default='/scratch/project_465001890/hplt-2-0-output/fraL/tokenized_shards,'
+                '/scratch/project_465001890/hplt-2-0-output/cesL/tokenized_shards,'
     )
     return parser.parse_args()
 

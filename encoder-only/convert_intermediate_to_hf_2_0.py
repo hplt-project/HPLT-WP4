@@ -26,12 +26,12 @@ def parse_args():
     parser.add_argument(
         "--input_model_directory",
         type=str,
-        default="/scratch/project_465001386/hplt-2-0-output/",
+        default="/scratch/project_465001890/hplt-2-0-output/",
     )
     parser.add_argument(
         "--output_model_directory",
         type=str,
-        default="/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/intermediate",
+        default="/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/intermediate",
     )
     args = parser.parse_args()
     return args

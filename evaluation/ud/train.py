@@ -127,11 +127,11 @@ def main():
     parser.add_argument("--min_count", action="store", type=int, default=3)
     parser.add_argument("--ema_decay", action="store", type=float, default=0.995)
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--treebank_path", default="/scratch/project_465001386/ud-treebanks-v2.13/") # 2.15 for Albanian, Georgian!
+    parser.add_argument("--treebank_path", default="/scratch/project_465001890/ud-treebanks-v2.13/") # 2.15 for Albanian, Georgian!
     parser.add_argument("--version", type=str, default="2_0", choices=('2_0', '1_2')) # model trained on data of version
-    parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
-    parser.add_argument("--results_path", default="/scratch/project_465001386/hplt-2-0-output/results/")
-    parser.add_argument("--checkpoints_path", default="/scratch/project_465001386/hplt-2-0-output/checkpoints/")
+    parser.add_argument('--models_path', default='/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/')
+    parser.add_argument("--results_path", default="/scratch/project_465001890/hplt-2-0-output/results/")
+    parser.add_argument("--checkpoints_path", default="/scratch/project_465001890/hplt-2-0-output/checkpoints/")
     args = parser.parse_args()
 
     if args.language in ["mr", "ta"]:

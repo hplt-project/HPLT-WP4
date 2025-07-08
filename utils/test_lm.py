@@ -8,7 +8,7 @@ model = AutoModelForMaskedLM.from_pretrained(sys.argv[1], trust_remote_code=True
 
 mask_id = tokenizer.convert_tokens_to_ids("[MASK]")
 
-text = "It's a beautiful[MASK]."
+text = "David Keith Lynch (Januari 20, 1946- [MASK] 15, 2025) alizaliwa huko Missoula, Montana, Marekani."
 
 input_text = tokenizer(text, return_tensors="pt")
 

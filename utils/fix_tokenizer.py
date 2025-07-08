@@ -6,7 +6,7 @@ if __name__ == '__main__':
     api = HfApi()
     for short, long in LANGS_MAPPING.items():
         print(long)
-        tok_path = f"/scratch/project_465001386/hplt-2-0-output/{short}/tokenizer.json"
+        tok_path = f"/scratch/project_465001890/hplt-2-0-output/{short}/tokenizer.json"
         problem_repo = f'HPLT/hplt_bert_base_2_0_{long}'
         readme_path_in_repo = "README.md"
         main_readme_path = hf_hub_download(repo_id=problem_repo, filename=readme_path_in_repo)
@@ -32,11 +32,11 @@ if __name__ == '__main__':
                 decoders.Strip(' ', 1, 0),
             ])
         enc = tokenizer.encode('Meow meow')
-        saved = f"/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/{long}/tokenizer.json"
+        saved = f"/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/{long}/tokenizer.json"
         try:
             tokenizer.save(saved)
         except Exception:
-            saved = f"/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/{long}_31250/tokenizer.json"
+            saved = f"/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/{long}_31250/tokenizer.json"
             tokenizer.save(saved)
         refs = api.list_repo_refs(problem_repo)
         for branch in refs.branches:

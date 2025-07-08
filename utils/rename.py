@@ -7,7 +7,7 @@ from glob import glob
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dir', default='/scratch/project_465001386/hplt-2-0-full')
+    parser.add_argument('--dir', default='/scratch/project_465001890/hplt-2-0-full')
     return parser.parse_args()
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT="project_465001386"
+PROJECT="project_465001890"
 CONTAINER="/users/dasamuel/hplt_scratch/HPLT-WP4/pytorch-lumi_sles-rocm-5.5.1-python-3.10-pytorch-v2.0.1-apex-torchvision-torchdata-torchtext-torchaudio.sif"
 BIND="/scratch/$PROJECT"
 srun \

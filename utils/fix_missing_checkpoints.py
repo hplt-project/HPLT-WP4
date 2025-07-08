@@ -3,7 +3,7 @@ import subprocess
 from huggingface_hub import HfApi
 from constants import LANGS_MAPPING
 
-ALL_LANGS = "/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/intermediate"
+ALL_LANGS = "/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/intermediate"
 
 def fix():
     for lang in LANGS_MAPPING.values():

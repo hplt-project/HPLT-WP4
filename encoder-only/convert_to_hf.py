@@ -11,7 +11,7 @@ STEP_PATTERN = re.compile(r"\d+")
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465001386/hplt-2-0-output/')
+    parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465001890/hplt-2-0-output/')
     parser.add_argument('--output_model_directory', type=str, default='~/hplt_hf_models')
     parser.add_argument('--language', type=str, default='en')
     parser.add_argument('--all_checkpoints', action='store_true')

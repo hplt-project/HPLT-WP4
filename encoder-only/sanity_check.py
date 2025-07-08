@@ -42,11 +42,12 @@ La cerimonia di premiazione della 82ª edizione dei Golden Globe ha avuto luogo 
             " Dréibuchauteur, Schauspiller, Moler, Fotograf, Designer a Komponist aktiv war.",
     'mltL': "Il-Bulgarija hija [MASK] tal-Unjoni Ewropea, taż-Żona Schengen, tan-NATO u tal-Kunsill tal-Ewropa.",
     'eusL': "Zientzialari talde batek eman du [MASK]: kurlinta mokomehea desagertu da. Azken aldiz 1995ean ikusi zuten Marokon.",
+    'swhLatn': "David Keith Lynch (Januari 20, 1946- [MASK] 15, 2025) alizaliwa huko Missoula, Montana, Marekani.", # https://sw.wikipedia.org/wiki/David_Lynch
 }
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--models_path', default='/scratch/project_465001386/hplt-2-0-output/hplt_hf_models/')
+    parser.add_argument('--models_path', default='/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/')
     return parser.parse_args()
 
 

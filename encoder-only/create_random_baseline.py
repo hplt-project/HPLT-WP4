@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument("--language", default="ellG", type=str)
     parser.add_argument(
         "--input_dir",
-                        default="/scratch/project_465001386/hplt-2-0-output",
+                        default="/scratch/project_465001890/hplt-2-0-output",
                         type=str,
                         )
     return parser.parse_args()

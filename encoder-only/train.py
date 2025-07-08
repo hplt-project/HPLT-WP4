@@ -31,13 +31,13 @@ def parse_arguments():
 
     parser.add_argument("--language", default="en", type=str, help="The language to train on.")
     parser.add_argument(
-        "--input_dir", default="/scratch/project_465001386/hplt-2-0-output/nldL",
+        "--input_dir", default="/scratch/project_465001890/hplt-2-0-output/nldL",
         type=str,
         help="The input data dir. Should contain tokenized_shards/ folder with .pt.gz files for the task.",
     )
     parser.add_argument("--name", default="bert_base_{language}", type=str)
     parser.add_argument("--config_file", default="~/HPLT-WP4/encoder-only/configs/base.json", type=str, help="The BERT model config")
-    parser.add_argument("--output_dir", default="/scratch/project_465001386/hplt-2-0-output/nldL", type=str, help="The output directory where the model checkpoints will be written.")
+    parser.add_argument("--output_dir", default="/scratch/project_465001890/hplt-2-0-output/nldL", type=str, help="The output directory where the model checkpoints will be written.")
     parser.add_argument("--checkpoint_path", default=None, type=str, help="Path to a previous checkpointed training state.")
     parser.add_argument("--optimizer", default="lamb", type=str)
     parser.add_argument("--seq_length", default=128, help="Sequence length for training.")

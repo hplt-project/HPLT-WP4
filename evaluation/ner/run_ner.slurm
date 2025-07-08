@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=bert_ner
-#SBATCH --account=project_465001386
+#SBATCH --account=project_465001890
 #SBATCH --partition=small-g
 #SBATCH --gpus=1
 #SBATCH --time=1:00:00
@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8
 
 source ${HOME}/.bashrc
-export EBU_USER_PREFIX=/projappl/project_465001384/software/
+export EBU_USER_PREFIX=/projappl/project_465001925/software/
 module --quiet purge
 # the important bit: unload all current modules (just in case) and load only the necessary ones
 module --quiet purge
