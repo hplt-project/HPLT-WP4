@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=HPLT_T5
 #SBATCH --account=project_465001890
-#SBATCH --time=8:00:00
+#SBATCH --time=26:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=16

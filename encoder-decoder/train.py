@@ -55,6 +55,7 @@ def parse_arguments():
     parser.add_argument("--max_gradient", default=2.0, type=float, help="Max value for gradient clipping.")
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--data_format", default="pt.gz")
+    parser.add_argument('--save_every', type=int, default=31250//10, help="save every X steps")
     args = parser.parse_args()
 
     return args
@@ -105,7 +106,7 @@ def setup_training(args):
             allow_val_change=True,
             reinit=True
         )
-
+        print(args, flush=True)
     return device, local_rank
 
 
@@ -203,7 +204,19 @@ def log_parameter_histograms(model, step):
             )
 
 
-def training_epoch(model, train_dataloader, optimizer, scheduler, grad_scaler, global_step, epoch, args, device, max_local_steps):
+def training_epoch(
+        model,
+        train_dataloader,
+        optimizer,
+        scheduler,
+        grad_scaler,
+        global_step,
+        epoch,
+        args,
+        device,
+        max_local_steps,
+        valid_dataloader,
+    ):
     model = model.train()
     optimizer.zero_grad(set_to_none=True)
 
@@ -257,6 +270,11 @@ def training_epoch(model, train_dataloader, optimizer, scheduler, grad_scaler, g
                 },
                 step=global_step,
             )
+        if (global_step % args.save_every == 0):
+            save(model, optimizer, grad_scaler, scheduler, global_step, epoch, args)
+            validation_epoch(model, valid_dataloader, epoch, args, device)
+            model = model.train()
+
 
         # Exiting the training due to hitting max steps
         if global_step >= args.device_max_steps or local_step >= max_local_steps - 1:
@@ -275,12 +293,17 @@ def validation_epoch(model, valid_dataloader, epoch, args, device):
         valid_iter = valid_dataloader
 
     losses, perplexities, accuracies = [], [], []
-    for batch in valid_iter:
-        input_ids, attention_mask, target_ids = [t.to(device, non_blocking=True) for t in batch]
-        input_ids, target_ids = input_ids.t(), target_ids.t()
+    with torch.no_grad():
+        for batch in valid_iter:
+            input_ids, attention_mask, target_ids = [t.to(device, non_blocking=True) for t in batch]
+            input_ids, target_ids = input_ids.t(), target_ids.t()
 
-        with torch.cuda.amp.autocast(args.mixed_precision, dtype=torch.bfloat16):
-            loss, perplexity, accuracy = model(input_ids, target_ids, attention_mask)
+            with torch.cuda.amp.autocast(args.mixed_precision, dtype=torch.bfloat16):
+                loss, perplexity, accuracy = model(input_ids, target_ids, attention_mask)
+
+            metrics = torch.stack([loss, perplexity, accuracy])
+            torch.distributed.all_reduce(metrics, torch.distributed.ReduceOp.AVG)
+            loss, perplexity, accuracy = metrics.tolist()
 
             losses.append(loss)
             perplexities.append(perplexity)
@@ -299,8 +322,10 @@ def validation_epoch(model, valid_dataloader, epoch, args, device):
 
 
 def save(model, optimizer, grad_scaler, scheduler, global_step, epoch, args):
-    checkpoint_path = f"{args.output_dir}/model.bin"
+    checkpoint_dir = f"{args.output_dir}/step{global_step}"
+    checkpoint_path = f"{checkpoint_dir}/model.bin"
     if is_main_process():
+        os.makedirs(checkpoint_dir, exist_ok=True)
         if os.path.exists(checkpoint_path):
             os.rename(checkpoint_path, f"{checkpoint_path}_tmp")
 
@@ -383,11 +408,24 @@ if __name__ == "__main__":
     tokenizer = Tokenizer.from_file(args.tokenizer_path)
     device, local_rank = setup_training(args)
     model, config, optimizer, scheduler, grad_scaler = prepare_model_and_optimizer(args, device, local_rank, checkpoint, tokenizer)
-
+    
     for epoch in count(initial_epoch):
         train_dataloader, valid_dataloader, min_length = load_datasets(args, tokenizer, epoch, device)
+        if epoch == 0: # sanity check
+            validation_epoch(model, valid_dataloader, epoch, args, device)
 
-        global_step = training_epoch(model, train_dataloader, optimizer, scheduler, grad_scaler, global_step, epoch, args, device, min_length)
+        global_step = training_epoch(
+            model,
+            train_dataloader,
+            optimizer, scheduler,
+            grad_scaler,
+            global_step,
+            epoch,
+            args,
+            device,
+            min_length,
+            valid_dataloader,
+        )
         save(model, optimizer, grad_scaler, scheduler, global_step, epoch, args)
 
         if (epoch + 1) % args.validate_every == 0 or global_step == args.device_max_steps:

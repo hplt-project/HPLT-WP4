@@ -1,0 +1,7 @@
+{
+    "_from_model_config": true,
+    "decoder_start_token_id": 5,
+    "eos_token_id": 6,
+    "pad_token_id": 0
+  }
+    

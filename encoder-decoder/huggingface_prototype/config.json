@@ -1,0 +1,33 @@
+{
+    "architectures": [
+      "NorT5ForConditionalGeneration"
+    ],
+    "auto_map": {
+      "AutoConfig": "configuration_nort5.NorT5Config",
+      "AutoModel": "modeling_nort5.NorT5Model",
+      "AutoModelForSeq2SeqLM": "modeling_nort5.NorT5ForConditionalGeneration",
+      "AutoModelForConditionalGeneration": "modeling_nort5.NorT5ForConditionalGeneration"
+    },
+    "attention_probs_dropout_prob": 0.0,
+    "bos_token_id": 5,
+    "cls_token_id": 2,
+    "eos_token_id": 6,
+    "hidden_dropout_prob": 0.0,
+    "hidden_size": 768,
+    "initializer_range": 0.02,
+    "intermediate_size": 2048,
+    "layer_norm_eps": 1e-07,
+    "max_position_embeddings": 512,
+    "num_attention_heads": 12,
+    "num_hidden_layers": 12,
+    "output_all_encoded_layers": true,
+    "pad_token_id": 0,
+    "position_bucket_size": 32,
+    "sep_token_id": 3,
+    "torch_dtype": "float32",
+    "vocab_size": 50000,
+    "max_length": 512,
+    "max_new_tokens": 256,
+    "is_encoder_decoder": true
+  }
+  

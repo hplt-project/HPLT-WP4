@@ -35,14 +35,14 @@ class SpanMaskingStrategy:
         self.tokenizer = tokenizer
         self.n_special_tokens = n_special_tokens
         self.padding_label_id = padding_label_id
-        self.mask_indices = [self.tokenizer.token_to_id(f"[MASK]") for i in range(100)]
+        self.mask_indices = [self.tokenizer.token_to_id(f"[MASK]_{i}") for i in range(1,100)]
 
     def __call__(self, tokens):
         n_masked = torch.binomial((tokens >= self.n_special_tokens).float().sum(dim=0, keepdim=True), torch.FloatTensor([self.mask_p])).item()
         preservation_mask = tokens < self.n_special_tokens
         mask = torch.zeros_like(tokens, dtype=torch.bool)
 
-        cycle_detection = 100
+        cycle_detection = 99
         while mask.sum() <= n_masked and cycle_detection > 0:
             span_length = torch.tensor([0]).geometric_(1/3).item()
             offset = torch.randint(-(span_length - 1), tokens.size(0) + span_length, []).item()
