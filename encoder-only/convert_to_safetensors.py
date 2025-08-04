@@ -7,8 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForMaskedLM
 import argparse
-from huggingface_hub import get_collection, HfApi
-import subprocess
+from huggingface_hub import get_collection, HfApi, hf_hub_download
 
 
 def convert_pytorch_to_safetensors(pytorch_path: str, safetensors_path: str):
@@ -99,13 +98,15 @@ def verify_conversion(pytorch_path: str, safetensors_path: str):
     if all_match:
         print("🔥 All tensors match! Conversion successful.")
 
+
 @torch.no_grad()
 def show_certainty(sentence, model, tokenizer):
     tokens = tokenizer(sentence, return_tensors='pt')["input_ids"]
     N = tokens.size(1)
     tokens = tokens.repeat(N - 2, 1)
     mask = torch.eye(N).bool()[1:-1, :]
-    bert_input = tokens.masked_fill(mask, value=MASK_ID)
+    mask_id = tokenizer.convert_tokens_to_ids("[MASK]")
+    bert_input = tokens.masked_fill(mask, value=mask_id)
 
     words = [tokenizer.decode([tokens[0, i + 1].item()]) for i in range(N-2)]
     max_word_len = max(max(len(w) for w in words), 5) + 3
@@ -141,16 +142,19 @@ args = parser.parse_args()
 api = HfApi()
 collection = get_collection(args.collection_slug)
 safetensors_path = 'model.safetensors'
+fn = 'pytorch_model.bin'
 for item in collection.items:
     print(item.item_id)
-    bin_path = f"https://huggingface.co/{item.item_id}/resolve/main/pytorch_model.bin"
-    subprocess.run(['wget', bin_path])
-    convert_pytorch_to_safetensors(pytorch_path=bin_path, safetensors_path=safetensors_path)
-    verify_conversion(pytorch_path=bin_path, safetensors_path=safetensors_path)
-    api.upload_file(
-        path_or_fileobj=safetensors_path,
-        path_in_repo=safetensors_path,
-        repo_id=item.item_id,
-        repo_type="model",
-        commit_message=f"Upload {safetensors_path}",
-    )
+    refs = api.list_repo_refs(item.item_id)
+    for branch in refs.branches:
+        hf_hub_download(repo_id=item.item_id, filename=fn, revision=branch.name, local_dir='.')
+        convert_pytorch_to_safetensors(pytorch_path=fn, safetensors_path=safetensors_path)
+        verify_conversion(pytorch_path=fn, safetensors_path=safetensors_path)
+        api.upload_file(
+            path_or_fileobj=safetensors_path,
+            path_in_repo=safetensors_path,
+            repo_id=item.item_id,
+            repo_type="model",
+            commit_message=f"Upload {safetensors_path}",
+            revision=branch.name,
+        )
