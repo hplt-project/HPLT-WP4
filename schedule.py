@@ -26,41 +26,46 @@ def parse_args():
                         default=0.0)
     parser.add_argument('--do_calculate_train_tok_stats', action='store_true')
     parser.add_argument(
-        '--first_file_only',
-        action='store_true',
-        help="shard the first *.jsonl.zst only (for languages with many data)",
-    )
-    parser.add_argument(
         '--skip_sharding',
         action='store_true',
         help="start from training a tokenizer",
     )
+    parser.add_argument('--wds_best', action='store_true')
+    parser.add_argument('--n_training_documents', type=int, default=2029156*4)
     return parser.parse_args()
 
 
-def count_total_size(input_dir):
+def count_total_size(input_dir, args):
     total_size = 0
     for filename in os.listdir(input_dir):
-        if not filename.endswith(".jsonl.zst"):
+        if args.wds_best and not (filename.startswith("10_") or filename.startswith("9_")):
             continue
+        elif not args.wds_best:
+            if not filename.endswith(".jsonl.zst"):
+                continue
 
-        total_size += os.path.getsize(os.path.join(input_dir, filename))
+        total_size += os.path.getsize(os.path.join(input_dir, filename)) # in bytes 
 
-    total_size /= 1024 * 1024
+    total_size /= 1024 * 1024 # in MiB
     return total_size
 
 
 def schedule(language, input_dir, output_dir, shard_size):
-    total_size = count_total_size(input_dir)
-    number_of_shards = 2 ** max(0, math.floor(
-        math.log(total_size / (shard_size / 2), 2)))
-    actual_shard_size = total_size / number_of_shards
-
-    print(f"Total size: {total_size:.2f} MB")
-    print(
-        f"Number of shards: {number_of_shards} files, each of roughly {actual_shard_size:.2f} MB",
-        flush=True)
-
+    if not args.n_training_documents:
+        total_size = count_total_size(input_dir, args)
+        number_of_shards = 2 ** max(
+        0, math.floor(
+        math.log(total_size / (shard_size / 2), 2),
+        ),
+        )
+        actual_shard_size = total_size / number_of_shards
+        print(f"Total size: {total_size:.2f} MB", flush=True)
+    else:
+        n_input_files = len(os.listdir(input_dir))
+        docs_to_pick = args.n_training_documents // n_input_files
+        print(f"Number of documents to pick from each file: {docs_to_pick}", flush=True)
+        actual_shard_size = -1
+        number_of_shards = n_input_files
     shard_dir = os.path.join(output_dir, "text_shards")
     shard_job_ids = []
     if not args.skip_sharding:
@@ -75,30 +80,33 @@ def schedule(language, input_dir, output_dir, shard_size):
         current_input_files, current_input_file_size = [], 0
         has_scheduled_validation = False
 
-        if not args.first_file_only:
+        if args.wds_best:
+            print("Using documents scored 10 only", flush=True)
             filenames = [filename for filename in os.listdir(input_dir) if
-                         filename.endswith(".jsonl.zst")]
+                        filename.endswith(".jsonl.zst") and (filename.startswith("10_") or filename.startswith("9_"))]
         else:
-            filenames = [
-                os.path.join(input_dir, f"{args.language}_1.jsonl.zst")]
+            filenames = [filename for filename in os.listdir(input_dir) if
+                        filename.endswith(".jsonl.zst")]
+
         for i, filename in enumerate(sorted(filenames)):
             current_input_files.append(filename)
-            current_input_file_size += os.path.getsize(
-                os.path.join(input_dir, filename)) / 1024 / 1024
+            if not args.n_training_documents:
+                current_input_file_size += os.path.getsize(
+                    os.path.join(input_dir, filename)) / 1024 / 1024
 
-            if current_input_file_size < 32 * actual_shard_size and i != len(
-                    filenames) - 1:
-                continue
+                if current_input_file_size < 32 * actual_shard_size and i != len(
+                        filenames) - 1:
+                    continue
 
-            num_shards = current_input_file_size / actual_shard_size
+                num_shards = current_input_file_size / actual_shard_size 
+            else:
+                num_shards = 1
             shards = list(range(int(num_scheduled_shards),
                                 int(num_scheduled_shards + num_shards)))
             num_scheduled_shards += num_shards
-
             # if we are at the last file, make sure all shards are created
             if i == len(filenames) - 1 and shards[-1] < number_of_shards - 1:
                 shards += list(range(shards[-1], number_of_shards))
-
             print(
                 f"Scheduling [{', '.join(current_input_files)}] to shards [{', '.join(map(str, shards))}]",
                 flush=True)
@@ -107,6 +115,8 @@ def schedule(language, input_dir, output_dir, shard_size):
             current_input_files = [os.path.join(input_dir, filename) for
                                    filename in current_input_files]
             command = f"sbatch --job-name {language}-SHARD --chdir preprocessing --output /scratch/project_465001890/hplt-2-0-output/logs/{language}-shard-%j.out preprocessing/shard_worker.sh {','.join(current_input_files)} {shard_dir} {','.join(map(str, shards))} {args.sample_power} {'--create_validation' if not has_scheduled_validation else ''}"
+            if args.n_training_documents:
+                command += f" --docs_to_pick {docs_to_pick}"
             bash_output = subprocess.check_output(command, shell=True)
             print(bash_output.decode("utf-8"))
             has_scheduled_validation = True
@@ -115,6 +125,11 @@ def schedule(language, input_dir, output_dir, shard_size):
             shard_job_ids.append(job_id)
 
             current_input_files, current_input_file_size = [], 0
+        assert number_of_shards == num_scheduled_shards
+        print(
+                f"Number of shards: {num_scheduled_shards} files, each of roughly {actual_shard_size:.2f} MB",
+                flush=True,
+            )
 
     # schedule tokenizer training
     if not os.path.exists(os.path.join(output_dir, 'tokenizer.json')):
@@ -148,7 +163,6 @@ def schedule(language, input_dir, output_dir, shard_size):
     # schedule shard tokenization, batch together 64 jobs
     tokenized_shard_dir = os.path.join(output_dir, "tokenized_shards")
     os.makedirs(tokenized_shard_dir, exist_ok=True)
-
     tokenization_job_ids = []
     for shard_batch in range(math.ceil(number_of_shards / 64)):
         print(

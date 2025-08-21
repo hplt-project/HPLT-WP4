@@ -22,6 +22,7 @@ if __name__ == '__main__':
     for problematic_folder in args.problematic_folders.split(','):
         current_number = 0
         number_of_train_docs = 0
+        num_toks = 0
         print(problematic_folder)
         paths = glob(f"{problematic_folder}/*.pt.gz")
         paths.sort()
@@ -42,6 +43,8 @@ if __name__ == '__main__':
                 if 'train' in file_path:
                     print(current_number)
                     number_of_train_docs += len(documents)
+                    len_toks = sum([len(x) for x in documents])
+                    num_toks += len_toks
                     new_path = os.path.join(problematic_folder, f'train_{current_number:05d}.pt.gz')
                     print(file_path)
                     print(new_path)
@@ -49,3 +52,4 @@ if __name__ == '__main__':
                     current_number += 1
 
         print(f"{number_of_train_docs} training documents in {problematic_folder}")
+        print(f"{num_toks} training tokens in {problematic_folder}")

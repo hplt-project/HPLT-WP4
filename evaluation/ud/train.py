@@ -213,7 +213,7 @@ def main():
 
     test_results = {}
     best_mlas_blex_sum = 0.0
-
+    os.makedirs(args.checkpoints_path, exist_ok=True)
     # train loop
     for epoch in range(args.epochs):
         train_iter = tqdm.tqdm(train_loader)

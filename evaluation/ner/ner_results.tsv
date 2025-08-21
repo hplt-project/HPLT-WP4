@@ -79,3 +79,6 @@ xlm-roberta-base	wikiann/ja	0.659
 xlm-roberta-base	wikiann/ja	0.663
 bert-base-multilingual-cased	wikiann/he	0.026
 xlm-roberta-base	wikiann/he	0.842
+/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/eng_Latn_31250	wikiann/en	0.812
+/scratch/project_465001890/hplt-2-0-output/hf_models/eng_Latn_31250	wikiann/en	0.815
+/scratch/project_465001890/hplt-2-0-output/hf_models-eng/eng_Latn_31250	wikiann/en	0.822
