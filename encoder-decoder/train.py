@@ -55,7 +55,7 @@ def parse_arguments():
     parser.add_argument("--max_gradient", default=2.0, type=float, help="Max value for gradient clipping.")
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--data_format", default="pt.gz")
-    parser.add_argument('--save_every', type=int, default=31250//10, help="save every X steps")
+    parser.add_argument('--save_every', type=int, default=3125, help="save every X steps")
     args = parser.parse_args()
 
     return args
@@ -272,7 +272,7 @@ def training_epoch(
             )
         if (global_step % args.save_every == 0):
             save(model, optimizer, grad_scaler, scheduler, global_step, epoch, args)
-            validation_epoch(model, valid_dataloader, epoch, args, device)
+            validation_epoch(model, valid_dataloader, epoch, args, device, global_step)
             model = model.train()
 
 
@@ -284,7 +284,7 @@ def training_epoch(
 
 
 @torch.no_grad()
-def validation_epoch(model, valid_dataloader, epoch, args, device):
+def validation_epoch(model, valid_dataloader, epoch, args, device, global_step):
     model = model.eval()
 
     if is_main_process():

@@ -16,4 +16,4 @@ encoding = tokenizer(sentence)
 
 input_tensor = torch.tensor([encoding.input_ids])
 output_tensor = model.generate(input_tensor, decoder_start_token_id=4, eos_token_id=118)
-print(tokenizer.decode(output_tensor.squeeze(), skip_special_tokens=True))
+print(tokenizer.decode(output_tensor.squeeze(), skip_special_tokens=False))

@@ -3,7 +3,7 @@
 #SBATCH --job-name=sanity
 #SBATCH --account=project_465001890
 #SBATCH --time=00:30:00
-#SBATCH --mem-per-cpu=7G
+#SBATCH --mem-per-cpu=1750
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
