@@ -20,6 +20,7 @@ def parse_args():
     parser.add_argument('--input_files', type=str, required=True)
     parser.add_argument('--output_files', type=str, required=True)
     parser.add_argument('--tokenizer_path', type=str, required=True)
+    parser.add_argument('--remove_original', action='store_true')
     return parser.parse_args()
 
 
@@ -100,8 +101,9 @@ if __name__ == "__main__":
     with gzip.GzipFile(output_file, 'wb') as f:
         torch.save(tokenized_documents, f)
 
+    if args.remove_original:
     # remove the original file
-    os.remove(input_file)
+        os.remove(input_file)
 
     print(
         f"Tokenized {len(tokenized_documents)} documents with {n_subwords} subwords in total")

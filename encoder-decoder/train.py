@@ -32,11 +32,10 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Required parameters
-    parser.add_argument("--input_dir", default="../bert-lumi/data/pretrain/tokenized", type=str, help="The input data dir. Should contain .hdf5 files for the task.")
-    parser.add_argument("--name", default="base", type=str)
+    parser.add_argument("--input_dir", default="/scratch/project_465001890/hplt-3-0-output/", type=str, help="The input data dir.")
+    parser.add_argument("--name", default="t-5-base", type=str)
     parser.add_argument("--config_file", default="configs/base.json", type=str, help="The BERT model config")
-    parser.add_argument("--output_dir", default="checkpoints/base", type=str, help="The output directory where the model checkpoints will be written.")
-    parser.add_argument("--tokenizer_path", default="../bert-lumi/data/wordpiece.json", type=str, help="The vocabulary the BERT model will train on.")
+    parser.add_argument("--output_dir", default="t5-base/", type=str, help="The output directory where the model checkpoints will be written.")
     parser.add_argument("--checkpoint_path", default=None, type=str, help="Path to a previous checkpointed training state.")
 
     # Other parameters
@@ -56,8 +55,9 @@ def parse_arguments():
     parser.add_argument('--mixed_precision', default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--data_format", default="pt.gz")
     parser.add_argument('--save_every', type=int, default=3125, help="save every X steps")
+    parser.add_argument('--language', default='ell_Grek')
     args = parser.parse_args()
-
+    args.name += f"-{args.language}"
     return args
 
 
@@ -83,10 +83,7 @@ def setup_training(args):
     device = torch.device("cuda", local_rank)
     print(f"RCCL started on device {device}", flush=True)
     print(f"host: {gethostname()}, rank: {rank}, local_rank: {local_rank}")
-
-    if is_main_process():
-        os.system(f"mkdir -p {args.output_dir}")
-
+            
     args.n_training_files = len(fnmatch.filter(os.listdir(args.input_dir), f"train_*.{args.data_format}"))
     if is_main_process():
         print(f"Training for {args.max_steps:,} steps with {get_world_size()} GPUs")
@@ -371,7 +368,7 @@ def load_datasets(args, tokenizer, epoch, device):
         train_data,
         shuffle=True,
         batch_size=args.batch_size,
-        num_workers=3,
+        num_workers=0,
         generator=torch.Generator().manual_seed(train_seed),
         drop_last=True,
         pin_memory=True,
@@ -382,7 +379,7 @@ def load_datasets(args, tokenizer, epoch, device):
         valid_data,
         shuffle=False,
         batch_size=args.batch_size,
-        num_workers=3,
+        num_workers=0,
         generator=torch.Generator().manual_seed(42),
         drop_last=True,
         pin_memory=True,
@@ -394,7 +391,11 @@ def load_datasets(args, tokenizer, epoch, device):
 
 if __name__ == "__main__":
     args = parse_arguments()
-
+    args.tokenizer_path = os.path.join(args.input_dir, args.language, 'tokenizer.json')
+    args.output_dir = os.path.join(args.input_dir, args.language, args.output_dir)
+    os.system(f"mkdir -p {args.output_dir}")
+    args.input_dir = os.path.join(args.input_dir, args.language, 'tokenized_shards/')
+    print(args.tokenizer_path, flush=True)
     if args.checkpoint_path is not None:
         checkpoint = torch.load(args.checkpoint_path, map_location="cpu")
         checkpoint_args, initial_epoch, global_step = checkpoint["args"], checkpoint["epoch"] + 1, checkpoint["global_step"]
@@ -404,7 +405,7 @@ if __name__ == "__main__":
     else:
         checkpoint, initial_epoch, global_step = None, 0, 0
         args.wandb_id = wandb.util.generate_id() if int(os.environ["SLURM_PROCID"]) == 0 else 0
-
+    
     tokenizer = Tokenizer.from_file(args.tokenizer_path)
     device, local_rank = setup_training(args)
     model, config, optimizer, scheduler, grad_scaler = prepare_model_and_optimizer(args, device, local_rank, checkpoint, tokenizer)
@@ -412,7 +413,7 @@ if __name__ == "__main__":
     for epoch in count(initial_epoch):
         train_dataloader, valid_dataloader, min_length = load_datasets(args, tokenizer, epoch, device)
         if epoch == 0: # sanity check
-            validation_epoch(model, valid_dataloader, epoch, args, device)
+            validation_epoch(model, valid_dataloader, epoch, args, device, global_step)
 
         global_step = training_epoch(
             model,
@@ -429,7 +430,7 @@ if __name__ == "__main__":
         save(model, optimizer, grad_scaler, scheduler, global_step, epoch, args)
 
         if (epoch + 1) % args.validate_every == 0 or global_step == args.device_max_steps:
-            validation_epoch(model, valid_dataloader, epoch, args, device)
+            validation_epoch(model, valid_dataloader, epoch, args, device, global_step)
 
         if global_step >= args.device_max_steps:
             break

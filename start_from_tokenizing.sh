@@ -31,5 +31,5 @@ LANGS=${@}
 for lang in $LANGS
 do
   echo "Running schedule.py"
-  python3 start_from_tokenizing.py --language $lang
+  python3 start_from_tokenizing.py --language $lang --output_dir /scratch/project_465001890/hplt-3-0-output/
 done

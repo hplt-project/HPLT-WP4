@@ -3,6 +3,7 @@
 # it then schedules the shard workers, the tokenizer training, the shard tokenization and the BERT training
 
 import argparse
+from glob import glob
 import os
 import math
 import subprocess
@@ -32,6 +33,7 @@ def parse_args():
     )
     parser.add_argument('--wds_best', action='store_true')
     parser.add_argument('--n_training_documents', type=int, default=2029156*4)
+    parser.add_argument('--run_training', action='store_true')
     return parser.parse_args()
 
 
@@ -61,11 +63,12 @@ def schedule(language, input_dir, output_dir, shard_size):
         actual_shard_size = total_size / number_of_shards
         print(f"Total size: {total_size:.2f} MB", flush=True)
     else:
-        n_input_files = len(os.listdir(input_dir))
+        n_input_files = len(glob(f"{input_dir}/*.jsonl.zst"))
         docs_to_pick = args.n_training_documents // n_input_files
         print(f"Number of documents to pick from each file: {docs_to_pick}", flush=True)
         actual_shard_size = -1
         number_of_shards = n_input_files
+        print(f'number of shards: {number_of_shards}')
     shard_dir = os.path.join(output_dir, "text_shards")
     shard_job_ids = []
     if not args.skip_sharding:
@@ -199,15 +202,16 @@ def schedule(language, input_dir, output_dir, shard_size):
     bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
     print(bash_output)
     tokenization_job_ids.append(bash_output.split()[-1])
-
-    # schedule BERT training
-    print(f"Scheduling BERT training", flush=True)
-    command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output /scratch/project_465001890/hplt-2-0-output/logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
-    bash_output = subprocess.check_output(command, shell=True)
-    print(bash_output.decode("utf-8"), flush=True)
+    if args.run_training:
+        # schedule BERT training
+        print(f"Scheduling BERT training", flush=True)
+        command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output /scratch/project_465001890/hplt-2-0-output/logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
+        bash_output = subprocess.check_output(command, shell=True)
+        print(bash_output.decode("utf-8"), flush=True)
 
 
 if __name__ == "__main__":
     args = parse_args()
+    print(args)
     schedule(args.language, args.input_dir, args.output_dir,
              args.shard_size_mb)

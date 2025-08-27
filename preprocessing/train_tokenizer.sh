@@ -2,13 +2,13 @@
 
 #SBATCH --account=project_465001890
 #SBATCH --time=72:00:00
-#SBATCH --mem-per-cpu=1750
+#SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
 
-
+# ^ memory > 2G is really needed when saving the tokenizer
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error
 

@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoModelForSeq2SeqLM, get_linear_schedule_with_warmup
 from torch.optim import AdamW
+import evaluate
 
 from ner_dataset import WikiAnnDataset
 
@@ -18,6 +19,7 @@ class T5FineTuner(pl.LightningModule):
         self.save_hyperparameters()
         self.training_step_outputs = []   # save outputs in each batch to compute metric overall epoch
         self.val_step_outputs = []        # save outputs in each batch to compute metric overall epoch
+        self.seqeval = evaluate.load("seqeval")
 
     def is_logger(self):
         return True
@@ -44,13 +46,12 @@ class T5FineTuner(pl.LightningModule):
             decoder_attention_mask=batch['target_mask']
         )
 
-        loss = outputs.loss
-        return loss
+        return outputs
 
     def training_step(self, batch, batch_idx):
-        loss = self._step(batch)
+        outputs = self._step(batch)
         # https://stackoverflow.com/questions/73111496/pytorch-lightning-misconfiguration-exception-the-closure-hasnt-been-executed
-        self.manual_backward(loss)
+        self.manual_backward(outputs.loss)
         
         optimizer = self.optimizers()
 
@@ -58,9 +59,9 @@ class T5FineTuner(pl.LightningModule):
         optimizer.zero_grad()
         self.lr_scheduler.step()
 
-        self.training_step_outputs.append({"loss":loss})
-        tensorboard_logs = {"train_loss": loss}
-        return {"loss": loss, "log": tensorboard_logs}
+        self.training_step_outputs.append({"loss": outputs.loss})
+        tensorboard_logs = {"train_loss": outputs.loss}
+        return {"loss": outputs.loss, "log": tensorboard_logs}
 
     def on_train_epoch_end(self):
         # https://stackoverflow.com/questions/70790473/pytorch-lightning-epoch-end-validation-epoch-end
@@ -68,11 +69,72 @@ class T5FineTuner(pl.LightningModule):
         tensorboard_logs = {"avg_train_loss": avg_train_loss}
         self.training_step_outputs.clear()
 
+
+    @staticmethod
+    def find_sub_list(sl, l):
+        results = []
+        sll = len(sl)
+        for ind in (i for i, e in enumerate(l) if e == sl[0]):
+            if l[ind:ind+sll] == sl:
+                results.append((ind, ind+sll-1))
+        return results
+    
+
+    def generate_label(self, input: str, target: str):
+        mapper = {'O': 0, 'B-DATE': 1, 'I-DATE': 2, 'B-PER': 3,
+                'I-PER': 4, 'B-ORG': 5, 'I-ORG': 6, 'B-LOC': 7, 'I-LOC': 8}
+        inv_mapper = {v: k for k, v in mapper.items()}
+
+        input = input.split(" ")
+        target = target.split("; ")
+
+        init_target_label = [mapper['O']]*len(input)
+
+        for ent in target:
+            ent = ent.split(": ")
+            try:
+                sent_end = ent[1].split(" ")
+                index = self.find_sub_list(sent_end, input)
+            except:
+                continue
+            # print(index)
+            try:
+                init_target_label[index[0][0]] = mapper[f"B-{ent[0].upper()}"]
+                for i in range(index[0][0]+1, index[0][1]+1):
+                    init_target_label[i] = mapper[f"I-{ent[0].upper()}"]
+            except:
+                continue
+        init_target_label = [inv_mapper[j] for j in init_target_label]
+        return init_target_label
+    
+
     def validation_step(self, batch, batch_idx):
-        loss = self._step(batch)
-        self.val_step_outputs.append({"val_loss": loss})
-        self.log('val_loss', loss)
-        return {"val_loss": loss}
+        outputs = self._step(batch)
+        self.val_step_outputs.append({"val_loss": outputs.loss})
+        self.log('val_loss', outputs.loss)
+        outs = self.model.generate(
+            input_ids=batch["source_ids"],
+            attention_mask=batch["source_mask"],
+        )
+        dec = [self.tokenizer.decode(ids, skip_special_tokens=True,
+                                clean_up_tokenization_spaces=False).strip() for ids in outs]
+        batch["target_ids"] = torch.where(batch["target_ids"] != -100, batch["target_ids"], self.tokenizer.pad_token_id)
+        try:
+            target = [self.tokenizer.decode(ids, skip_special_tokens=True,  clean_up_tokenization_spaces=False).strip()
+                        for ids in batch["target_ids"]]
+        except OverflowError:
+            print(batch["target_ids"], flush=True)
+            raise OverflowError
+        batch["source_ids"] = torch.where(batch["source_ids"] != -100, batch["source_ids"], self.tokenizer.pad_token_id)
+        texts = [self.tokenizer.decode(ids, skip_special_tokens=True,  clean_up_tokenization_spaces=False).strip()
+                    for ids in batch["source_ids"]]
+        true_label = [self.generate_label(texts[i].strip(), target[i].strip()) if target[i].strip() != 'none' else [
+            "O"]*len(texts[i].strip().split()) for i in range(len(texts))]
+        pred_label = [self.generate_label(texts[i].strip(), dec[i].strip()) if dec[i].strip() != 'none' else [
+            "O"]*len(texts[i].strip().split()) for i in range(len(texts))]
+        f1 = self.seqeval.compute(predictions=pred_label, references=true_label)['overall_f1']
+        self.log("val_f1", f1)
+        return {"val_loss": outputs.loss, 'val_f1': f1}
 
     def on_validation_epoch_end(self):
         avg_loss = torch.stack([x["val_loss"] for x in self.val_step_outputs]).mean()
@@ -95,7 +157,9 @@ class T5FineTuner(pl.LightningModule):
             },
         ]
         optimizer = AdamW(optimizer_grouped_parameters,
-                          lr=self.hparam.learning_rate, eps=self.hparam.adam_epsilon)
+                          lr=self.hparam.learning_rate,
+                        #eps=self.hparam.adam_epsilon
+                        )
         self.opt = optimizer
         return [optimizer]
 

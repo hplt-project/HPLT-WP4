@@ -11,7 +11,7 @@ class WikiAnnDataset(Dataset):
     self.tokenizer.model_max_length = max_len
     self.inputs = []
     self.targets = []
-
+    self.eos = ' [SEP]'
     self._build()
   
   def __len__(self):
@@ -30,8 +30,8 @@ class WikiAnnDataset(Dataset):
     for idx in range(len(self.data)):
       input_, target = " ".join(self.data[idx]["tokens"]), "; ".join(self.data[idx]["spans"])     
       
-      input_ = input_.lower() + ' </s>'
-      target = target.lower() + " </s>"
+      input_ = input_ + self.eos
+      target = target + self.eos
 
        # tokenize inputs
       tokenized_inputs = self.tokenizer.batch_encode_plus(
