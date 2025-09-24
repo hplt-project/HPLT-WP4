@@ -9,7 +9,7 @@ import evaluate
 from ner_dataset import WikiAnnDataset
 
 class T5FineTuner(pl.LightningModule):
-    def __init__(self, hparam, tokenizer, dataset):
+    def __init__(self, hparam, tokenizer, dataset, eos):
         super(T5FineTuner, self).__init__()
         self.hparam = hparam
         self.dataset = dataset
@@ -20,6 +20,7 @@ class T5FineTuner(pl.LightningModule):
         self.training_step_outputs = []   # save outputs in each batch to compute metric overall epoch
         self.val_step_outputs = []        # save outputs in each batch to compute metric overall epoch
         self.seqeval = evaluate.load("seqeval")
+        self.eos = eos
 
     def is_logger(self):
         return True
@@ -197,4 +198,4 @@ class T5FineTuner(pl.LightningModule):
         self.tokenizer.max_length = args.max_seq_length
         self.tokenizer.model_max_length = args.max_seq_length
         
-        return WikiAnnDataset(tokenizer=self.tokenizer, dataset=self.dataset, type_path=type_path)
+        return WikiAnnDataset(tokenizer=self.tokenizer, dataset=self.dataset, type_path=type_path, eos=self.eos)

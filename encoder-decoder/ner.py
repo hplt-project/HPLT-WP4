@@ -20,6 +20,8 @@ def parse_arguments():
     parser.add_argument('--model_path', default='/scratch/project_465001925/mariiaf/swh-Latn-t5')
     parser.add_argument('--lang', default='sw')
     parser.add_argument('--output_dir', default="/scratch/project_465001890/hplt-2-0-output/t5-ner")
+    parser.add_argument('--train_batch_size', type=int, default=20)
+    parser.add_argument('--learning_rate', type=float, default=5e-5)
     return parser.parse_args()
 
 def set_seed(seed):
@@ -39,17 +41,23 @@ tokenizer = AutoTokenizer.from_pretrained(
             cl_args.model_path,
         )
 dataset = load_dataset("wikiann", cl_args.lang)
+output_dir = os.path.join(
+    cl_args.output_dir,
+    cl_args.lang,
+    f"{os.path.split(cl_args.model_path.rstrip('/'))[-1]}-{cl_args.learning_rate}",
+    )
+os.makedirs(output_dir, exist_ok=True)
 args_dict = dict(
     data_dir="wikiann", # path for data files
-    output_dir=cl_args.output_dir, # path to save the checkpoints
+    output_dir=output_dir, # path to save the checkpoints
     model_path=cl_args.model_path,
     max_seq_length=512,
-    learning_rate=5e-5,
+    learning_rate=cl_args.learning_rate,
     weight_decay=0.0,
     #adam_epsilon=1e-8,
     warmup_steps=0,
-    train_batch_size=20,
-    eval_batch_size=32,
+    train_batch_size=cl_args.train_batch_size,
+    eval_batch_size=cl_args.train_batch_size + 12,
     num_train_epochs=5,
     devices=1,
     gradient_accumulation_steps=1,
@@ -61,11 +69,15 @@ args_dict = dict(
 )
 args = argparse.Namespace(**args_dict)
 print(args)
-model = T5FineTuner(args, tokenizer, dataset)
+if not 'google' in cl_args.model_path:
+    eos = ' [SEP]'
+else:
+    eos = "</s>"
+model = T5FineTuner(args, tokenizer, dataset, eos)
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
-    dirpath=cl_args.output_dir,
-    monitor="val_loss",
-    mode="min",
+    dirpath=output_dir,
+    monitor="val_f1",
+    mode="max",
     save_top_k=5,
     save_weights_only=True,
 )
@@ -80,14 +92,14 @@ train_params = dict(
     precision= 16 if args.fp_16 else 32,
     #amp_level=args.opt_level,
     callbacks=[LoggingCallback(), checkpoint_callback],
-    logger=pl.loggers.WandbLogger(name=cl_args.lang, project="HPLT_T5_NER", entity="ltg"),
+    logger=pl.loggers.WandbLogger(name=f"{cl_args.lang}-{cl_args.model_path}-{cl_args.learning_rate}", project="HPLT_T5_NER", entity="ltg"),
 )
 
 trainer = pl.Trainer(**train_params)
 trainer.fit(model)
 print(f"Best checkpoint: {checkpoint_callback.best_model_path}")
 model = T5FineTuner.load_from_checkpoint(checkpoint_callback.best_model_path)
-test_dataset = WikiAnnDataset(tokenizer=tokenizer, dataset=dataset, type_path='test')
+test_dataset = WikiAnnDataset(tokenizer=tokenizer, dataset=dataset, type_path='test', eos=eos)
 test_loader = DataLoader(test_dataset, batch_size=32,
                              num_workers=2, shuffle=True)
 model.model.eval()

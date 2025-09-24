@@ -2,7 +2,7 @@
 from torch.utils.data import Dataset
 
 class WikiAnnDataset(Dataset):
-  def __init__(self, tokenizer, dataset, type_path, max_len=512):
+  def __init__(self, tokenizer, dataset, type_path, max_len=512, eos=' [SEP]'):
 
     self.data = dataset[type_path]
     self.max_len = max_len
@@ -11,7 +11,7 @@ class WikiAnnDataset(Dataset):
     self.tokenizer.model_max_length = max_len
     self.inputs = []
     self.targets = []
-    self.eos = ' [SEP]'
+    self.eos = eos
     self._build()
   
   def __len__(self):
