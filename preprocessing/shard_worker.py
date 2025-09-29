@@ -113,6 +113,7 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
                 for num_samples, _ in enumerate(tqdm(text_stream)):
                     continue       
         print(num_samples, flush=True)
+        docs_to_pick = min(args.docs_to_pick, num_samples)
         indices_to_pick = set(random.sample([i for i in range(num_samples + 1)], k=args.docs_to_pick))
         print(len(indices_to_pick), flush=True)
         with open(filename, "rb") as f:
@@ -120,7 +121,7 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
             with dctx.stream_reader(f) as reader:
                 text_stream = io.TextIOWrapper(reader, encoding='utf-8')
                 for i, line in enumerate(tqdm(text_stream)):
-                    if n_processed_train_documents == args.docs_to_pick:
+                    if (n_processed_train_documents == docs_to_pick) and ((not create_validation) or (n_processed_val_documents == n_validation_documents)):
                         break
                     if i in indices_to_pick:
                         line = json.loads(line)
@@ -154,7 +155,7 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
                                 continue
                             validation_file.write(json.dumps(document) + "\n")
                             n_processed_val_documents += 1
-    assert n_processed_train_documents == args.docs_to_pick 
+    assert n_processed_train_documents == docs_to_pick
     # close all shard files
     for shard_file in shard_files:
         shard_file.close()
