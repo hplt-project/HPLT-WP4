@@ -589,6 +589,7 @@ class NorT5ForConditionalGeneration(NorT5Model):
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
+        token_type_ids: Optional[torch.LongTensor] = None, # for compatibility
     ):
         use_cache = use_cache if use_cache is not None else getattr(self.config, "use_cache", False)
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
