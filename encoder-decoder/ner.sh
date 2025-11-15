@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=t5_ner
-#SBATCH --account=project_465001890
+#SBATCH --account=project_465002259
 #SBATCH --partition=small-g
 #SBATCH --gpus=1
-#SBATCH --time=4:00:00
+#SBATCH --time=5:00:00
 #SBATCH --nodes=1
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=8

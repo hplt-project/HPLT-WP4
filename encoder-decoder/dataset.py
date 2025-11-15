@@ -42,7 +42,7 @@ class SpanMaskingStrategy:
         preservation_mask = tokens < self.n_special_tokens
         mask = torch.zeros_like(tokens, dtype=torch.bool)
 
-        cycle_detection = 99
+        cycle_detection = len(self.mask_indices)
         while mask.sum() <= n_masked and cycle_detection > 0:
             span_length = torch.tensor([0]).geometric_(1/3).item()
             offset = torch.randint(-(span_length - 1), tokens.size(0) + span_length, []).item()

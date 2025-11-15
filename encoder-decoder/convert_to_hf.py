@@ -11,10 +11,11 @@ STEP_PATTERN = re.compile(r"\d+")
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465001890/hplt-2-0-output/train')
+    parser.add_argument('--input_model_directory', type=str, default='/scratch/project_465002259/hplt-3-0-t5/train')
     parser.add_argument('--output_model_directory', type=str, default='~/hplt_hf_models')
     parser.add_argument('--language', type=str, default='en')
     parser.add_argument('--all_checkpoints', action='store_true')
+    parser.add_argument('--model_directory', default="t5-base/")
     args = parser.parse_args()
     return args
 
@@ -24,10 +25,11 @@ def convert_to_hf(
         output_model_directory,
         language,
         all_checkpoints,
+        model_directory,
 ):
     checkpointing_steps = [31250]
     checkpoints_directory = os.path.join(
-        input_model_directory, f"{language}/t5/",
+        input_model_directory, language, model_directory,
     )
     if all_checkpoints:
         print(f"Files in the checkpoints_directory: {os.listdir(checkpoints_directory)}")
@@ -67,6 +69,7 @@ def main():
         args.output_model_directory,
         args.language,
         args.all_checkpoints,
+        args.model_directory,
     )
 
 

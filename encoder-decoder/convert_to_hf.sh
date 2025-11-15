@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --job-name=CONVERT
-#SBATCH --account=project_465001890
+#SBATCH --account=project_465002259
 #SBATCH --time=00:15:00
 #SBATCH --mem-per-cpu=1750
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
-#SBATCH --output=/scratch/project_465001890/hplt-2-0-output/logs/convert-%j.out
+#SBATCH --output=/scratch/project_465002259/hplt-3-0-t5/logs/convert-%j.out
 
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error

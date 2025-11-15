@@ -43,7 +43,6 @@ pip install transformers==4.46.1
 ```
 
 ```python
-import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 model_path = 'HPLT/hplt_t5_base_3_0_nob_Latn'
@@ -71,7 +70,7 @@ We are releasing 10 intermediate checkpoints for each model at intervals of ever
 
 You can load a specific model revision with `transformers` using the argument `revision`:
 ```python
-model = AutoModelForMaskedLM.from_pretrained("HPLT/hplt_t5_base_3_0_eng_Latn", revision="step21875", trust_remote_code=True)
+model = AutoModelForSeq2SeqLM.from_pretrained("HPLT/hplt_t5_base_3_0_eng_Latn", revision="step21875", trust_remote_code=True)
 ```
 
 You can access all the revisions for the models with the following code:
@@ -104,5 +103,60 @@ print([b.name for b in out.branches])
     url = "https://aclanthology.org/2023.nodalida-1.61/",
     pages = "618--633",
     abstract = "We present NorBench: a streamlined suite of NLP tasks and probes for evaluating Norwegian language models (LMs) on standardized data splits and evaluation metrics. We also introduce a range of new Norwegian language models (both encoder and encoder-decoder based). Finally, we compare and analyze their performance, along with other existing LMs, across the different benchmark tests of NorBench."
+}
+```
+
+```bibtex
+@inproceedings{burchell-etal-2025-expanded,
+    title = "An Expanded Massive Multilingual Dataset for High-Performance Language Technologies ({HPLT})",
+    author = {Burchell, Laurie  and
+      de Gibert, Ona  and
+      Arefyev, Nikolay  and
+      Aulamo, Mikko  and
+      Ba{\~n}{\'o}n, Marta  and
+      Chen, Pinzhen  and
+      Fedorova, Mariia  and
+      Guillou, Liane  and
+      Haddow, Barry  and
+      Haji{\v{c}}, Jan  and
+      Helcl, Jind{\v{r}}ich  and
+      Henriksson, Erik  and
+      Klimaszewski, Mateusz  and
+      Komulainen, Ville  and
+      Kutuzov, Andrey  and
+      Kyt{\"o}niemi, Joona  and
+      Laippala, Veronika  and
+      M{\ae}hlum, Petter  and
+      Malik, Bhavitvya  and
+      Mehryary, Farrokh  and
+      Mikhailov, Vladislav  and
+      Moghe, Nikita  and
+      Myntti, Amanda  and
+      O{'}Brien, Dayy{\'a}n  and
+      Oepen, Stephan  and
+      Pal, Proyag  and
+      Piha, Jousia  and
+      Pyysalo, Sampo  and
+      Ram{\'i}rez-S{\'a}nchez, Gema  and
+      Samuel, David  and
+      Stepachev, Pavel  and
+      Tiedemann, J{\"o}rg  and
+      Vari{\v{s}}, Du{\v{s}}an  and
+      Vojt{\v{e}}chov{\'a}, Tereza  and
+      Zaragoza-Bernabeu, Jaume},
+    editor = "Che, Wanxiang  and
+      Nabende, Joyce  and
+      Shutova, Ekaterina  and
+      Pilehvar, Mohammad Taher",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-long.854/",
+    doi = "10.18653/v1/2025.acl-long.854",
+    pages = "17452--17485",
+    ISBN = "979-8-89176-251-0",
+    abstract = "Training state-of-the-art large language models requires vast amounts of clean and diverse textual data. However, building suitable multilingual datasets remains a challenge. In this work, we present HPLT v2, a collection of high-quality multilingual monolingual and parallel corpora, extending prior work of the HPLT project. The monolingual portion of the data contains 8T tokens covering 193 languages, while the parallel data contains 380M sentence pairs covering 51 languages. We document the entire data pipeline and release the code to reproduce it. We provide extensive analysis of the quality and characteristics of our data. Finally, we evaluate the performance of language models and machine translation systems trained on HPLT v2, demonstrating its value."
 }
 ```

@@ -8,7 +8,7 @@ from tqdm import tqdm
 from datetime import timedelta
 from itertools import count
 from socket import gethostname
-from statistics import mean
+from statistics import mean, median
 from tokenizers import Tokenizer
 
 import torch
@@ -32,7 +32,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Required parameters
-    parser.add_argument("--input_dir", default="/scratch/project_465001890/hplt-3-0-output/", type=str, help="The input data dir.")
+    parser.add_argument("--input_dir", default="/scratch/project_465002259/hplt-3-0-t5/", type=str, help="The input data dir.")
     parser.add_argument("--name", default="t-5-base", type=str)
     parser.add_argument("--config_file", default="configs/base.json", type=str, help="The BERT model config")
     parser.add_argument("--output_dir", default="t5-base/", type=str, help="The output directory where the model checkpoints will be written.")
@@ -43,7 +43,7 @@ def parse_arguments():
     parser.add_argument("--seq_length", default=512, type=int, help="The maximum total input sequence length after WordPiece tokenization. Sequences longer than this will be truncated, and sequences shorter than this will be padded.")
     parser.add_argument("--validate_every", default=1, type=int, help="Run validation after every X training shards.")
     parser.add_argument("--batch_size", default=32, type=int, help="Total batch size for training per GPUs and per grad accumulation step.")
-    parser.add_argument("--learning_rate", default=2e-3, type=float, help="The initial learning rate for Adam.")
+    parser.add_argument("--learning_rate", default=2e-3, type=float, help="The initial learning rate.")
     parser.add_argument("--max_steps", default=250000, type=int, help="Total number of training steps to perform.")
     parser.add_argument("--warmup_proportion", default=0.004, type=float, help="Proportion of training to perform linear learning rate warmup for. E.g., 0.1 = 10%% of training.")
     parser.add_argument('--seed', type=int, default=42, help="random seed for initialization")
@@ -311,6 +311,7 @@ def validation_epoch(model, valid_dataloader, epoch, args, device, global_step):
             {
                 "epoch": epoch,
                 "validation/loss": mean(losses),
+                "validation/perplexity_median": median(perplexities),
                 "validation/accuracy": mean(accuracies) * 100.0,
                 "validation/perplexity": mean(perplexities)
             },
@@ -395,7 +396,7 @@ if __name__ == "__main__":
     args.output_dir = os.path.join(args.input_dir, args.language, args.output_dir)
     os.system(f"mkdir -p {args.output_dir}")
     args.input_dir = os.path.join(args.input_dir, args.language, 'tokenized_shards/')
-    print(args.tokenizer_path, flush=True)
+    
     if args.checkpoint_path is not None:
         checkpoint = torch.load(args.checkpoint_path, map_location="cpu")
         checkpoint_args, initial_epoch, global_step = checkpoint["args"], checkpoint["epoch"] + 1, checkpoint["global_step"]
@@ -405,7 +406,6 @@ if __name__ == "__main__":
     else:
         checkpoint, initial_epoch, global_step = None, 0, 0
         args.wandb_id = wandb.util.generate_id() if int(os.environ["SLURM_PROCID"]) == 0 else 0
-    
     tokenizer = Tokenizer.from_file(args.tokenizer_path)
     device, local_rank = setup_training(args)
     model, config, optimizer, scheduler, grad_scaler = prepare_model_and_optimizer(args, device, local_rank, checkpoint, tokenizer)

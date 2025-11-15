@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=HPLT_T5
-#SBATCH --account=project_465001890
-#SBATCH --time=36:00:00
+#SBATCH --account=project_465002259
+#SBATCH --time=40:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=16
@@ -28,7 +28,7 @@ module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singulari
 export NCCL_SOCKET_IFNAME=hsn
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OPENBLAS_VERBOSE=2
-
+export FI_MR_CACHE_MONITOR=userfaultfd
 
 
 ##### Number of total processes 
