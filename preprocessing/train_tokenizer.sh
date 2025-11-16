@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --account=project_465001890
-#SBATCH --time=72:00:00
+#SBATCH --account=project_465002259
+#SBATCH --time=12:00:00
 #SBATCH --mem-per-cpu=7G
 #SBATCH --cpus-per-task=7
 #SBATCH --nodes=1

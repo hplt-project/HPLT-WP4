@@ -41,7 +41,7 @@ if __name__ == "__main__":
     args = parse_args()
 
     # start a timer for 71 hours; if the timer runs out, the job will stop and the tokenized files will be saved
-    timer = Timer(8 * 60 * 60)
+    timer = Timer(16 * 60 * 60)
 
     # load the tokenizer
     tokenizer = Tokenizer.from_file(args.tokenizer_path)

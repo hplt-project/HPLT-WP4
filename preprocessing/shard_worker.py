@@ -84,7 +84,7 @@ def shard(input_files, output_dir, shards, create_validation=False, sample_power
         print(f"Rejected {n_rejected_documents} documents ({n_rejected_documents / (n_processed_documents + n_rejected_documents) * 100.0:.2f}%)", flush=True)
 
 
-def shard_sample(input_files, output_dir, shards, args, create_validation=False, sample_power=0.0):
+def shard_sample(input_files, output_dir, shards, args, create_validation=False):
 
     random.seed(42)
 
@@ -98,12 +98,11 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
         validation_file = gzip.open(os.path.join(output_dir, "validation.jsonl.gz"), "wt")
 
     n_validation_documents = 10_000
-    n_processed_train_documents = 0
     n_processed_val_documents = 0
-    n_rejected_documents = 0
 
     # iterate through all input files
     for filename in input_files:
+        n_processed_train_documents = 0
         # open/decompress every .json.zst file
         dctx = zstd.ZstdDecompressor()     
         with open(filename, "rb") as f:
@@ -130,16 +129,6 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
                             indices_to_pick.add(random.choice([j for j in range(i + 1, num_samples + 1) if j not in indices_to_pick]))
                             continue
 
-                        if sample_power > 0.0:
-                            scores = line["scores"]
-                            scores = [float(score) for score in scores]
-                            mean_score = mean(scores)
-
-                            if random.random() > math.pow(mean_score + 0.2, sample_power):
-                                n_rejected_documents += 1
-                                indices_to_pick.add(random.choice([j for j in range(i + 1, num_samples + 1) if j not in indices_to_pick]))
-                                continue
-
                         if n_processed_train_documents == 0:
                             print(f"\nFirst document: {document}\n\n", flush=True)
                         shard_file = shard_files[n_processed_train_documents % len(shard_files)]
@@ -155,15 +144,12 @@ def shard_sample(input_files, output_dir, shards, args, create_validation=False,
                                 continue
                             validation_file.write(json.dumps(document) + "\n")
                             n_processed_val_documents += 1
-    assert n_processed_train_documents == docs_to_pick
+        assert n_processed_train_documents == docs_to_pick
     # close all shard files
     for shard_file in shard_files:
         shard_file.close()
     if create_validation:
         validation_file.close()
-
-    if sample_power > 0.0:
-        print(f"Rejected {n_rejected_documents} train documents ({n_rejected_documents / (n_processed_train_documents + n_rejected_documents) * 100.0:.2f}%)", flush=True)
 
  
 if __name__ == "__main__":
@@ -173,6 +159,6 @@ if __name__ == "__main__":
     args.shards = [int(shard) for shard in args.shards.split(",")]
 
     if args.docs_to_pick:
-        shard_sample(args.input_files, args.output_dir, args.shards, args, args.create_validation, args.sample_power)
+        shard_sample(args.input_files, args.output_dir, args.shards, args, args.create_validation)
     else:
         shard(args.input_files, args.output_dir, args.shards, args.create_validation, args.sample_power)

@@ -1,12 +1,11 @@
 #!/bin/bash
 
-#SBATCH --account=project_465001890
-#SBATCH --time=12:00:00
+#SBATCH --account=project_465002259
+#SBATCH --time=20:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=128
-#SBATCH --partition=standard
-
+#SBATCH --partition=small
+#SBATCH --mem-per-cpu=7G
 
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error
@@ -26,7 +25,7 @@ TOKENIZER_PATH=${3}
 OTHER_ARGS=${@:4}
 
 export WORLD_SIZE=$SLURM_NTASKS
-echo "Node name${SLURMD_NODENAME}"
+echo "Node name ${SLURMD_NODENAME}"
 echo "Node list ${SLURM_NODELIST}"
 echo "Kernel version"
 uname -a

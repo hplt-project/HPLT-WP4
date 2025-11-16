@@ -6,6 +6,7 @@ import argparse
 import re
 from collections import Counter
 from gzip import BadGzipFile
+import sys
 from zlib import error
 
 from tokenizers.models import WordPiece
@@ -39,6 +40,7 @@ def parse_args():
                         help='Use Burmese pre-tokenization')
     parser.add_argument('--do_chinese_pretokenization', action='store_true',
                         help='Use Chinese pre-tokenization')
+    parser.add_argument('--do_tamil_pretokenization', action='store_true')
     args = parser.parse_args()
 
     return args
@@ -186,7 +188,7 @@ if __name__ == "__main__":
                                         tagger.tokenize(text)]
         elif args.do_thai_pretokenization:
             from pythainlp.tokenize import word_tokenize
-            pretokenize = lambda text: word_tokenize(text, engine="nlpo3",
+            pretokenize = lambda text: word_tokenize(text, engine="nlpo3", # nlpo3-1.3.1
                                                      keep_whitespace=False)
         elif args.do_burmese_pretokenization:
             import pyidaungsu as pds
@@ -195,7 +197,12 @@ if __name__ == "__main__":
             from jieba import cut
             print("Chinese pretokenization")
             pretokenize = lambda text: cut(text, cut_all=False)
-
+        elif args.do_tamil_pretokenization:
+            # stanza-1.10.1 tomli-2.2.1
+            import stanza
+            stanza.download('ta')
+            nlp = stanza.Pipeline(lang='ta', processors='tokenize')
+            pretokenize = lambda text: [tok.text for sentence in nlp(text).sentences for tok in sentence.tokens]
         for filename in sorted(os.listdir(dir_path)):
             print(f"Files left: {num_sampled_files} at {time.strftime('%Y-%m-%d %H:%M')}", flush=True)
             if (num_sampled_files <= 0) or (not timer.has_time_remaining()):
@@ -205,6 +212,7 @@ if __name__ == "__main__":
                 continue
 
             training_filename = os.path.join(dir_path, filename)
+            print(training_filename, flush=True)
             try:
                 for line in open(training_filename, "rt"):
                     text = json.loads(line)
@@ -213,7 +221,12 @@ if __name__ == "__main__":
                     if len(text) == 0:
                         continue
 
-                    if not args.do_japanese_pretokenization and not args.do_korean_pretokenization and not args.do_thai_pretokenization and not args.do_burmese_pretokenization and not args.do_chinese_pretokenization:
+                    if not args.do_japanese_pretokenization \
+                        and not args.do_korean_pretokenization \
+                        and not args.do_thai_pretokenization \
+                        and not args.do_burmese_pretokenization \
+                        and not args.do_chinese_pretokenization \
+                        and not args.do_tamil_pretokenization:
                         yield text
                     else:
                         for i, paragraph in enumerate(text.split('\n')):
@@ -225,11 +238,9 @@ if __name__ == "__main__":
                                 else:
                                     prefix = ''
 
-                                try:
-                                    for word in pretokenize(segment):
-                                        yield f"{prefix}{word}"
-                                except:
-                                    continue
+                                for word in pretokenize(segment):
+                                    yield f"{prefix}{word}"
+
             except (BadGzipFile, error) as e:
                 print(f"{e} on {training_filename}, skipping")
                 continue
@@ -240,7 +251,7 @@ if __name__ == "__main__":
         iterator(args.input_dir, args.num_sampled_files, args),
         trainer
     )
-
+    print(f"Tokenizer size {sys.getsizeof(tokenizer) / (1024 * 1024)}", flush=True)
     print("Saving the tokenizer", flush=True)
     tokenizer.save(f"{args.output_dir}/tokenizer.json")
 
