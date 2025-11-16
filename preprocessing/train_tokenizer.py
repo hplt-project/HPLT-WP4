@@ -40,7 +40,6 @@ def parse_args():
                         help='Use Burmese pre-tokenization')
     parser.add_argument('--do_chinese_pretokenization', action='store_true',
                         help='Use Chinese pre-tokenization')
-    parser.add_argument('--do_tamil_pretokenization', action='store_true')
     args = parser.parse_args()
 
     return args
@@ -197,12 +196,6 @@ if __name__ == "__main__":
             from jieba import cut
             print("Chinese pretokenization")
             pretokenize = lambda text: cut(text, cut_all=False)
-        elif args.do_tamil_pretokenization:
-            # stanza-1.10.1 tomli-2.2.1
-            import stanza
-            stanza.download('ta')
-            nlp = stanza.Pipeline(lang='ta', processors='tokenize')
-            pretokenize = lambda text: [tok.text for sentence in nlp(text).sentences for tok in sentence.tokens]
         for filename in sorted(os.listdir(dir_path)):
             print(f"Files left: {num_sampled_files} at {time.strftime('%Y-%m-%d %H:%M')}", flush=True)
             if (num_sampled_files <= 0) or (not timer.has_time_remaining()):
