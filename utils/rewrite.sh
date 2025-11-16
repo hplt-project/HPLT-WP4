@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --account=project_465001890
-#SBATCH --time=5:00:00
-#SBATCH --mem-per-cpu=7G
+#SBATCH --account=project_465002259
+#SBATCH --time=20:00:00
+#SBATCH --mem-per-cpu=14G
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -20,4 +20,4 @@ module --quiet purge
 module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
 
 # run the script
-srun singularity exec $SIF python3 rewrite_to_equal_files.py
+srun singularity exec $SIF python3 rewrite_to_equal_files.py ${@}

@@ -1,19 +1,18 @@
 #!/bin/bash
 
 #SBATCH --job-name=SCHEDULER
-#SBATCH --account=project_465001890
+#SBATCH --account=project_465002259
 #SBATCH --time=01:00:00
 #SBATCH --mem-per-cpu=1750
-#SBATCH --cpus-per-task=7
+#SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=small
-#SBATCH --output=/scratch/project_465001890/hplt-2-0-output/logs/schedule-%j.out # has no effect?
-
+#SBATCH --output=/scratch/project_465002259/hplt-3-0-t5/logs/schedule-%j.out
 
 if [ -z $SLURM_JOB_ID ]; then
-    mkdir -p /scratch/project_465001890/hplt-2-0-output/logs
-    sbatch --job-name "${1}-SCHEDULE" --output "/scratch/project_465001890/hplt-2-0-output/logs/${1}-schedule-%j.out" "$0" "$@"
+    mkdir -p /scratch/project_465002259/hplt-3-0-t5/logs
+    sbatch --job-name "${1}-SCHEDULE" --output "/scratch/project_465002259/hplt-3-0-t5/logs/${1}-schedule-%j.out" "$0" "$@"
     exit
 fi
 
