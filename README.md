@@ -114,6 +114,12 @@ sbatch rewrite.sh --lang nld_Latn
 cp /scratch/project_465002259/hplt-3-0-t5/nld_Latn/tokenized_neq_shards/validation.pt.gz /scratch/project_465002259/hplt-3-0-t5/nld_Latn/tokenized_shards/validation.pt.gz
 ```
 
+### After training
+
+Instructions for conversion into HuggingFace format are in [encoder-decoder/README.md](encoder-decoder/README.md). 
+
+Instructions for uploading to HuggingFace and HuggingFace troubleshooting are in [utils/README.md](utils/README.md).
+
 ## Cite
 
 ### HPLT 3.0 paper

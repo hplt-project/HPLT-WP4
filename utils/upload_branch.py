@@ -9,7 +9,7 @@ from huggingface_hub.errors import HfHubHTTPError
 api = HfApi()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--path', default="/scratch/project_465002259/hplt-3-0-output/hf_models/")
+parser.add_argument('--path', default="/scratch/project_465002259/hplt-3-0-t5/hf_models/")
 args = parser.parse_args()
 
 for folder in glob(args.path + 'mlt_*'):

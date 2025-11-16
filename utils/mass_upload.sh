@@ -1,6 +1,6 @@
 #! /bin/bash
 
-for path in /scratch/project_465002259/hplt-3-0-output/hf_models/*_31250
+for path in /scratch/project_465002259/hplt-3-0-t5/hf_models/*_31250
 do
     echo ${path}
     lang=$(awk -v var="$path" 'BEGIN { print substr(var,length(var)-13, 8) }')
