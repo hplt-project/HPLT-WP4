@@ -25,3 +25,9 @@ Beware of hardcoded path and there are not all our language codes there
 Run many `google/mt5-base` models
 
 `eval_many_mt5.sh`
+
+Test Norwegian preprocessing function (note, that spaces were added only in `eval_model.py`):
+
+```commandline
+pytest norsk_test.py
+```
