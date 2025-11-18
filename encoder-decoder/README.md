@@ -19,6 +19,12 @@ sbatch convert_to_hf.sh /scratch/project_465002259/hplt-3-0-t5/ /scratch/project
 
 ### How to run fine-tuning on WikiAnn NER
 
+```
+module load LUMI PyTorch/2.2.2-rocm-5.6.1-python-3.10-vllm-0.4.0.post1-singularity-20240617
+singularity shell $SIF
+pip install -r requirements.txt
+```
+
 Our models:
 
 ```

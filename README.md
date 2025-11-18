@@ -116,9 +116,11 @@ cp /scratch/project_465002259/hplt-3-0-t5/nld_Latn/tokenized_neq_shards/validati
 
 ### After training
 
-Instructions for conversion into HuggingFace format are in [encoder-decoder/README.md](encoder-decoder/README.md). 
+Instructions for conversion into HuggingFace format and evaluating on WikiAnn are in [encoder-decoder/README.md](encoder-decoder/README.md). 
 
 Instructions for uploading to HuggingFace and HuggingFace troubleshooting are in [utils/README.md](utils/README.md).
+
+Running T5 evaluation on MultiBLIMP [evaluation/multiblimp/README.md](evaluation/multiblimp/README.md)
 
 ## Cite
 

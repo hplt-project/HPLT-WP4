@@ -1,0 +1,2 @@
+minicons==0.3.32
+swifter==1.4.0
