@@ -16,6 +16,9 @@ class ShardScheduler:
                         filename.endswith(".jsonl.zst") and (filename.startswith("10_") or filename.startswith("9_"))]
         else:
             self.filenames = glob(os.path.join(self.input_dir, "*.jsonl.zst"))
+            print(self.input_dir)
+            print(os.listdir(self.input_dir))
+            print(self.filenames)
         if not args.n_training_documents:
             total_size = self._count_total_size()
             self.number_of_shards = 2 ** max(
@@ -37,14 +40,14 @@ class ShardScheduler:
         self.language = args.language
         self.current_input_files = []
         self.has_scheduled_validation = False
-        self.logs_dir = "/scratch/project_465002259/hplt-3-0-t5/logs/"
+        self.output_dir = args.output_dir
+        self.logs_dir = os.path.join(self.output_dir, "logs/")
         self.sample_power = args.sample_power
         self.n_training_documents = args.n_training_documents
         self.filenames.sort(key=os.path.getsize, reverse=True) # ensure enough validation docs in the 1st
         self.filenames_not_first = self.filenames[1:]
         self.filenames_not_first.reverse()
         self.filenames = [self.filenames[0]] + self.filenames_not_first # escape the situation of too large first batch
-        self.output_dir = args.output_dir
         
 
     def _count_total_size(self):

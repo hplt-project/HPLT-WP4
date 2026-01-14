@@ -45,7 +45,7 @@ For any training, don't forget to make sure that the tokenized shards are all of
 ```
 sbatch schedule.sh \
     nno_Latn \
-    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted/nno_Latn \
+    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted \
     <output directory> \
     512 \
     0.0 \
@@ -57,8 +57,8 @@ sbatch schedule.sh \
 ```
 sbatch schedule.sh \
     nno_Latn \
-    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted/nno_Latn \
-    /scratch/project_465002259/hplt-3-0-t5/nno_Latn \
+    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted \
+    /scratch/project_465002259/hplt-3-0-t5 \
     512 \
     0.0
 ```
@@ -76,8 +76,8 @@ This sampling is done by the command
 ```
 sbatch schedule.sh \
     nld_Latn \
-    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted/nld_Latn \
-    /scratch/project_465002259/hplt-3-0-t5/nld_Latn \
+    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted \
+    /scratch/project_465002259/hplt-3-0-t5 \
     512 \
     0.0 \
     --n_training_documents 20000000
@@ -92,8 +92,8 @@ For languages like English and Russian, if sharding "as is", we might submit mor
 ```
 sbatch schedule.sh \
     eng_Latn \
-    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted/eng_Latn \
-    /scratch/project_465002259/hplt-3-0-t5/eng_Latn \
+    /appl/local/openeurollm/training/catalogue/hplt/3.0/sorted \
+    /scratch/project_465002259/hplt-3-0-t5 \
     512 \
     0.0 \
     --n_training_documents 20000000 \
