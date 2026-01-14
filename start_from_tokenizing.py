@@ -11,19 +11,23 @@ import subprocess
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--language', type=str, required=True, default="itaL")
-    parser.add_argument('--output_dir', type=str, default="/scratch/project_465002259/hplt-3-0-t5/")
+    parser.add_argument('--output_dir', type=str, default="/cluster/work/projects/nn9851k/mariiaf/hplt/")
     parser.add_argument('--tokenize_train', action='store_true')
     parser.add_argument('--run_training', action='store_true')
+    parser.add_argument('--olivia', action='store_true')
     return parser.parse_args()
 
 
-def schedule(language, output_dir):
+def schedule(language, output_dir, args):
     output_dir = os.path.join(output_dir, language)
     shard_dir = os.path.join(output_dir, "text_shards")
     # schedule shard tokenization, batch together ntasks jobs
     tokenized_shard_dir = os.path.join(output_dir, "tokenized_shards")
     os.makedirs(tokenized_shard_dir, exist_ok=True)
     tokenization_job_ids = [] # MaxSubmit on standard is 120, see sacctmgr list user $USER withassocq
+    script = "tokenize_shards"
+    if args.olivia:
+        script = "tokenize_shards_olivia"
     if args.tokenize_train:
         shard_files = os.listdir(shard_dir)
         number_of_shards = len(shard_files)
@@ -48,7 +52,7 @@ def schedule(language, output_dir):
             input_shard_files = ",".join(input_shard_files)
             output_shard_files = ",".join(output_shard_files)
             tokenizer_path = os.path.join(output_dir, "tokenizer.json")
-            command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node={n_files_in_batch} --chdir preprocessing --output /scratch/project_465002259/hplt-3-0-t5/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards.sh {input_shard_files} {output_shard_files} {tokenizer_path}"
+            command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node={n_files_in_batch} --chdir preprocessing --output /cluster/work/projects/nn9851k/mariiaf/hplt/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards_olivia.sh {input_shard_files} {output_shard_files} {tokenizer_path}"
             bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
             print(bash_output)
             tokenization_job_ids.append(bash_output.split()[-1])
@@ -60,7 +64,7 @@ def schedule(language, output_dir):
     output_shard_file = os.path.join(tokenized_shard_dir, "validation.pt.gz")
     if not os.path.exists(output_shard_file):
         tokenizer_path = os.path.join(output_dir, "tokenizer.json")
-        command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node=1 --chdir preprocessing --output /scratch/project_465002259/hplt-3-0-t5/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards.sh {input_shard_file} {output_shard_file} {tokenizer_path}"
+        command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node=1 --chdir preprocessing --output /cluster/work/projects/nn9851k/mariiaf/hplt/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards_olivia.sh {input_shard_file} {output_shard_file} {tokenizer_path}"
         bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
         print(bash_output, flush=True)
         tokenization_job_ids.append(bash_output.split()[-1])
@@ -68,7 +72,7 @@ def schedule(language, output_dir):
     if args.run_training:
         # schedule BERT training
         print(f"Scheduling BERT training", flush=True)
-        command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output /scratch/project_465002259/hplt-3-0-t5/logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
+        command = f"sbatch --job-name {language}-BERT --chdir encoder-only --output /cluster/work/projects/nn9851k/mariiaf/hplt/logs/{language}-bert-%j.out --dependency=afterok:{':'.join(tokenization_job_ids)} encoder-only/train.sh {language} {output_dir}"
         bash_output = subprocess.check_output(command, shell=True)
         print(bash_output.decode("utf-8"), flush=True)
 
@@ -76,4 +80,4 @@ def schedule(language, output_dir):
 if __name__ == "__main__":
     args = parse_args()
     print(args)
-    schedule(args.language, args.output_dir)
+    schedule(args.language, args.output_dir, args)
