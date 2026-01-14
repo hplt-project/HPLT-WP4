@@ -2,14 +2,15 @@
 # the input directory is the directory containing N sharded jsonl files
 # the output directory is the directory where the each file is tokenized
 
-from tokenizers import Tokenizer
+import argparse
+import gzip
 import json
 import os
-import argparse
 import re
-from smart_open import open
+
 import torch
-import gzip
+from smart_open import open
+from tokenizers import Tokenizer
 from tqdm import tqdm
 
 from timer import Timer

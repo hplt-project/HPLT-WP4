@@ -1,13 +1,14 @@
 import argparse
-import os
-import io
 import gzip
-import zstandard as zstd
-import math
+import io
 import json
-from tqdm import tqdm
+import math
+import os
 import random
 from statistics import mean
+
+import zstandard as zstd
+from tqdm import tqdm
 
 
 def parse_args():
