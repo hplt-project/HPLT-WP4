@@ -36,6 +36,7 @@ def parse_args():
     parser.add_argument('--run_training', action='store_true')
     parser.add_argument('--run_sharding_only', action='store_true')
     parser.add_argument('--max_n_jobs', default=79)
+    parser.add_argument('--olivia', action='store_true')
     return parser.parse_args()
 
 
