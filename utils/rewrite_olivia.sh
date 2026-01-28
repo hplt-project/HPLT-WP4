@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --account=nn10029k
-#SBATCH --time=20:00:00
-#SBATCH --mem-per-cpu=14G
+#SBATCH --time=10:00:00
+#SBATCH --mem-per-cpu=25G
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
