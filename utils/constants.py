@@ -123,6 +123,8 @@ LANGS_MAPPING_IETF = { # https://en.wikipedia.org/wiki/IETF_language_tag
     "sweL": "sv",
     "swhL": "sw",
     "tatC": "tt",
+    "tamT": "ta",
+    "thaT": "th",
     "turL": "tr",
     "ukrC": "uk",
     "vieL": "vi",
