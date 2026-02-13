@@ -11,6 +11,7 @@ from constants import LANGS_MAPPING_IETF
 api = HfApi()
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', default="/scratch/project_465002259/hplt-3-0-t5/hf_models/")
+parser.add_argument('--model', default="HPLT/hplt_gpt_bert_base_3_0_")
 args = parser.parse_args()
 
 for folder in glob(args.path + '*'):
@@ -20,9 +21,12 @@ for folder in glob(args.path + '*'):
         print(el)
         langcode, script, _ = el.split("_") # als, Latn
         lg = Lang(langcode)
-
-        with open("../encoder-decoder/huggingface_prototype/README.md", 'r') as file:
-            contents = file.read()
+        try:
+            with open(f"{folder}/README.md", 'r') as file:
+                contents = file.read()
+        except FileNotFoundError:
+            print(f"README in {folder} not found", flush=True)
+            continue
         # Replace the word
         name = lg.name
         if lg.other_names():
@@ -44,7 +48,7 @@ for folder in glob(args.path + '*'):
             api.upload_file(
                 path_or_fileobj=out,
                 path_in_repo="README.md",
-                repo_id=f"HPLT/hplt_t5_base_3_0_{langcode}_{script}",
+                repo_id=f"{args.model}{langcode}_{script}",
                 repo_type="model",
                 commit_message=f"Updating README",
             )
