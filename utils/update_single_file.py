@@ -1,5 +1,5 @@
 import argparse
-from huggingface_hub import HfApi
+from huggingface_hub import HfApi, get_collection
 
 
 def update_repo(args):
@@ -27,7 +27,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('main_path')
     parser.add_argument('--repo', default="HPLT/hplt_gpt_bert_base_3_0_deu_Latn")
+    parser.add_argument('--collection_slug', default="")
     parser.add_argument('--path_in_repo', default="config.json")
     parser.add_argument('--msg', default="Prettify config")
     args = parser.parse_args()
-    update_repo(args)
+
+    if args.collection_slug:
+        collection = get_collection(args.collection_slug)
+        for item in collection.items:
+            print(item)
+            if item.item_type == 'model':
+                args.repo = item.item_id
+                update_repo(args)
+    else:
+        update_repo(args)
