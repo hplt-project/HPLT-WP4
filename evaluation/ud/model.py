@@ -183,7 +183,10 @@ class Model(nn.Module):
         super().__init__()
 
         self.bert = AutoModel.from_pretrained(args.model_path, trust_remote_code=True)
-        self.n_layers = self.bert.config.num_hidden_layers
+        try:
+            self.n_layers = self.bert.config.num_hidden_layers
+        except AttributeError:
+            self.n_layers = self.bert.config.num_layers
         args.hidden_size = self.bert.config.hidden_size
 
         self.dropout = nn.Dropout(args.dropout)

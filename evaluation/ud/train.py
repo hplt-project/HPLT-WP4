@@ -82,7 +82,10 @@ class CollateFunctor:
 
 def load_data(args, tokenizer):
     language_treebank_mapping = json.load(open(f"language_treebank_mapping_{args.version}.json", "r"))
-    treebank = language_treebank_mapping.get(args.language.split('_')[0])
+    if args.version == '2_0':
+        treebank = language_treebank_mapping.get(args.language.split('_')[0])
+    else:
+        treebank = language_treebank_mapping.get(args.language)
     if treebank is None:
         raise ValueError(f"Treebank not found for {args.language}")
     treebank_path = os.path.join(os.path.expanduser(args.treebank_path), treebank)
@@ -128,7 +131,7 @@ def main():
     parser.add_argument("--ema_decay", action="store", type=float, default=0.995)
     parser.add_argument("--log_wandb", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--treebank_path", default="/scratch/project_465001890/ud-treebanks-v2.13/") # 2.15 for Albanian, Georgian!
-    parser.add_argument("--version", type=str, default="2_0", choices=('2_0', '1_2')) # model trained on data of version
+    parser.add_argument("--version", type=str, default="3_0", choices=('3_0', '2_0', '1_2')) # model trained on data of version
     parser.add_argument('--models_path', default='/scratch/project_465001890/hplt-2-0-output/hplt_hf_models/')
     parser.add_argument("--results_path", default="/scratch/project_465001890/hplt-2-0-output/results/")
     parser.add_argument("--checkpoints_path", default="/scratch/project_465001890/hplt-2-0-output/checkpoints/")
@@ -144,7 +147,11 @@ def main():
         args.epochs = 60
 
     if args.model == "hplt":
-        if args.version == '1_2':
+        if args.version == '3_0':
+            args.model_path = os.path.join(
+                args.models_path, f"{args.language}_31250",
+            )
+        elif args.version == '1_2':
             args.model_path = os.path.join(
                 args.models_path, f"hplt_bert_base_{args.language}",
             )
