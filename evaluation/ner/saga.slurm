@@ -7,11 +7,11 @@
 #SBATCH --account=nn9851k
 #
 # Wall time limit:
-#SBATCH --time=3:00:00
+#SBATCH --time=5:00:00
 #SBATCH --partition=a100
 #SBATCH --gpus=1
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=16G
+#SBATCH --mem=0
 #SBATCH --cpus-per-task=2
 
 set -o errexit  # Exit the script on any error
