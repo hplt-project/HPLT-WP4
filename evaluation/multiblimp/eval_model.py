@@ -3,10 +3,11 @@ import argparse
 import sys
 import os
 
+import torch.cuda
 from datasets import load_dataset
 from huggingface_hub import hf_hub_download
 
-from load_model import load_hf_model
+from load_model import load_hf_model, DECODER, ENCODER_DECODER, ENCODER
 from norsk import score_norsk
 from score import score_tse
 
@@ -48,14 +49,21 @@ if __name__ == "__main__":
             hf_token = f.read().strip()
     else:
         hf_token = args.hf_token
-    is_encoder = bool(args.mask_1)
+
+    arch = DECODER
+    if args.mask_1:
+        if not args.mask_2:
+            arch = ENCODER
+        else:
+            arch = ENCODER_DECODER
+
     lm = load_hf_model(
         args.model_name,
         no_cache=False,
-        is_encoder=is_encoder,
+        arch=arch,
         token=hf_token, 
         cache_dir=os.path.expanduser(args.cache_dir),
-        device_map=0,
+        device_map=0 if torch.cuda.is_available() else "cpu",
     )
     print("Model loaded")
     if not args.data_filename[:3] == 'nob':
@@ -64,7 +72,7 @@ if __name__ == "__main__":
         pair_files = [data]
     for fn in sorted(pair_files):
         if isinstance(fn, str):
-            df = score_tse(lm, fn=fn, is_encoder=is_encoder, mask_1=args.mask_1, mask_2=args.mask_2)
+            df = score_tse(lm, fn=fn, arch=arch, mask_1=args.mask_1, mask_2=args.mask_2)
             results_dir = (
                 os.path.join("model_results", os.path.split(args.model_name)[-1])
                 if args.results_dir is None

@@ -1,8 +1,7 @@
 import tempfile
 from typing import *
 
-import torch
-from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM, AutoModelForMaskedLM, AutoTokenizer
 from minicons import scorer
 
 
@@ -27,30 +26,41 @@ SIZES = [
     "100mb",
     "1000mb",
 ]
+DECODER = "decoder-only"
+ENCODER = "encoder-only"
+ENCODER_DECODER = "encoder-decoder"
 
 
-def load_hf_model(model_name: str, no_cache=False, is_encoder=False, **kwargs):
+def load_hf_model(model_name: str, no_cache=False, arch=DECODER, **kwargs):
     model = None
     tokenizer = None
 
     if no_cache:
         with tempfile.TemporaryDirectory() as tmpdirname:
-            if not is_encoder:
+            if arch == DECODER:
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name, cache_dir=tmpdirname, **kwargs
                 )
-            else:
+            elif arch == ENCODER_DECODER:
                 model = AutoModelForSeq2SeqLM.from_pretrained(
+                    model_name, cache_dir=tmpdirname, trust_remote_code=True, **kwargs,
+                )
+            elif arch == ENCODER:
+                model = AutoModelForMaskedLM.from_pretrained(
                     model_name, cache_dir=tmpdirname, trust_remote_code=True, **kwargs,
                 )
             tokenizer = AutoTokenizer.from_pretrained(
                 model_name, cache_dir=tmpdirname, **kwargs
             )
     else:
-        if not is_encoder:
+        if arch == DECODER:
             model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
-        else:
+        elif arch == ENCODER_DECODER:
             model = AutoModelForSeq2SeqLM.from_pretrained(
+                model_name, trust_remote_code=True, **kwargs,
+            )
+        elif arch == ENCODER:
+            model = AutoModelForMaskedLM.from_pretrained(
                 model_name, trust_remote_code=True, **kwargs,
             )
         tokenizer = AutoTokenizer.from_pretrained(model_name, **kwargs)
@@ -61,13 +71,14 @@ def load_hf_model(model_name: str, no_cache=False, is_encoder=False, **kwargs):
     if model is None:
         print("Model is None")
         return None
-    if not is_encoder:
-        ilm_model = scorer.IncrementalLMScorer(
+    if arch == DECODER:
+        scorer_model = scorer.IncrementalLMScorer(
             model,
             "cuda",
             tokenizer=tokenizer,
         )
-    else:
-        ilm_model = scorer.Seq2SeqScorer(model, tokenizer=tokenizer, device="cuda")
-
-    return ilm_model
+    elif arch == ENCODER_DECODER:
+        scorer_model = scorer.Seq2SeqScorer(model, tokenizer=tokenizer, device="cuda")
+    elif arch == ENCODER:
+        scorer_model = scorer.MaskedLMScorer(model, tokenizer=tokenizer)
+    return scorer_model
