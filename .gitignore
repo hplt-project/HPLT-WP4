@@ -12,8 +12,6 @@ bert-*.err
 */workdir/*
 */wandb/*
 
-*.out
-
 
 # C extensions
 *.so
