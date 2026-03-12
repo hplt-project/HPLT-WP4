@@ -1,0 +1,97 @@
+Starting job 235182 on gpu-1-75 on Olivia at Thu Mar 12 00:39:33 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-75
+SLURM_JOB_ID: 235182
+SLURM_NODELIST: gpu-1-75
+SLURM_NTASKS: 1
+--model_name FacebookAI/xlm-roberta-base --data_filename cym/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='FacebookAI/xlm-roberta-base', data_filename='cym/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/cym
+Model loaded
+(1120, 38)
+Pandas Apply:   0%|          | 0/1120 [00:00<?, ?it/s]Pandas Apply:   1%|          | 8/1120 [00:00<00:15, 70.58it/s]Pandas Apply:   1%|▏         | 16/1120 [00:00<00:24, 44.48it/s]Pandas Apply:   2%|▏         | 21/1120 [00:00<00:23, 45.97it/s]Pandas Apply:   2%|▏         | 26/1120 [00:00<00:32, 33.54it/s]Pandas Apply:   3%|▎         | 32/1120 [00:00<00:28, 38.05it/s]Pandas Apply:   3%|▎         | 39/1120 [00:01<00:30, 35.51it/s]Pandas Apply:   4%|▍         | 47/1120 [00:01<00:24, 43.32it/s]Pandas Apply:   5%|▍         | 53/1120 [00:01<00:24, 44.15it/s]Pandas Apply:   5%|▌         | 59/1120 [00:01<00:23, 45.82it/s]Pandas Apply:   6%|▌         | 64/1120 [00:01<00:22, 46.71it/s]Pandas Apply:   6%|▌         | 69/1120 [00:01<00:22, 47.13it/s]Pandas Apply:   7%|▋         | 74/1120 [00:01<00:22, 46.89it/s]Pandas Apply:   7%|▋         | 79/1120 [00:01<00:26, 38.86it/s]Pandas Apply:   8%|▊         | 84/1120 [00:01<00:25, 40.48it/s]Pandas Apply:   8%|▊         | 90/1120 [00:02<00:22, 45.24it/s]Pandas Apply:   8%|▊         | 95/1120 [00:02<00:25, 40.05it/s]Pandas Apply:   9%|▉         | 101/1120 [00:02<00:23, 43.39it/s]Pandas Apply:  10%|▉         | 107/1120 [00:02<00:21, 47.44it/s]Pandas Apply:  10%|█         | 114/1120 [00:02<00:19, 51.15it/s]Pandas Apply:  11%|█         | 120/1120 [00:02<00:21, 46.35it/s]Pandas Apply:  11%|█         | 125/1120 [00:02<00:22, 44.65it/s]Pandas Apply:  12%|█▏        | 134/1120 [00:02<00:17, 55.72it/s]Pandas Apply:  13%|█▎        | 143/1120 [00:03<00:15, 63.14it/s]Pandas Apply:  13%|█▎        | 150/1120 [00:03<00:16, 60.06it/s]Pandas Apply:  14%|█▍        | 159/1120 [00:03<00:14, 67.66it/s]Pandas Apply:  15%|█▍        | 167/1120 [00:03<00:13, 68.65it/s]Pandas Apply:  16%|█▌        | 175/1120 [00:03<00:15, 62.80it/s]Pandas Apply:  17%|█▋        | 185/1120 [00:03<00:13, 70.82it/s]Pandas Apply:  17%|█▋        | 195/1120 [00:03<00:12, 75.90it/s]Pandas Apply:  18%|█▊        | 203/1120 [00:03<00:12, 75.28it/s]Pandas Apply:  19%|█▉        | 211/1120 [00:04<00:13, 66.02it/s]Pandas Apply:  20%|█▉        | 220/1120 [00:04<00:12, 70.86it/s]Pandas Apply:  20%|██        | 228/1120 [00:04<00:13, 64.98it/s]Pandas Apply:  21%|██        | 235/1120 [00:04<00:14, 59.14it/s]Pandas Apply:  22%|██▏       | 243/1120 [00:04<00:14, 60.88it/s]Pandas Apply:  22%|██▏       | 250/1120 [00:04<00:14, 61.90it/s]Pandas Apply:  23%|██▎       | 258/1120 [00:04<00:13, 65.13it/s]Pandas Apply:  24%|██▎       | 265/1120 [00:04<00:13, 63.14it/s]Pandas Apply:  24%|██▍       | 272/1120 [00:05<00:13, 62.83it/s]Pandas Apply:  25%|██▍       | 279/1120 [00:05<00:14, 57.30it/s]Pandas Apply:  25%|██▌       | 285/1120 [00:05<00:14, 56.72it/s]Pandas Apply:  26%|██▌       | 293/1120 [00:05<00:13, 59.79it/s]Pandas Apply:  27%|██▋       | 300/1120 [00:05<00:14, 57.42it/s]Pandas Apply:  27%|██▋       | 306/1120 [00:05<00:16, 50.50it/s]Pandas Apply:  28%|██▊       | 313/1120 [00:05<00:15, 53.54it/s]Pandas Apply:  29%|██▉       | 322/1120 [00:05<00:13, 60.04it/s]Pandas Apply:  29%|██▉       | 329/1120 [00:06<00:14, 55.28it/s]Pandas Apply:  30%|███       | 337/1120 [00:06<00:14, 54.64it/s]Pandas Apply:  31%|███       | 345/1120 [00:06<00:12, 60.06it/s]Pandas Apply:  31%|███▏      | 352/1120 [00:06<00:12, 59.26it/s]Pandas Apply:  32%|███▏      | 359/1120 [00:06<00:12, 58.75it/s]Pandas Apply:  33%|███▎      | 368/1120 [00:06<00:11, 64.91it/s]Pandas Apply:  34%|███▎      | 376/1120 [00:06<00:11, 62.71it/s]Pandas Apply:  34%|███▍      | 383/1120 [00:06<00:12, 57.53it/s]Pandas Apply:  35%|███▍      | 390/1120 [00:07<00:12, 59.80it/s]Pandas Apply:  35%|███▌      | 397/1120 [00:07<00:11, 61.15it/s]Pandas Apply:  36%|███▌      | 404/1120 [00:07<00:12, 58.33it/s]Pandas Apply:  37%|███▋      | 411/1120 [00:07<00:11, 59.31it/s]Pandas Apply:  37%|███▋      | 418/1120 [00:07<00:11, 59.97it/s]Pandas Apply:  38%|███▊      | 425/1120 [00:07<00:12, 57.57it/s]Pandas Apply:  38%|███▊      | 431/1120 [00:07<00:13, 50.94it/s]Pandas Apply:  39%|███▉      | 437/1120 [00:08<00:15, 43.88it/s]Pandas Apply:  40%|███▉      | 443/1120 [00:08<00:14, 46.13it/s]Pandas Apply:  40%|████      | 448/1120 [00:08<00:15, 43.51it/s]Pandas Apply:  40%|████      | 453/1120 [00:08<00:17, 38.23it/s]Pandas Apply:  41%|████      | 458/1120 [00:08<00:16, 39.42it/s]Pandas Apply:  41%|████▏     | 463/1120 [00:08<00:16, 40.09it/s]Pandas Apply:  42%|████▏     | 470/1120 [00:08<00:14, 45.32it/s]Pandas Apply:  42%|████▏     | 475/1120 [00:08<00:14, 44.98it/s]Pandas Apply:  43%|████▎     | 481/1120 [00:09<00:13, 47.96it/s]Pandas Apply:  43%|████▎     | 487/1120 [00:09<00:12, 50.41it/s]Pandas Apply:  44%|████▍     | 493/1120 [00:09<00:13, 45.48it/s]Pandas Apply:  45%|████▍     | 499/1120 [00:09<00:12, 47.94it/s]Pandas Apply:  45%|████▌     | 505/1120 [00:09<00:12, 48.65it/s]Pandas Apply:  46%|████▌     | 512/1120 [00:09<00:11, 53.98it/s]Pandas Apply:  46%|████▋     | 518/1120 [00:09<00:11, 52.51it/s]Pandas Apply:  47%|████▋     | 525/1120 [00:09<00:11, 51.24it/s]Pandas Apply:  47%|████▋     | 531/1120 [00:10<00:13, 42.13it/s]Pandas Apply:  48%|████▊     | 538/1120 [00:10<00:12, 48.12it/s]Pandas Apply:  49%|████▊     | 545/1120 [00:10<00:10, 52.68it/s]Pandas Apply:  49%|████▉     | 551/1120 [00:10<00:11, 50.48it/s]Pandas Apply:  50%|████▉     | 558/1120 [00:10<00:10, 54.71it/s]Pandas Apply:  51%|█████     | 566/1120 [00:10<00:09, 60.50it/s]Pandas Apply:  51%|█████     | 573/1120 [00:10<00:08, 61.14it/s]Pandas Apply:  52%|█████▏    | 581/1120 [00:10<00:08, 63.07it/s]Pandas Apply:  53%|█████▎    | 589/1120 [00:10<00:07, 66.95it/s]Pandas Apply:  53%|█████▎    | 596/1120 [00:11<00:08, 65.34it/s]Pandas Apply:  54%|█████▍    | 603/1120 [00:11<00:08, 60.03it/s]Pandas Apply:  54%|█████▍    | 610/1120 [00:11<00:09, 52.24it/s]Pandas Apply:  55%|█████▌    | 616/1120 [00:11<00:10, 49.50it/s]Pandas Apply:  56%|█████▌    | 622/1120 [00:11<00:10, 47.21it/s]Pandas Apply:  56%|█████▌    | 628/1120 [00:11<00:10, 47.95it/s]Pandas Apply:  57%|█████▋    | 633/1120 [00:11<00:10, 45.90it/s]Pandas Apply:  57%|█████▋    | 640/1120 [00:12<00:09, 51.19it/s]Pandas Apply:  58%|█████▊    | 647/1120 [00:12<00:08, 54.87it/s]Pandas Apply:  58%|█████▊    | 654/1120 [00:12<00:08, 57.67it/s]Pandas Apply:  59%|█████▉    | 662/1120 [00:12<00:07, 62.80it/s]Pandas Apply:  60%|█████▉    | 669/1120 [00:12<00:07, 60.20it/s]Pandas Apply:  60%|██████    | 676/1120 [00:12<00:07, 60.50it/s]Pandas Apply:  61%|██████    | 683/1120 [00:12<00:06, 62.57it/s]Pandas Apply:  62%|██████▏   | 690/1120 [00:12<00:07, 57.05it/s]Pandas Apply:  62%|██████▏   | 697/1120 [00:12<00:07, 60.03it/s]Pandas Apply:  63%|██████▎   | 706/1120 [00:13<00:06, 66.88it/s]Pandas Apply:  64%|██████▎   | 713/1120 [00:13<00:06, 62.07it/s]Pandas Apply:  64%|██████▍   | 720/1120 [00:13<00:06, 61.48it/s]Pandas Apply:  65%|██████▍   | 727/1120 [00:13<00:07, 55.65it/s]Pandas Apply:  65%|██████▌   | 733/1120 [00:13<00:07, 49.29it/s]Pandas Apply:  66%|██████▌   | 739/1120 [00:13<00:09, 40.81it/s]Pandas Apply:  67%|██████▋   | 746/1120 [00:13<00:08, 44.08it/s]Pandas Apply:  67%|██████▋   | 751/1120 [00:14<00:08, 45.09it/s]Pandas Apply:  68%|██████▊   | 756/1120 [00:14<00:09, 37.36it/s]Pandas Apply:  68%|██████▊   | 761/1120 [00:14<00:09, 38.50it/s]Pandas Apply:  68%|██████▊   | 766/1120 [00:14<00:09, 37.28it/s]Pandas Apply:  69%|██████▉   | 772/1120 [00:14<00:08, 42.23it/s]Pandas Apply:  70%|██████▉   | 779/1120 [00:14<00:07, 46.90it/s]Pandas Apply:  70%|███████   | 784/1120 [00:14<00:07, 46.08it/s]Pandas Apply:  70%|███████   | 789/1120 [00:15<00:08, 41.17it/s]Pandas Apply:  71%|███████   | 794/1120 [00:15<00:07, 42.27it/s]Pandas Apply:  72%|███████▏  | 801/1120 [00:15<00:06, 48.94it/s]Pandas Apply:  72%|███████▏  | 808/1120 [00:15<00:05, 52.56it/s]Pandas Apply:  73%|███████▎  | 814/1120 [00:15<00:05, 51.81it/s]Pandas Apply:  73%|███████▎  | 820/1120 [00:15<00:05, 50.97it/s]Pandas Apply:  74%|███████▍  | 827/1120 [00:15<00:05, 54.89it/s]Pandas Apply:  74%|███████▍  | 833/1120 [00:15<00:05, 51.55it/s]Pandas Apply:  75%|███████▍  | 839/1120 [00:16<00:06, 40.94it/s]Pandas Apply:  75%|███████▌  | 845/1120 [00:16<00:06, 44.60it/s]Pandas Apply:  76%|███████▋  | 854/1120 [00:16<00:04, 53.57it/s]Pandas Apply:  77%|███████▋  | 863/1120 [00:16<00:04, 61.65it/s]Pandas Apply:  78%|███████▊  | 872/1120 [00:16<00:03, 68.77it/s]Pandas Apply:  79%|███████▊  | 880/1120 [00:16<00:03, 66.96it/s]Pandas Apply:  79%|███████▉  | 889/1120 [00:16<00:03, 70.13it/s]Pandas Apply:  80%|████████  | 897/1120 [00:16<00:03, 61.87it/s]Pandas Apply:  81%|████████  | 904/1120 [00:17<00:03, 59.78it/s]Pandas Apply:  81%|████████▏ | 911/1120 [00:17<00:03, 61.77it/s]Pandas Apply:  82%|████████▏ | 918/1120 [00:17<00:03, 50.59it/s]Pandas Apply:  83%|████████▎ | 927/1120 [00:17<00:03, 57.94it/s]Pandas Apply:  83%|████████▎ | 935/1120 [00:17<00:03, 57.58it/s]Pandas Apply:  84%|████████▍ | 942/1120 [00:17<00:03, 46.31it/s]Pandas Apply:  85%|████████▍ | 949/1120 [00:17<00:03, 50.96it/s]Pandas Apply:  85%|████████▌ | 956/1120 [00:18<00:03, 50.58it/s]Pandas Apply:  86%|████████▌ | 963/1120 [00:18<00:03, 48.89it/s]Pandas Apply:  87%|████████▋ | 969/1120 [00:18<00:03, 44.11it/s]Pandas Apply:  87%|████████▋ | 974/1120 [00:18<00:03, 39.95it/s]Pandas Apply:  87%|████████▋ | 979/1120 [00:18<00:03, 40.64it/s]Pandas Apply:  88%|████████▊ | 984/1120 [00:18<00:03, 40.75it/s]Pandas Apply:  88%|████████▊ | 989/1120 [00:18<00:03, 42.05it/s]Pandas Apply:  89%|████████▉ | 994/1120 [00:19<00:02, 42.39it/s]Pandas Apply:  89%|████████▉ | 1000/1120 [00:19<00:02, 43.91it/s]Pandas Apply:  90%|████████▉ | 1005/1120 [00:19<00:02, 45.36it/s]Pandas Apply:  90%|█████████ | 1010/1120 [00:19<00:02, 45.31it/s]Pandas Apply:  91%|█████████ | 1015/1120 [00:19<00:02, 46.06it/s]Pandas Apply:  91%|█████████ | 1020/1120 [00:19<00:02, 38.02it/s]Pandas Apply:  92%|█████████▏| 1025/1120 [00:19<00:02, 38.33it/s]Pandas Apply:  92%|█████████▏| 1030/1120 [00:19<00:02, 38.16it/s]Pandas Apply:  92%|█████████▏| 1034/1120 [00:20<00:02, 37.07it/s]Pandas Apply:  93%|█████████▎| 1038/1120 [00:20<00:02, 36.73it/s]Pandas Apply:  93%|█████████▎| 1042/1120 [00:20<00:02, 36.39it/s]Pandas Apply:  94%|█████████▎| 1049/1120 [00:20<00:01, 44.82it/s]Pandas Apply:  94%|█████████▍| 1054/1120 [00:20<00:01, 44.44it/s]Pandas Apply:  95%|█████████▍| 1059/1120 [00:20<00:01, 42.59it/s]Pandas Apply:  95%|█████████▌| 1064/1120 [00:20<00:01, 42.60it/s]Pandas Apply:  96%|█████████▌| 1070/1120 [00:20<00:01, 44.47it/s]Pandas Apply:  96%|█████████▌| 1075/1120 [00:20<00:01, 39.00it/s]Pandas Apply:  96%|█████████▋| 1080/1120 [00:21<00:01, 39.50it/s]Pandas Apply:  97%|█████████▋| 1085/1120 [00:21<00:00, 35.13it/s]Pandas Apply:  97%|█████████▋| 1089/1120 [00:21<00:00, 35.02it/s]Pandas Apply:  98%|█████████▊| 1093/1120 [00:21<00:00, 35.75it/s]Pandas Apply:  98%|█████████▊| 1098/1120 [00:21<00:00, 37.47it/s]Pandas Apply:  98%|█████████▊| 1102/1120 [00:21<00:00, 35.27it/s]Pandas Apply:  99%|█████████▉| 1110/1120 [00:21<00:00, 44.42it/s]Pandas Apply: 100%|█████████▉| 1115/1120 [00:22<00:00, 40.67it/s]Pandas Apply: 100%|██████████| 1120/1120 [00:22<00:00, 50.58it/s]
+acc 0.876
+
+Job 235182 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T00:26:42; waited 12.8 minutes in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   40.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235182               1            0.0 %  2026-03-12T00:39:33   40.0 s  0
+235182.batch         1      1     0.2 %  2026-03-12T00:39:33   40.0 s  0
+235182.apptainer     1      1     0.0 %  2026-03-12T00:39:34   39.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 39.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235182             808.0        
+235182.batch       808.0     0.1
+235182.apptainer   808.0     6.2
+
+Job 235182 completed at Thu Mar 12 00:40:14 CET 2026

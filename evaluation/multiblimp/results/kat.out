@@ -1,0 +1,97 @@
+Starting job 235165 on gpu-1-68 on Olivia at Thu Mar 12 00:34:56 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-68
+SLURM_JOB_ID: 235165
+SLURM_NODELIST: gpu-1-68
+SLURM_NTASKS: 1
+--model_name /cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/kat_Geor_31250 --data_filename kat/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='/cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/kat_Geor_31250', data_filename='kat/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/kat
+Model loaded
+(204, 38)
+Pandas Apply:   0%|          | 0/204 [00:00<?, ?it/s]Pandas Apply:   1%|          | 2/204 [00:00<00:11, 18.14it/s]Pandas Apply:   2%|▏         | 4/204 [00:00<00:12, 15.59it/s]Pandas Apply:   3%|▎         | 6/204 [00:00<00:13, 14.45it/s]Pandas Apply:   4%|▍         | 9/204 [00:00<00:11, 17.25it/s]Pandas Apply:   6%|▌         | 12/204 [00:00<00:10, 18.73it/s]Pandas Apply:   7%|▋         | 15/204 [00:00<00:09, 19.85it/s]Pandas Apply:   9%|▉         | 18/204 [00:00<00:09, 20.48it/s]Pandas Apply:  10%|█         | 21/204 [00:01<00:08, 20.87it/s]Pandas Apply:  12%|█▏        | 24/204 [00:01<00:08, 21.54it/s]Pandas Apply:  13%|█▎        | 27/204 [00:01<00:08, 20.66it/s]Pandas Apply:  15%|█▍        | 30/204 [00:01<00:08, 21.27it/s]Pandas Apply:  16%|█▌        | 33/204 [00:01<00:08, 21.26it/s]Pandas Apply:  18%|█▊        | 36/204 [00:01<00:07, 21.40it/s]Pandas Apply:  19%|█▉        | 39/204 [00:01<00:08, 18.91it/s]Pandas Apply:  21%|██        | 42/204 [00:02<00:08, 20.04it/s]Pandas Apply:  22%|██▏       | 45/204 [00:02<00:07, 20.78it/s]Pandas Apply:  24%|██▎       | 48/204 [00:02<00:08, 19.11it/s]Pandas Apply:  25%|██▌       | 51/204 [00:02<00:07, 20.12it/s]Pandas Apply:  26%|██▋       | 54/204 [00:02<00:07, 20.89it/s]Pandas Apply:  28%|██▊       | 57/204 [00:02<00:06, 21.28it/s]Pandas Apply:  29%|██▉       | 60/204 [00:02<00:06, 21.59it/s]Pandas Apply:  31%|███       | 63/204 [00:03<00:06, 21.61it/s]Pandas Apply:  32%|███▏      | 66/204 [00:03<00:06, 21.85it/s]Pandas Apply:  34%|███▍      | 69/204 [00:03<00:06, 22.08it/s]Pandas Apply:  35%|███▌      | 72/204 [00:03<00:06, 21.32it/s]Pandas Apply:  37%|███▋      | 75/204 [00:03<00:05, 22.00it/s]Pandas Apply:  38%|███▊      | 78/204 [00:03<00:06, 19.70it/s]Pandas Apply:  40%|███▉      | 81/204 [00:03<00:06, 20.33it/s]Pandas Apply:  41%|████      | 84/204 [00:04<00:05, 20.44it/s]Pandas Apply:  43%|████▎     | 87/204 [00:04<00:05, 21.26it/s]Pandas Apply:  44%|████▍     | 90/204 [00:04<00:05, 21.44it/s]Pandas Apply:  46%|████▌     | 93/204 [00:04<00:05, 20.67it/s]Pandas Apply:  47%|████▋     | 96/204 [00:04<00:05, 19.17it/s]Pandas Apply:  49%|████▊     | 99/204 [00:04<00:05, 19.84it/s]Pandas Apply:  50%|█████     | 102/204 [00:05<00:05, 20.27it/s]Pandas Apply:  51%|█████▏    | 105/204 [00:05<00:04, 20.92it/s]Pandas Apply:  53%|█████▎    | 108/204 [00:05<00:04, 21.62it/s]Pandas Apply:  54%|█████▍    | 111/204 [00:05<00:04, 21.66it/s]Pandas Apply:  56%|█████▌    | 114/204 [00:05<00:04, 21.31it/s]Pandas Apply:  57%|█████▋    | 117/204 [00:05<00:04, 19.74it/s]Pandas Apply:  59%|█████▉    | 120/204 [00:05<00:04, 20.71it/s]Pandas Apply:  60%|██████    | 123/204 [00:06<00:04, 18.45it/s]Pandas Apply:  62%|██████▏   | 126/204 [00:06<00:03, 19.70it/s]Pandas Apply:  63%|██████▎   | 129/204 [00:06<00:03, 20.80it/s]Pandas Apply:  65%|██████▍   | 132/204 [00:06<00:03, 21.30it/s]Pandas Apply:  66%|██████▌   | 135/204 [00:06<00:03, 21.82it/s]Pandas Apply:  68%|██████▊   | 138/204 [00:06<00:02, 22.12it/s]Pandas Apply:  69%|██████▉   | 141/204 [00:06<00:02, 22.70it/s]Pandas Apply:  71%|███████   | 144/204 [00:06<00:02, 23.12it/s]Pandas Apply:  72%|███████▏  | 147/204 [00:07<00:02, 23.55it/s]Pandas Apply:  74%|███████▎  | 150/204 [00:07<00:02, 23.28it/s]Pandas Apply:  75%|███████▌  | 153/204 [00:07<00:02, 20.88it/s]Pandas Apply:  76%|███████▋  | 156/204 [00:07<00:02, 20.97it/s]Pandas Apply:  78%|███████▊  | 159/204 [00:07<00:02, 21.38it/s]Pandas Apply:  79%|███████▉  | 162/204 [00:07<00:01, 22.09it/s]Pandas Apply:  81%|████████  | 165/204 [00:07<00:01, 22.39it/s]Pandas Apply:  82%|████████▏ | 168/204 [00:08<00:01, 22.57it/s]Pandas Apply:  84%|████████▍ | 171/204 [00:08<00:01, 22.85it/s]Pandas Apply:  85%|████████▌ | 174/204 [00:08<00:01, 22.82it/s]Pandas Apply:  87%|████████▋ | 177/204 [00:08<00:01, 22.56it/s]Pandas Apply:  88%|████████▊ | 180/204 [00:08<00:01, 22.50it/s]Pandas Apply:  90%|████████▉ | 183/204 [00:08<00:00, 22.32it/s]Pandas Apply:  91%|█████████ | 186/204 [00:08<00:00, 22.32it/s]Pandas Apply:  93%|█████████▎| 189/204 [00:09<00:00, 20.92it/s]Pandas Apply:  94%|█████████▍| 192/204 [00:09<00:00, 21.47it/s]Pandas Apply:  96%|█████████▌| 195/204 [00:09<00:00, 21.87it/s]Pandas Apply:  97%|█████████▋| 198/204 [00:09<00:00, 21.67it/s]Pandas Apply:  99%|█████████▊| 201/204 [00:09<00:00, 21.96it/s]Pandas Apply: 100%|██████████| 204/204 [00:09<00:00, 21.98it/s]Pandas Apply: 100%|██████████| 204/204 [00:09<00:00, 20.94it/s]
+acc 0.951
+
+Job 235165 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T00:26:42; waited 8.2 minutes in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   28.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235165               1            0.0 %  2026-03-12T00:34:56   28.0 s  0
+235165.batch         1      1     0.2 %  2026-03-12T00:34:56   28.0 s  0
+235165.apptainer     1      1     0.0 %  2026-03-12T00:34:57   27.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 27.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235165             808.0        
+235165.batch       808.0     0.0
+235165.apptainer   808.0     6.7
+
+Job 235165 completed at Thu Mar 12 00:35:24 CET 2026

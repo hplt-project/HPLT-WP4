@@ -1,0 +1,97 @@
+Starting job 235230 on gpu-1-75 on Olivia at Thu Mar 12 00:55:55 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-75
+SLURM_JOB_ID: 235230
+SLURM_NODELIST: gpu-1-75
+SLURM_NTASKS: 1
+--model_name FacebookAI/xlm-roberta-base --data_filename swe/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='FacebookAI/xlm-roberta-base', data_filename='swe/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/swe
+Model loaded
+(201, 38)
+Pandas Apply:   0%|          | 0/201 [00:00<?, ?it/s]Pandas Apply:   2%|▏         | 4/201 [00:00<00:05, 38.93it/s]Pandas Apply:   4%|▍         | 8/201 [00:00<00:05, 37.72it/s]Pandas Apply:   6%|▌         | 12/201 [00:00<00:06, 29.21it/s]Pandas Apply:   8%|▊         | 17/201 [00:00<00:05, 35.31it/s]Pandas Apply:  11%|█         | 22/201 [00:00<00:04, 39.05it/s]Pandas Apply:  13%|█▎        | 27/201 [00:00<00:04, 38.91it/s]Pandas Apply:  16%|█▌        | 32/201 [00:00<00:04, 40.25it/s]Pandas Apply:  19%|█▉        | 38/201 [00:00<00:03, 42.22it/s]Pandas Apply:  22%|██▏       | 44/201 [00:01<00:03, 45.93it/s]Pandas Apply:  25%|██▍       | 50/201 [00:01<00:03, 47.06it/s]Pandas Apply:  27%|██▋       | 55/201 [00:01<00:03, 39.43it/s]Pandas Apply:  30%|███       | 61/201 [00:01<00:03, 43.13it/s]Pandas Apply:  33%|███▎      | 66/201 [00:01<00:03, 41.39it/s]Pandas Apply:  36%|███▌      | 72/201 [00:01<00:02, 45.01it/s]Pandas Apply:  39%|███▉      | 78/201 [00:01<00:02, 48.01it/s]Pandas Apply:  42%|████▏     | 85/201 [00:01<00:02, 53.53it/s]Pandas Apply:  45%|████▌     | 91/201 [00:02<00:02, 54.39it/s]Pandas Apply:  48%|████▊     | 97/201 [00:02<00:02, 51.67it/s]Pandas Apply:  52%|█████▏    | 105/201 [00:02<00:01, 57.60it/s]Pandas Apply:  55%|█████▌    | 111/201 [00:02<00:01, 54.00it/s]Pandas Apply:  58%|█████▊    | 117/201 [00:02<00:01, 52.83it/s]Pandas Apply:  61%|██████    | 123/201 [00:02<00:01, 53.78it/s]Pandas Apply:  64%|██████▍   | 129/201 [00:02<00:01, 50.99it/s]Pandas Apply:  67%|██████▋   | 135/201 [00:02<00:01, 52.06it/s]Pandas Apply:  71%|███████   | 142/201 [00:02<00:01, 55.66it/s]Pandas Apply:  74%|███████▎  | 148/201 [00:03<00:00, 56.64it/s]Pandas Apply:  77%|███████▋  | 154/201 [00:03<00:00, 54.44it/s]Pandas Apply:  81%|████████  | 162/201 [00:03<00:00, 60.74it/s]Pandas Apply:  84%|████████▍ | 169/201 [00:03<00:00, 54.16it/s]Pandas Apply:  88%|████████▊ | 177/201 [00:03<00:00, 60.21it/s]Pandas Apply:  92%|█████████▏| 184/201 [00:03<00:00, 61.93it/s]Pandas Apply:  95%|█████████▌| 191/201 [00:03<00:00, 63.42it/s]Pandas Apply:  99%|█████████▊| 198/201 [00:03<00:00, 62.63it/s]Pandas Apply: 100%|██████████| 201/201 [00:04<00:00, 49.84it/s]
+acc 0.995
+
+Job 235230 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T00:26:43; waited 29.2 minutes in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   20.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235230               1            0.0 %  2026-03-12T00:55:55   20.0 s  0
+235230.batch         1      1     0.3 %  2026-03-12T00:55:55   20.0 s  0
+235230.apptainer     1      1     0.0 %  2026-03-12T00:55:56   19.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 19.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235230             808.0        
+235230.batch       808.0     0.0
+235230.apptainer   808.0     6.1
+
+Job 235230 completed at Thu Mar 12 00:56:15 CET 2026

@@ -1,0 +1,97 @@
+Starting job 235229 on gpu-1-28 on Olivia at Thu Mar 12 00:55:30 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-28
+SLURM_JOB_ID: 235229
+SLURM_NODELIST: gpu-1-28
+SLURM_NTASKS: 1
+--model_name jhu-clsp/mmBERT-base --data_filename swe/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='jhu-clsp/mmBERT-base', data_filename='swe/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/swe
+Model loaded
+(201, 38)
+Pandas Apply:   0%|          | 0/201 [00:00<?, ?it/s]Pandas Apply:   1%|▏         | 3/201 [00:00<00:07, 25.22it/s]Pandas Apply:   3%|▎         | 6/201 [00:00<00:07, 27.54it/s]Pandas Apply:   5%|▍         | 10/201 [00:00<00:05, 32.45it/s]Pandas Apply:   7%|▋         | 14/201 [00:00<00:07, 25.47it/s]Pandas Apply:   8%|▊         | 17/201 [00:00<00:08, 21.77it/s]Pandas Apply:  10%|█         | 21/201 [00:00<00:07, 25.01it/s]Pandas Apply:  12%|█▏        | 25/201 [00:00<00:06, 27.23it/s]Pandas Apply:  14%|█▍        | 29/201 [00:01<00:05, 28.71it/s]Pandas Apply:  16%|█▋        | 33/201 [00:01<00:05, 30.35it/s]Pandas Apply:  18%|█▊        | 37/201 [00:01<00:05, 32.18it/s]Pandas Apply:  20%|██        | 41/201 [00:01<00:04, 33.59it/s]Pandas Apply:  22%|██▏       | 45/201 [00:01<00:04, 34.27it/s]Pandas Apply:  24%|██▍       | 49/201 [00:01<00:04, 35.30it/s]Pandas Apply:  26%|██▋       | 53/201 [00:01<00:04, 29.65it/s]Pandas Apply:  28%|██▊       | 57/201 [00:01<00:04, 32.14it/s]Pandas Apply:  30%|███       | 61/201 [00:02<00:04, 32.64it/s]Pandas Apply:  32%|███▏      | 65/201 [00:02<00:04, 33.88it/s]Pandas Apply:  34%|███▍      | 69/201 [00:02<00:03, 33.56it/s]Pandas Apply:  37%|███▋      | 74/201 [00:02<00:03, 37.23it/s]Pandas Apply:  39%|███▉      | 78/201 [00:02<00:03, 37.76it/s]Pandas Apply:  41%|████▏     | 83/201 [00:02<00:02, 39.36it/s]Pandas Apply:  44%|████▍     | 88/201 [00:02<00:02, 39.11it/s]Pandas Apply:  46%|████▌     | 92/201 [00:02<00:02, 37.76it/s]Pandas Apply:  48%|████▊     | 97/201 [00:02<00:02, 38.72it/s]Pandas Apply:  51%|█████     | 102/201 [00:03<00:02, 41.51it/s]Pandas Apply:  53%|█████▎    | 107/201 [00:03<00:02, 41.67it/s]Pandas Apply:  56%|█████▌    | 112/201 [00:03<00:02, 38.86it/s]Pandas Apply:  58%|█████▊    | 116/201 [00:03<00:02, 37.68it/s]Pandas Apply:  60%|█████▉    | 120/201 [00:03<00:02, 37.08it/s]Pandas Apply:  62%|██████▏   | 125/201 [00:03<00:01, 38.93it/s]Pandas Apply:  64%|██████▍   | 129/201 [00:03<00:01, 36.59it/s]Pandas Apply:  67%|██████▋   | 134/201 [00:03<00:01, 37.27it/s]Pandas Apply:  69%|██████▉   | 139/201 [00:04<00:01, 39.84it/s]Pandas Apply:  72%|███████▏  | 144/201 [00:04<00:01, 39.78it/s]Pandas Apply:  74%|███████▍  | 149/201 [00:04<00:01, 40.91it/s]Pandas Apply:  77%|███████▋  | 154/201 [00:04<00:01, 38.86it/s]Pandas Apply:  80%|███████▉  | 160/201 [00:04<00:00, 42.12it/s]Pandas Apply:  82%|████████▏ | 165/201 [00:04<00:00, 38.44it/s]Pandas Apply:  85%|████████▍ | 170/201 [00:04<00:00, 40.24it/s]Pandas Apply:  87%|████████▋ | 175/201 [00:04<00:00, 42.05it/s]Pandas Apply:  90%|████████▉ | 180/201 [00:05<00:00, 43.06it/s]Pandas Apply:  92%|█████████▏| 185/201 [00:05<00:00, 43.72it/s]Pandas Apply:  95%|█████████▍| 190/201 [00:05<00:00, 43.49it/s]Pandas Apply:  97%|█████████▋| 195/201 [00:05<00:00, 43.84it/s]Pandas Apply: 100%|█████████▉| 200/201 [00:05<00:00, 40.12it/s]Pandas Apply: 100%|██████████| 201/201 [00:05<00:00, 36.12it/s]
+acc 1.0
+
+Job 235229 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T00:26:43; waited 28.8 minutes in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   29.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235229               1            0.0 %  2026-03-12T00:55:30   29.0 s  0
+235229.batch         1      1     0.3 %  2026-03-12T00:55:30   29.0 s  0
+235229.apptainer     1      1     0.0 %  2026-03-12T00:55:31   28.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 28.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235229             808.0        
+235229.batch       808.0     0.1
+235229.apptainer   808.0     7.5
+
+Job 235229 completed at Thu Mar 12 00:55:59 CET 2026
