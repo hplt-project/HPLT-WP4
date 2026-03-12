@@ -1,0 +1,212 @@
+Starting job 235402 on gpu-1-14 on Olivia at Thu Mar 12 02:19:02 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-14
+SLURM_JOB_ID: 235402
+SLURM_NODELIST: gpu-1-14
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eus- --data_filename eus/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='HPLT/hplt_bert_base_2_0_eus-', data_filename='eus/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/eus
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 479, in cached_files
+    hf_hub_download(
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'HPLT/hplt_bert_base_2_0_eus-'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 60, in <module>
+    lm = load_hf_model(
+         ^^^^^^^^^^^^^^
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/load_model.py", line 63, in load_hf_model
+    model = AutoModelForMaskedLM.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/models/auto/auto_factory.py", line 508, in from_pretrained
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 322, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 532, in cached_files
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 143, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'HPLT/hplt_bert_base_2_0_eus-'.
+srun: error: gpu-1-14: task 0: Exited with exit code 1
+srun: Terminating StepId=235402.0
+
+Job 235402 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:19:01; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   12.0 seconds
+
+Job failed.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235402               1            0.0 %  2026-03-12T02:19:02   12.0 s  1
+235402.batch         1      1     0.6 %  2026-03-12T02:19:02   12.0 s  1
+235402.apptainer     1      1     0.0 %  2026-03-12T02:19:02   12.0 s  1
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 11.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235402             808.0        
+235402.batch       808.0     0.1
+235402.apptainer   808.0     4.1
+
+Job 235402 completed at Thu Mar 12 02:19:15 CET 2026
+Starting job 235435 on gpu-1-14 on Olivia at Thu Mar 12 02:20:13 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-14
+SLURM_JOB_ID: 235435
+SLURM_NODELIST: gpu-1-14
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eus- --data_filename eus/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-03-12T02:20:21.496] error: *** STEP 235435.0 ON gpu-1-14 CANCELLED AT 2026-03-12T02:20:21 DUE to SIGNAL Terminated ***
+[2026-03-12T02:20:21.496] error: *** JOB 235435 ON gpu-1-14 CANCELLED AT 2026-03-12T02:20:21 DUE to SIGNAL Terminated ***
+
+Job 235435 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:20:12; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   8.0 seconds
+
+Job was cancelled.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235435               1            0.0 %  2026-03-12T02:20:13    8.0 s  0
+235435.batch         1      1     0.6 %  2026-03-12T02:20:13    9.0 s  Signal 15
+235435.apptainer     1      1     0.0 %  2026-03-12T02:20:13   10.0 s  Signal 15
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 7.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235435             808.0        
+235435.batch       808.0     0.1
+235435.apptainer   808.0     2.7
+
+Job 235435 completed at Thu Mar 12 02:20:25 CET 2026
+Starting job 235468 on gpu-1-14 on Olivia at Thu Mar 12 02:20:34 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-14
+SLURM_JOB_ID: 235468
+SLURM_NODELIST: gpu-1-14
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eus-Latn --data_filename eus/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_2_0_eus-Latn', data_filename='eus/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/eus
+Model loaded
+(273, 38)
+Pandas Apply:   0%|          | 0/273 [00:00<?, ?it/s]Pandas Apply:   3%|▎         | 8/273 [00:00<00:03, 68.99it/s]Pandas Apply:   5%|▌         | 15/273 [00:00<00:04, 64.35it/s]Pandas Apply:   8%|▊         | 22/273 [00:00<00:03, 62.93it/s]Pandas Apply:  11%|█         | 29/273 [00:00<00:03, 62.29it/s]Pandas Apply:  13%|█▎        | 36/273 [00:00<00:03, 61.80it/s]Pandas Apply:  16%|█▌        | 43/273 [00:00<00:03, 59.02it/s]Pandas Apply:  18%|█▊        | 50/273 [00:00<00:03, 59.29it/s]Pandas Apply:  21%|██        | 56/273 [00:00<00:03, 59.18it/s]Pandas Apply:  23%|██▎       | 63/273 [00:01<00:03, 59.74it/s]Pandas Apply:  26%|██▌       | 70/273 [00:01<00:03, 60.30it/s]Pandas Apply:  28%|██▊       | 77/273 [00:01<00:03, 60.45it/s]Pandas Apply:  31%|███       | 84/273 [00:01<00:03, 60.69it/s]Pandas Apply:  33%|███▎      | 91/273 [00:01<00:02, 60.92it/s]Pandas Apply:  36%|███▌      | 98/273 [00:01<00:02, 61.13it/s]Pandas Apply:  38%|███▊      | 105/273 [00:01<00:02, 61.19it/s]Pandas Apply:  41%|████      | 112/273 [00:01<00:02, 61.18it/s]Pandas Apply:  44%|████▎     | 119/273 [00:01<00:02, 61.33it/s]Pandas Apply:  46%|████▌     | 126/273 [00:02<00:02, 61.31it/s]Pandas Apply:  49%|████▊     | 133/273 [00:02<00:02, 61.08it/s]Pandas Apply:  51%|█████▏    | 140/273 [00:02<00:02, 60.78it/s]Pandas Apply:  54%|█████▍    | 147/273 [00:02<00:02, 60.40it/s]Pandas Apply:  56%|█████▋    | 154/273 [00:02<00:01, 60.22it/s]Pandas Apply:  59%|█████▉    | 161/273 [00:02<00:01, 60.06it/s]Pandas Apply:  62%|██████▏   | 168/273 [00:02<00:01, 59.60it/s]Pandas Apply:  64%|██████▍   | 175/273 [00:02<00:01, 59.68it/s]Pandas Apply:  66%|██████▋   | 181/273 [00:02<00:01, 59.38it/s]Pandas Apply:  68%|██████▊   | 187/273 [00:03<00:01, 59.18it/s]Pandas Apply:  71%|███████   | 193/273 [00:03<00:01, 59.14it/s]Pandas Apply:  73%|███████▎  | 199/273 [00:03<00:01, 59.17it/s]Pandas Apply:  75%|███████▌  | 206/273 [00:03<00:01, 59.51it/s]Pandas Apply:  78%|███████▊  | 212/273 [00:03<00:01, 59.46it/s]Pandas Apply:  80%|███████▉  | 218/273 [00:03<00:00, 59.29it/s]Pandas Apply:  82%|████████▏ | 224/273 [00:03<00:00, 59.10it/s]Pandas Apply:  84%|████████▍ | 230/273 [00:03<00:00, 59.01it/s]Pandas Apply:  86%|████████▋ | 236/273 [00:03<00:00, 59.29it/s]Pandas Apply:  89%|████████▊ | 242/273 [00:04<00:00, 58.90it/s]Pandas Apply:  91%|█████████ | 249/273 [00:04<00:00, 59.25it/s]Pandas Apply:  93%|█████████▎| 255/273 [00:04<00:00, 59.07it/s]Pandas Apply:  96%|█████████▌| 261/273 [00:04<00:00, 58.88it/s]Pandas Apply:  98%|█████████▊| 267/273 [00:04<00:00, 58.88it/s]Pandas Apply: 100%|██████████| 273/273 [00:04<00:00, 58.63it/s]Pandas Apply: 100%|██████████| 273/273 [00:04<00:00, 59.79it/s]
+acc 0.978
+
+Job 235468 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:20:33; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   44.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235468               1            0.0 %  2026-03-12T02:20:34   44.0 s  0
+235468.batch         1      1     0.2 %  2026-03-12T02:20:34   44.0 s  0
+235468.apptainer     1      1     0.0 %  2026-03-12T02:20:35   43.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 43.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235468             808.0        
+235468.batch       808.0     0.1
+235468.apptainer   808.0     6.9
+
+Job 235468 completed at Thu Mar 12 02:21:19 CET 2026

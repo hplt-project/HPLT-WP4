@@ -1,0 +1,43 @@
+Starting job 235478 on gpu-1-67 on Olivia at Thu Mar 12 02:23:32 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-67
+SLURM_JOB_ID: 235478
+SLURM_NODELIST: gpu-1-67
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_fao-Latn --data_filename fao/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_2_0_fao-Latn', data_filename='fao/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/fao
+Model loaded
+(232, 38)
+Pandas Apply:   0%|          | 0/232 [00:00<?, ?it/s]Pandas Apply:   3%|▎         | 8/232 [00:00<00:03, 68.85it/s]Pandas Apply:   6%|▋         | 15/232 [00:00<00:03, 64.78it/s]Pandas Apply:   9%|▉         | 22/232 [00:00<00:03, 63.91it/s]Pandas Apply:  12%|█▎        | 29/232 [00:00<00:03, 63.45it/s]Pandas Apply:  16%|█▌        | 36/232 [00:00<00:03, 62.87it/s]Pandas Apply:  19%|█▊        | 43/232 [00:00<00:03, 62.83it/s]Pandas Apply:  22%|██▏       | 50/232 [00:00<00:02, 62.80it/s]Pandas Apply:  25%|██▍       | 57/232 [00:00<00:02, 63.23it/s]Pandas Apply:  28%|██▊       | 64/232 [00:01<00:02, 63.24it/s]Pandas Apply:  31%|███       | 71/232 [00:01<00:02, 63.03it/s]Pandas Apply:  34%|███▎      | 78/232 [00:01<00:02, 63.03it/s]Pandas Apply:  37%|███▋      | 85/232 [00:01<00:02, 63.24it/s]Pandas Apply:  40%|███▉      | 92/232 [00:01<00:02, 63.43it/s]Pandas Apply:  43%|████▎     | 99/232 [00:01<00:02, 63.17it/s]Pandas Apply:  46%|████▌     | 106/232 [00:01<00:01, 63.11it/s]Pandas Apply:  49%|████▊     | 113/232 [00:01<00:01, 63.29it/s]Pandas Apply:  52%|█████▏    | 120/232 [00:01<00:01, 63.22it/s]Pandas Apply:  55%|█████▍    | 127/232 [00:02<00:01, 63.28it/s]Pandas Apply:  58%|█████▊    | 134/232 [00:02<00:01, 63.19it/s]Pandas Apply:  61%|██████    | 141/232 [00:02<00:01, 63.16it/s]Pandas Apply:  64%|██████▍   | 148/232 [00:02<00:01, 63.10it/s]Pandas Apply:  67%|██████▋   | 155/232 [00:02<00:01, 63.11it/s]Pandas Apply:  70%|██████▉   | 162/232 [00:02<00:01, 63.13it/s]Pandas Apply:  73%|███████▎  | 169/232 [00:02<00:00, 63.17it/s]Pandas Apply:  76%|███████▌  | 176/232 [00:02<00:00, 63.11it/s]Pandas Apply:  79%|███████▉  | 183/232 [00:02<00:00, 62.94it/s]Pandas Apply:  82%|████████▏ | 190/232 [00:03<00:00, 63.04it/s]Pandas Apply:  85%|████████▍ | 197/232 [00:03<00:00, 63.25it/s]Pandas Apply:  88%|████████▊ | 204/232 [00:03<00:00, 63.17it/s]Pandas Apply:  91%|█████████ | 211/232 [00:03<00:00, 63.35it/s]Pandas Apply:  94%|█████████▍| 218/232 [00:03<00:00, 63.54it/s]Pandas Apply:  97%|█████████▋| 225/232 [00:03<00:00, 63.33it/s]Pandas Apply: 100%|██████████| 232/232 [00:03<00:00, 63.06it/s]Pandas Apply: 100%|██████████| 232/232 [00:03<00:00, 62.94it/s]
+acc 0.991
+
+Job 235478 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:20:33; waited 3.0 minutes in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   30.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235478               1            0.0 %  2026-03-12T02:23:32   30.0 s  0
+235478.batch         1      1     0.2 %  2026-03-12T02:23:32   30.0 s  0
+235478.apptainer     1      1     0.0 %  2026-03-12T02:23:33   29.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 29.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235478             808.0        
+235478.batch       808.0     0.1
+235478.apptainer   808.0     5.9
+
+Job 235478 completed at Thu Mar 12 02:24:02 CET 2026

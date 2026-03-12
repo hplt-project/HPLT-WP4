@@ -1,0 +1,212 @@
+Starting job 235399 on gpu-1-98 on Olivia at Thu Mar 12 02:19:02 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-98
+SLURM_JOB_ID: 235399
+SLURM_NODELIST: gpu-1-98
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eng- --data_filename eng/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
+    import torch.cuda
+  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
+    from torch import quantization as quantization  # usort: skip
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
+    from .fake_quantize import *  # noqa: F403
+  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
+    from torch.ao.quantization.fake_quantize import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
+    from .pt2e._numeric_debugger import (  # noqa: F401
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
+    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
+  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
+    from torch.export import ExportedProgram
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
+    from .decomp_utils import CustomDecompTable
+  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
+    from torch._export.utils import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
+    from .wrappers import _wrap_submodules
+  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
+    from torch._higher_order_ops.strict_mode import strict_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
+    from torch._higher_order_ops._invoke_quant import (
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
+    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
+  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
+    from torch._subclasses.functional_tensor import disable_functional_mode
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
+    class FunctionalTensor(torch.Tensor):
+  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
+    cpu = _conversion_method_template(device=torch.device("cpu"))
+/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+ (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Namespace(model_name='HPLT/hplt_bert_base_2_0_eng-', data_filename='eng/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/eng
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 479, in cached_files
+    hf_hub_download(
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'HPLT/hplt_bert_base_2_0_eng-'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 60, in <module>
+    lm = load_hf_model(
+         ^^^^^^^^^^^^^^
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/load_model.py", line 63, in load_hf_model
+    model = AutoModelForMaskedLM.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/models/auto/auto_factory.py", line 508, in from_pretrained
+    resolved_config_file = cached_file(
+                           ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 322, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 532, in cached_files
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision, repo_type)
+  File "/usr/local/lib/python3.12/dist-packages/transformers/utils/hub.py", line 143, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: 'HPLT/hplt_bert_base_2_0_eng-'.
+srun: error: gpu-1-98: task 0: Exited with exit code 1
+srun: Terminating StepId=235399.0
+
+Job 235399 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:19:01; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   12.0 seconds
+
+Job failed.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235399               1            0.0 %  2026-03-12T02:19:02   12.0 s  1
+235399.batch         1      1     0.5 %  2026-03-12T02:19:02   12.0 s  1
+235399.apptainer     1      1     0.0 %  2026-03-12T02:19:02   12.0 s  1
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 11.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235399             808.0        
+235399.batch       808.0     0.0
+235399.apptainer   808.0     4.1
+
+Job 235399 completed at Thu Mar 12 02:19:15 CET 2026
+Starting job 235432 on gpu-1-98 on Olivia at Thu Mar 12 02:20:13 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-98
+SLURM_JOB_ID: 235432
+SLURM_NODELIST: gpu-1-98
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eng- --data_filename eng/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+[2026-03-12T02:20:21.494] error: *** STEP 235432.0 ON gpu-1-98 CANCELLED AT 2026-03-12T02:20:21 DUE to SIGNAL Terminated ***
+[2026-03-12T02:20:21.494] error: *** JOB 235432 ON gpu-1-98 CANCELLED AT 2026-03-12T02:20:21 DUE to SIGNAL Terminated ***
+
+Job 235432 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:20:12; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   8.0 seconds
+
+Job was cancelled.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235432               1            0.0 %  2026-03-12T02:20:13    8.0 s  0
+235432.batch         1      1     0.5 %  2026-03-12T02:20:13    9.0 s  Signal 15
+235432.apptainer     1      1     0.0 %  2026-03-12T02:20:13   10.0 s  Signal 15
+
+Used CPU time:   0.0 CPU seconds
+Unused CPU time: 8.0 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235432             808.0        
+235432.batch       808.0     0.0
+235432.apptainer   808.0     2.7
+
+Job 235432 completed at Thu Mar 12 02:20:25 CET 2026
+Starting job 235465 on gpu-1-98 on Olivia at Thu Mar 12 02:20:34 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-98
+SLURM_JOB_ID: 235465
+SLURM_NODELIST: gpu-1-98
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_2_0_eng-Latn --data_filename eng/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_2_0_eng-Latn', data_filename='eng/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/eng
+Model loaded
+(770, 38)
+Pandas Apply:   0%|          | 0/770 [00:00<?, ?it/s]Pandas Apply:   1%|          | 7/770 [00:00<00:11, 64.41it/s]Pandas Apply:   2%|▏         | 14/770 [00:00<00:12, 60.59it/s]Pandas Apply:   3%|▎         | 21/770 [00:00<00:12, 58.32it/s]Pandas Apply:   4%|▎         | 27/770 [00:00<00:12, 57.91it/s]Pandas Apply:   4%|▍         | 33/770 [00:00<00:13, 55.71it/s]Pandas Apply:   5%|▌         | 39/770 [00:00<00:12, 56.62it/s]Pandas Apply:   6%|▌         | 45/770 [00:00<00:14, 50.35it/s]Pandas Apply:   7%|▋         | 51/770 [00:00<00:14, 48.28it/s]Pandas Apply:   7%|▋         | 57/770 [00:01<00:14, 50.19it/s]Pandas Apply:   8%|▊         | 63/770 [00:01<00:13, 51.69it/s]Pandas Apply:   9%|▉         | 69/770 [00:01<00:13, 52.09it/s]Pandas Apply:  10%|▉         | 75/770 [00:01<00:13, 53.13it/s]Pandas Apply:  11%|█         | 81/770 [00:01<00:13, 52.38it/s]Pandas Apply:  11%|█▏        | 87/770 [00:01<00:12, 52.62it/s]Pandas Apply:  12%|█▏        | 93/770 [00:01<00:12, 52.44it/s]Pandas Apply:  13%|█▎        | 99/770 [00:01<00:12, 52.96it/s]Pandas Apply:  14%|█▎        | 105/770 [00:01<00:12, 53.63it/s]Pandas Apply:  14%|█▍        | 111/770 [00:02<00:12, 54.30it/s]Pandas Apply:  15%|█▌        | 117/770 [00:02<00:12, 54.29it/s]Pandas Apply:  16%|█▌        | 123/770 [00:02<00:11, 54.84it/s]Pandas Apply:  17%|█▋        | 129/770 [00:02<00:11, 55.07it/s]Pandas Apply:  18%|█▊        | 135/770 [00:02<00:11, 54.24it/s]Pandas Apply:  18%|█▊        | 141/770 [00:02<00:11, 54.76it/s]Pandas Apply:  19%|█▉        | 147/770 [00:02<00:11, 55.34it/s]Pandas Apply:  20%|█▉        | 153/770 [00:02<00:11, 55.27it/s]Pandas Apply:  21%|██        | 159/770 [00:02<00:10, 55.75it/s]Pandas Apply:  21%|██▏       | 165/770 [00:03<00:10, 55.68it/s]Pandas Apply:  22%|██▏       | 171/770 [00:03<00:10, 55.66it/s]Pandas Apply:  23%|██▎       | 177/770 [00:03<00:10, 55.68it/s]Pandas Apply:  24%|██▍       | 183/770 [00:03<00:10, 54.39it/s]Pandas Apply:  25%|██▍       | 189/770 [00:03<00:10, 54.40it/s]Pandas Apply:  25%|██▌       | 195/770 [00:03<00:10, 54.74it/s]Pandas Apply:  26%|██▌       | 201/770 [00:03<00:10, 55.26it/s]Pandas Apply:  27%|██▋       | 207/770 [00:03<00:10, 55.38it/s]Pandas Apply:  28%|██▊       | 213/770 [00:03<00:10, 55.47it/s]Pandas Apply:  28%|██▊       | 219/770 [00:04<00:09, 55.70it/s]Pandas Apply:  29%|██▉       | 225/770 [00:04<00:09, 55.59it/s]Pandas Apply:  30%|███       | 231/770 [00:04<00:09, 55.67it/s]Pandas Apply:  31%|███       | 237/770 [00:04<00:09, 54.41it/s]Pandas Apply:  32%|███▏      | 243/770 [00:04<00:09, 54.46it/s]Pandas Apply:  32%|███▏      | 249/770 [00:04<00:09, 54.21it/s]Pandas Apply:  33%|███▎      | 255/770 [00:04<00:09, 54.86it/s]Pandas Apply:  34%|███▍      | 261/770 [00:04<00:09, 55.09it/s]Pandas Apply:  35%|███▍      | 267/770 [00:04<00:09, 55.09it/s]Pandas Apply:  35%|███▌      | 273/770 [00:05<00:08, 55.27it/s]Pandas Apply:  36%|███▌      | 279/770 [00:05<00:08, 55.78it/s]Pandas Apply:  37%|███▋      | 285/770 [00:05<00:08, 55.68it/s]Pandas Apply:  38%|███▊      | 291/770 [00:05<00:08, 55.48it/s]Pandas Apply:  39%|███▊      | 297/770 [00:05<00:08, 55.53it/s]Pandas Apply:  39%|███▉      | 303/770 [00:05<00:08, 55.64it/s]Pandas Apply:  40%|████      | 309/770 [00:05<00:08, 56.18it/s]Pandas Apply:  41%|████      | 315/770 [00:05<00:08, 56.26it/s]Pandas Apply:  42%|████▏     | 321/770 [00:05<00:07, 56.27it/s]Pandas Apply:  42%|████▏     | 327/770 [00:05<00:07, 56.41it/s]Pandas Apply:  43%|████▎     | 333/770 [00:06<00:07, 56.24it/s]Pandas Apply:  44%|████▍     | 339/770 [00:06<00:07, 56.46it/s]Pandas Apply:  45%|████▍     | 345/770 [00:06<00:07, 56.69it/s]Pandas Apply:  46%|████▌     | 351/770 [00:06<00:07, 56.42it/s]Pandas Apply:  46%|████▋     | 357/770 [00:06<00:07, 56.45it/s]Pandas Apply:  47%|████▋     | 363/770 [00:06<00:07, 56.25it/s]Pandas Apply:  48%|████▊     | 369/770 [00:06<00:07, 54.56it/s]Pandas Apply:  49%|████▊     | 375/770 [00:06<00:07, 53.55it/s]Pandas Apply:  49%|████▉     | 381/770 [00:06<00:07, 54.52it/s]Pandas Apply:  50%|█████     | 387/770 [00:07<00:07, 53.67it/s]Pandas Apply:  51%|█████     | 393/770 [00:07<00:06, 54.16it/s]Pandas Apply:  52%|█████▏    | 399/770 [00:07<00:06, 54.61it/s]Pandas Apply:  53%|█████▎    | 405/770 [00:07<00:06, 55.03it/s]Pandas Apply:  53%|█████▎    | 411/770 [00:07<00:06, 55.25it/s]Pandas Apply:  54%|█████▍    | 417/770 [00:07<00:06, 55.47it/s]Pandas Apply:  55%|█████▍    | 423/770 [00:07<00:06, 55.36it/s]Pandas Apply:  56%|█████▌    | 429/770 [00:07<00:06, 55.16it/s]Pandas Apply:  56%|█████▋    | 435/770 [00:07<00:06, 54.89it/s]Pandas Apply:  57%|█████▋    | 441/770 [00:08<00:05, 55.17it/s]Pandas Apply:  58%|█████▊    | 447/770 [00:08<00:05, 55.79it/s]Pandas Apply:  59%|█████▉    | 453/770 [00:08<00:05, 56.14it/s]Pandas Apply:  60%|█████▉    | 459/770 [00:08<00:05, 56.55it/s]Pandas Apply:  60%|██████    | 465/770 [00:08<00:05, 56.21it/s]Pandas Apply:  61%|██████    | 471/770 [00:08<00:05, 56.26it/s]Pandas Apply:  62%|██████▏   | 477/770 [00:08<00:05, 49.76it/s]Pandas Apply:  63%|██████▎   | 483/770 [00:08<00:05, 50.16it/s]Pandas Apply:  64%|██████▎   | 489/770 [00:08<00:05, 51.81it/s]Pandas Apply:  64%|██████▍   | 495/770 [00:09<00:05, 53.37it/s]Pandas Apply:  65%|██████▌   | 501/770 [00:09<00:04, 54.30it/s]Pandas Apply:  66%|██████▌   | 507/770 [00:09<00:04, 54.69it/s]Pandas Apply:  67%|██████▋   | 513/770 [00:09<00:04, 54.57it/s]Pandas Apply:  67%|██████▋   | 519/770 [00:09<00:04, 55.48it/s]Pandas Apply:  68%|██████▊   | 525/770 [00:09<00:04, 55.49it/s]Pandas Apply:  69%|██████▉   | 531/770 [00:09<00:04, 54.64it/s]Pandas Apply:  70%|██████▉   | 537/770 [00:09<00:04, 55.16it/s]Pandas Apply:  71%|███████   | 543/770 [00:09<00:04, 55.62it/s]Pandas Apply:  71%|███████▏  | 549/770 [00:10<00:03, 55.89it/s]Pandas Apply:  72%|███████▏  | 555/770 [00:10<00:03, 55.92it/s]Pandas Apply:  73%|███████▎  | 561/770 [00:10<00:03, 56.28it/s]Pandas Apply:  74%|███████▎  | 567/770 [00:10<00:03, 56.36it/s]Pandas Apply:  74%|███████▍  | 573/770 [00:10<00:03, 55.80it/s]Pandas Apply:  75%|███████▌  | 579/770 [00:10<00:03, 55.69it/s]Pandas Apply:  76%|███████▌  | 585/770 [00:10<00:03, 54.50it/s]Pandas Apply:  77%|███████▋  | 591/770 [00:10<00:03, 53.65it/s]Pandas Apply:  78%|███████▊  | 597/770 [00:10<00:03, 54.56it/s]Pandas Apply:  78%|███████▊  | 603/770 [00:10<00:03, 55.03it/s]Pandas Apply:  79%|███████▉  | 609/770 [00:11<00:03, 51.13it/s]Pandas Apply:  80%|███████▉  | 615/770 [00:11<00:02, 52.34it/s]Pandas Apply:  81%|████████  | 621/770 [00:11<00:02, 53.60it/s]Pandas Apply:  81%|████████▏ | 627/770 [00:11<00:02, 54.34it/s]Pandas Apply:  82%|████████▏ | 633/770 [00:11<00:02, 54.79it/s]Pandas Apply:  83%|████████▎ | 639/770 [00:11<00:02, 55.12it/s]Pandas Apply:  84%|████████▍ | 645/770 [00:11<00:02, 55.28it/s]Pandas Apply:  85%|████████▍ | 651/770 [00:11<00:02, 54.96it/s]Pandas Apply:  85%|████████▌ | 657/770 [00:11<00:02, 55.60it/s]Pandas Apply:  86%|████████▌ | 663/770 [00:12<00:01, 56.04it/s]Pandas Apply:  87%|████████▋ | 669/770 [00:12<00:01, 56.31it/s]Pandas Apply:  88%|████████▊ | 675/770 [00:12<00:01, 55.94it/s]Pandas Apply:  88%|████████▊ | 681/770 [00:12<00:01, 55.97it/s]Pandas Apply:  89%|████████▉ | 687/770 [00:12<00:01, 53.70it/s]Pandas Apply:  90%|█████████ | 693/770 [00:12<00:01, 54.20it/s]Pandas Apply:  91%|█████████ | 699/770 [00:12<00:01, 54.41it/s]Pandas Apply:  92%|█████████▏| 705/770 [00:12<00:01, 54.63it/s]Pandas Apply:  92%|█████████▏| 711/770 [00:12<00:01, 55.18it/s]Pandas Apply:  93%|█████████▎| 717/770 [00:13<00:00, 55.41it/s]Pandas Apply:  94%|█████████▍| 723/770 [00:13<00:00, 55.86it/s]Pandas Apply:  95%|█████████▍| 729/770 [00:13<00:00, 52.99it/s]Pandas Apply:  95%|█████████▌| 735/770 [00:13<00:00, 54.27it/s]Pandas Apply:  96%|█████████▌| 741/770 [00:13<00:00, 54.19it/s]Pandas Apply:  97%|█████████▋| 747/770 [00:13<00:00, 54.89it/s]Pandas Apply:  98%|█████████▊| 753/770 [00:13<00:00, 54.67it/s]Pandas Apply:  99%|█████████▊| 759/770 [00:13<00:00, 55.08it/s]Pandas Apply:  99%|█████████▉| 765/770 [00:13<00:00, 55.91it/s]Pandas Apply: 100%|██████████| 770/770 [00:14<00:00, 54.72it/s]
+acc 0.903
+
+Job 235465 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T02:20:33; waited 1.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   55.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+235465               1            0.0 %  2026-03-12T02:20:34   55.0 s  0
+235465.batch         1      1     0.1 %  2026-03-12T02:20:34   55.0 s  0
+235465.apptainer     1      1     0.0 %  2026-03-12T02:20:35   54.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 54.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+235465             808.0        
+235465.batch       808.0     0.1
+235465.apptainer   808.0     6.7
+
+Job 235465 completed at Thu Mar 12 02:21:30 CET 2026
