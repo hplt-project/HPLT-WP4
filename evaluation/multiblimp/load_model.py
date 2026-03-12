@@ -80,5 +80,5 @@ def load_hf_model(model_name: str, no_cache=False, arch=DECODER, **kwargs):
     elif arch == ENCODER_DECODER:
         scorer_model = scorer.Seq2SeqScorer(model, tokenizer=tokenizer, device="cuda")
     elif arch == ENCODER:
-        scorer_model = scorer.MaskedLMScorer(model, tokenizer=tokenizer)
+        scorer_model = scorer.MaskedLMScorer(model, tokenizer=tokenizer, device="cuda")
     return scorer_model
