@@ -1,0 +1,44 @@
+Starting job 239505 on gpu-1-71 on Olivia at Fri Mar 13 01:59:40 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-71
+SLURM_JOB_ID: 239505
+SLURM_NODELIST: gpu-1-71
+SLURM_NTASKS: 1
+--model_name /cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/mkd_Cyrl_31250 --data_filename mkd/data.tsv --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='/cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/mkd_Cyrl_31250', data_filename='mkd/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/mkd
+/cluster/work/projects/nn9851k/hf_cache/
+Model loaded
+(39, 38)
+Pandas Apply:   0%|          | 0/39 [00:00<?, ?it/s]Pandas Apply:  10%|█         | 4/39 [00:00<00:01, 27.87it/s]Pandas Apply:  18%|█▊        | 7/39 [00:00<00:01, 25.96it/s]Pandas Apply:  26%|██▌       | 10/39 [00:00<00:01, 24.96it/s]Pandas Apply:  33%|███▎      | 13/39 [00:00<00:01, 24.54it/s]Pandas Apply:  41%|████      | 16/39 [00:00<00:00, 24.36it/s]Pandas Apply:  49%|████▊     | 19/39 [00:00<00:00, 24.18it/s]Pandas Apply:  56%|█████▋    | 22/39 [00:00<00:00, 24.16it/s]Pandas Apply:  64%|██████▍   | 25/39 [00:01<00:00, 24.28it/s]Pandas Apply:  72%|███████▏  | 28/39 [00:01<00:00, 24.27it/s]Pandas Apply:  79%|███████▉  | 31/39 [00:01<00:00, 24.33it/s]Pandas Apply:  87%|████████▋ | 34/39 [00:01<00:00, 24.40it/s]Pandas Apply:  95%|█████████▍| 37/39 [00:01<00:00, 24.39it/s]Pandas Apply: 100%|██████████| 39/39 [00:01<00:00, 23.89it/s]
+acc 1.0
+
+Job 239505 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-13T01:59:30; waited 10.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   21.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+239505               1            0.0 %  2026-03-13T01:59:40   21.0 s  0
+239505.batch         1      1     0.3 %  2026-03-13T01:59:40   21.0 s  0
+239505.apptainer     1      1     0.0 %  2026-03-13T01:59:41   20.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 20.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+239505             808.0        
+239505.batch       808.0     0.1
+239505.apptainer   808.0     7.1
+
+Job 239505 completed at Fri Mar 13 02:00:01 CET 2026

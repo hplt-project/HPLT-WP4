@@ -1,0 +1,44 @@
+Starting job 239486 on gpu-1-104 on Olivia at Fri Mar 13 01:59:40 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-104
+SLURM_JOB_ID: 239486
+SLURM_NODELIST: gpu-1-104
+SLURM_NTASKS: 1
+--model_name /cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/dan_Latn_31250 --data_filename dan/data.tsv --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='/cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/dan_Latn_31250', data_filename='dan/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/dan
+/cluster/work/projects/nn9851k/hf_cache/
+Model loaded
+(50, 38)
+Pandas Apply:   0%|          | 0/50 [00:00<?, ?it/s]Pandas Apply:   8%|▊         | 4/50 [00:00<00:01, 29.48it/s]Pandas Apply:  14%|█▍        | 7/50 [00:00<00:01, 25.14it/s]Pandas Apply:  20%|██        | 10/50 [00:00<00:01, 22.74it/s]Pandas Apply:  26%|██▌       | 13/50 [00:00<00:01, 23.00it/s]Pandas Apply:  32%|███▏      | 16/50 [00:00<00:01, 22.90it/s]Pandas Apply:  38%|███▊      | 19/50 [00:00<00:01, 22.50it/s]Pandas Apply:  44%|████▍     | 22/50 [00:00<00:01, 22.62it/s]Pandas Apply:  50%|█████     | 25/50 [00:01<00:01, 22.82it/s]Pandas Apply:  56%|█████▌    | 28/50 [00:01<00:00, 22.46it/s]Pandas Apply:  62%|██████▏   | 31/50 [00:01<00:00, 22.66it/s]Pandas Apply:  68%|██████▊   | 34/50 [00:01<00:00, 22.56it/s]Pandas Apply:  74%|███████▍  | 37/50 [00:01<00:00, 22.67it/s]Pandas Apply:  80%|████████  | 40/50 [00:01<00:00, 22.78it/s]Pandas Apply:  86%|████████▌ | 43/50 [00:01<00:00, 22.85it/s]Pandas Apply:  92%|█████████▏| 46/50 [00:01<00:00, 23.07it/s]Pandas Apply:  98%|█████████▊| 49/50 [00:02<00:00, 23.07it/s]Pandas Apply: 100%|██████████| 50/50 [00:02<00:00, 22.56it/s]
+acc 1.0
+
+Job 239486 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-13T01:59:30; waited 10.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   21.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+239486               1            0.0 %  2026-03-13T01:59:40   21.0 s  0
+239486.batch         1      1     0.3 %  2026-03-13T01:59:40   21.0 s  0
+239486.apptainer     1      1     0.0 %  2026-03-13T01:59:41   20.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 20.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+239486             808.0        
+239486.batch       808.0     0.1
+239486.apptainer   808.0     7.1
+
+Job 239486 completed at Fri Mar 13 02:00:02 CET 2026

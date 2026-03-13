@@ -1,0 +1,43 @@
+Starting job 239304 on gpu-1-110 on Olivia at Thu Mar 12 23:27:05 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-110
+SLURM_JOB_ID: 239304
+SLURM_NODELIST: gpu-1-110
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_sv --data_filename swe/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_sv', data_filename='swe/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/swe
+Model loaded
+(201, 38)
+Pandas Apply:   0%|          | 0/201 [00:00<?, ?it/s]Pandas Apply:   3%|▎         | 6/201 [00:00<00:03, 50.73it/s]Pandas Apply:   6%|▌         | 12/201 [00:00<00:04, 44.37it/s]Pandas Apply:   8%|▊         | 17/201 [00:00<00:04, 42.92it/s]Pandas Apply:  11%|█         | 22/201 [00:00<00:04, 43.40it/s]Pandas Apply:  13%|█▎        | 27/201 [00:00<00:03, 43.77it/s]Pandas Apply:  16%|█▌        | 32/201 [00:00<00:03, 43.56it/s]Pandas Apply:  18%|█▊        | 37/201 [00:00<00:03, 44.76it/s]Pandas Apply:  21%|██        | 42/201 [00:00<00:03, 46.19it/s]Pandas Apply:  24%|██▍       | 48/201 [00:01<00:03, 47.92it/s]Pandas Apply:  26%|██▋       | 53/201 [00:01<00:03, 45.28it/s]Pandas Apply:  29%|██▉       | 58/201 [00:01<00:03, 46.48it/s]Pandas Apply:  31%|███▏      | 63/201 [00:01<00:02, 47.34it/s]Pandas Apply:  34%|███▍      | 68/201 [00:01<00:02, 48.09it/s]Pandas Apply:  37%|███▋      | 74/201 [00:01<00:02, 49.91it/s]Pandas Apply:  40%|███▉      | 80/201 [00:01<00:02, 49.84it/s]Pandas Apply:  43%|████▎     | 86/201 [00:01<00:02, 50.49it/s]Pandas Apply:  46%|████▌     | 92/201 [00:01<00:02, 49.42it/s]Pandas Apply:  48%|████▊     | 97/201 [00:02<00:02, 48.62it/s]Pandas Apply:  51%|█████     | 102/201 [00:02<00:02, 48.34it/s]Pandas Apply:  53%|█████▎    | 107/201 [00:02<00:01, 48.23it/s]Pandas Apply:  56%|█████▌    | 113/201 [00:02<00:01, 49.40it/s]Pandas Apply:  59%|█████▉    | 119/201 [00:02<00:01, 50.53it/s]Pandas Apply:  62%|██████▏   | 125/201 [00:02<00:01, 51.42it/s]Pandas Apply:  65%|██████▌   | 131/201 [00:02<00:01, 51.38it/s]Pandas Apply:  68%|██████▊   | 137/201 [00:02<00:01, 51.49it/s]Pandas Apply:  71%|███████   | 143/201 [00:02<00:01, 51.82it/s]Pandas Apply:  74%|███████▍  | 149/201 [00:03<00:00, 52.55it/s]Pandas Apply:  77%|███████▋  | 155/201 [00:03<00:00, 52.97it/s]Pandas Apply:  80%|████████  | 161/201 [00:03<00:00, 53.33it/s]Pandas Apply:  83%|████████▎ | 167/201 [00:03<00:00, 51.28it/s]Pandas Apply:  86%|████████▌ | 173/201 [00:03<00:00, 52.72it/s]Pandas Apply:  89%|████████▉ | 179/201 [00:03<00:00, 53.76it/s]Pandas Apply:  92%|█████████▏| 185/201 [00:03<00:00, 54.21it/s]Pandas Apply:  95%|█████████▌| 191/201 [00:03<00:00, 54.33it/s]Pandas Apply:  98%|█████████▊| 197/201 [00:03<00:00, 54.27it/s]Pandas Apply: 100%|██████████| 201/201 [00:04<00:00, 49.49it/s]
+acc 0.945
+
+Job 239304 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T23:27:02; waited 3.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   2.4 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+239304               1            0.0 %  2026-03-12T23:27:05  144.0 s  0
+239304.batch         1      1     0.0 %  2026-03-12T23:27:05  144.0 s  0
+239304.apptainer     1      1     0.0 %  2026-03-12T23:27:06  143.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 2.4 CPU minutes
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+239304             808.0        
+239304.batch       808.0     0.1
+239304.apptainer   808.0     5.9
+
+Job 239304 completed at Thu Mar 12 23:29:30 CET 2026

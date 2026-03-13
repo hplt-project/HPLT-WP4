@@ -1,0 +1,44 @@
+Starting job 239514 on gpu-1-61 on Olivia at Fri Mar 13 01:59:40 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-61
+SLURM_JOB_ID: 239514
+SLURM_NODELIST: gpu-1-61
+SLURM_NTASKS: 1
+--model_name /cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/swe_Latn_31250 --data_filename swe/data.tsv --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='/cluster/work/projects/nn9851k/mariiaf/hplt/hplt_hf_models/swe_Latn_31250', data_filename='swe/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/swe
+/cluster/work/projects/nn9851k/hf_cache/
+Model loaded
+(201, 38)
+Pandas Apply:   0%|          | 0/201 [00:00<?, ?it/s]Pandas Apply:   2%|▏         | 4/201 [00:00<00:07, 26.86it/s]Pandas Apply:   3%|▎         | 7/201 [00:00<00:07, 24.75it/s]Pandas Apply:   5%|▍         | 10/201 [00:00<00:07, 24.02it/s]Pandas Apply:   6%|▋         | 13/201 [00:00<00:08, 23.21it/s]Pandas Apply:   8%|▊         | 16/201 [00:00<00:08, 23.04it/s]Pandas Apply:   9%|▉         | 19/201 [00:00<00:07, 23.27it/s]Pandas Apply:  11%|█         | 22/201 [00:00<00:07, 23.37it/s]Pandas Apply:  12%|█▏        | 25/201 [00:01<00:07, 23.36it/s]Pandas Apply:  14%|█▍        | 28/201 [00:01<00:07, 23.12it/s]Pandas Apply:  15%|█▌        | 31/201 [00:01<00:07, 23.25it/s]Pandas Apply:  17%|█▋        | 34/201 [00:01<00:07, 23.30it/s]Pandas Apply:  18%|█▊        | 37/201 [00:01<00:07, 23.40it/s]Pandas Apply:  20%|█▉        | 40/201 [00:01<00:06, 23.47it/s]Pandas Apply:  21%|██▏       | 43/201 [00:01<00:06, 23.49it/s]Pandas Apply:  23%|██▎       | 46/201 [00:01<00:06, 23.54it/s]Pandas Apply:  24%|██▍       | 49/201 [00:02<00:06, 23.51it/s]Pandas Apply:  26%|██▌       | 52/201 [00:02<00:06, 23.40it/s]Pandas Apply:  27%|██▋       | 55/201 [00:02<00:06, 23.41it/s]Pandas Apply:  29%|██▉       | 58/201 [00:02<00:06, 23.44it/s]Pandas Apply:  30%|███       | 61/201 [00:02<00:05, 23.51it/s]Pandas Apply:  32%|███▏      | 64/201 [00:02<00:05, 23.37it/s]Pandas Apply:  33%|███▎      | 67/201 [00:02<00:05, 23.49it/s]Pandas Apply:  35%|███▍      | 70/201 [00:02<00:05, 23.61it/s]Pandas Apply:  36%|███▋      | 73/201 [00:03<00:05, 23.52it/s]Pandas Apply:  38%|███▊      | 76/201 [00:03<00:05, 23.54it/s]Pandas Apply:  39%|███▉      | 79/201 [00:03<00:05, 23.56it/s]Pandas Apply:  41%|████      | 82/201 [00:03<00:05, 23.57it/s]Pandas Apply:  42%|████▏     | 85/201 [00:03<00:04, 23.65it/s]Pandas Apply:  44%|████▍     | 88/201 [00:03<00:04, 23.67it/s]Pandas Apply:  45%|████▌     | 91/201 [00:03<00:04, 23.61it/s]Pandas Apply:  47%|████▋     | 94/201 [00:03<00:04, 23.46it/s]Pandas Apply:  48%|████▊     | 97/201 [00:04<00:04, 23.54it/s]Pandas Apply:  50%|████▉     | 100/201 [00:04<00:04, 23.56it/s]Pandas Apply:  51%|█████     | 103/201 [00:04<00:04, 23.53it/s]Pandas Apply:  53%|█████▎    | 106/201 [00:04<00:04, 23.51it/s]Pandas Apply:  54%|█████▍    | 109/201 [00:04<00:03, 23.55it/s]Pandas Apply:  56%|█████▌    | 112/201 [00:04<00:03, 23.58it/s]Pandas Apply:  57%|█████▋    | 115/201 [00:04<00:03, 23.59it/s]Pandas Apply:  59%|█████▊    | 118/201 [00:05<00:03, 23.60it/s]Pandas Apply:  60%|██████    | 121/201 [00:05<00:03, 23.64it/s]Pandas Apply:  62%|██████▏   | 124/201 [00:05<00:03, 23.67it/s]Pandas Apply:  63%|██████▎   | 127/201 [00:05<00:03, 23.75it/s]Pandas Apply:  65%|██████▍   | 130/201 [00:05<00:02, 23.67it/s]Pandas Apply:  66%|██████▌   | 133/201 [00:05<00:02, 23.71it/s]Pandas Apply:  68%|██████▊   | 136/201 [00:05<00:02, 23.69it/s]Pandas Apply:  69%|██████▉   | 139/201 [00:05<00:02, 23.72it/s]Pandas Apply:  71%|███████   | 142/201 [00:06<00:02, 23.73it/s]Pandas Apply:  72%|███████▏  | 145/201 [00:06<00:02, 23.77it/s]Pandas Apply:  74%|███████▎  | 148/201 [00:06<00:02, 23.78it/s]Pandas Apply:  75%|███████▌  | 151/201 [00:06<00:02, 23.81it/s]Pandas Apply:  77%|███████▋  | 154/201 [00:06<00:01, 23.70it/s]Pandas Apply:  78%|███████▊  | 157/201 [00:06<00:01, 23.75it/s]Pandas Apply:  80%|███████▉  | 160/201 [00:06<00:01, 23.74it/s]Pandas Apply:  81%|████████  | 163/201 [00:06<00:01, 23.76it/s]Pandas Apply:  83%|████████▎ | 166/201 [00:07<00:01, 23.71it/s]Pandas Apply:  84%|████████▍ | 169/201 [00:07<00:01, 23.68it/s]Pandas Apply:  86%|████████▌ | 172/201 [00:07<00:01, 23.74it/s]Pandas Apply:  87%|████████▋ | 175/201 [00:07<00:01, 23.70it/s]Pandas Apply:  89%|████████▊ | 178/201 [00:07<00:00, 23.72it/s]Pandas Apply:  90%|█████████ | 181/201 [00:07<00:00, 23.78it/s]Pandas Apply:  92%|█████████▏| 184/201 [00:07<00:00, 23.78it/s]Pandas Apply:  93%|█████████▎| 187/201 [00:07<00:00, 23.77it/s]Pandas Apply:  95%|█████████▍| 190/201 [00:08<00:00, 23.77it/s]Pandas Apply:  96%|█████████▌| 193/201 [00:08<00:00, 23.76it/s]Pandas Apply:  98%|█████████▊| 196/201 [00:08<00:00, 23.86it/s]Pandas Apply:  99%|█████████▉| 199/201 [00:08<00:00, 23.76it/s]Pandas Apply: 100%|██████████| 201/201 [00:08<00:00, 23.50it/s]
+acc 1.0
+
+Job 239514 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-13T01:59:30; waited 10.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   28.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+239514               1            0.0 %  2026-03-13T01:59:40   28.0 s  0
+239514.batch         1      1     0.2 %  2026-03-13T01:59:40   28.0 s  0
+239514.apptainer     1      1     0.0 %  2026-03-13T01:59:41   27.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 27.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+239514             808.0        
+239514.batch       808.0     0.1
+239514.apptainer   808.0     7.1
+
+Job 239514 completed at Fri Mar 13 02:00:09 CET 2026

@@ -18,7 +18,7 @@ echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 echo "SLURM_NODELIST: $SLURM_NODELIST"
 echo "SLURM_NTASKS: $SLURM_NTASKS"
 
-SIF="/cluster/work/projects/nn9851k/mariiaf/hplt-container/pytorch2.7_cu2.9_py3.12_arm_minicons.sif"
+SIF="/cluster/projects/nn9851k/containers/pytorch2.7_cu2.9_py3.12_arm_numpy2.sif"
 
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error

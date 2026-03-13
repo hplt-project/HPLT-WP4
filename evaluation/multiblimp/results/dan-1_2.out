@@ -1,0 +1,43 @@
+Starting job 238505 on gpu-1-110 on Olivia at Thu Mar 12 18:06:36 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-110
+SLURM_JOB_ID: 238505
+SLURM_NODELIST: gpu-1-110
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_da --data_filename dan/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_da', data_filename='dan/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/dan
+Model loaded
+(50, 38)
+Pandas Apply:   0%|          | 0/50 [00:00<?, ?it/s]Pandas Apply:  10%|█         | 5/50 [00:00<00:01, 42.23it/s]Pandas Apply:  20%|██        | 10/50 [00:00<00:00, 40.24it/s]Pandas Apply:  30%|███       | 15/50 [00:00<00:00, 40.79it/s]Pandas Apply:  40%|████      | 20/50 [00:00<00:00, 42.40it/s]Pandas Apply:  50%|█████     | 25/50 [00:00<00:00, 42.52it/s]Pandas Apply:  60%|██████    | 30/50 [00:00<00:00, 41.96it/s]Pandas Apply:  70%|███████   | 35/50 [00:00<00:00, 42.72it/s]Pandas Apply:  80%|████████  | 40/50 [00:00<00:00, 44.30it/s]Pandas Apply:  90%|█████████ | 45/50 [00:01<00:00, 45.92it/s]Pandas Apply: 100%|██████████| 50/50 [00:01<00:00, 46.58it/s]Pandas Apply: 100%|██████████| 50/50 [00:01<00:00, 43.23it/s]
+acc 0.84
+
+Job 238505 consumed 0.0 billing hours and 0.1 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T18:06:28; waited 7.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   3.2 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+238505               1            0.0 %  2026-03-12T18:06:35  193.0 s  0
+238505.batch         1      1     0.0 %  2026-03-12T18:06:35  193.0 s  0
+238505.apptainer     1      1     0.0 %  2026-03-12T18:06:36  192.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 3.2 CPU minutes
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+238505             808.0        
+238505.batch       808.0     0.0
+238505.apptainer   808.0     5.8
+
+Job 238505 completed at Thu Mar 12 18:09:48 CET 2026

@@ -1,0 +1,43 @@
+Starting job 238899 on gpu-1-110 on Olivia at Thu Mar 12 22:38:12 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-110
+SLURM_JOB_ID: 238899
+SLURM_NODELIST: gpu-1-110
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_mk --data_filename mkd/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_mk', data_filename='mkd/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/mkd
+Model loaded
+(39, 38)
+Pandas Apply:   0%|          | 0/39 [00:00<?, ?it/s]Pandas Apply:  18%|█▊        | 7/39 [00:00<00:00, 60.57it/s]Pandas Apply:  36%|███▌      | 14/39 [00:00<00:00, 57.16it/s]Pandas Apply:  51%|█████▏    | 20/39 [00:00<00:00, 53.95it/s]Pandas Apply:  67%|██████▋   | 26/39 [00:00<00:00, 54.33it/s]Pandas Apply:  82%|████████▏ | 32/39 [00:00<00:00, 54.23it/s]Pandas Apply: 100%|██████████| 39/39 [00:00<00:00, 56.23it/s]Pandas Apply: 100%|██████████| 39/39 [00:00<00:00, 53.69it/s]
+acc 0.462
+
+Job 238899 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T22:38:05; waited 7.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   2.9 minutes
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+238899               1            0.0 %  2026-03-12T22:38:12  175.0 s  0
+238899.batch         1      1     0.0 %  2026-03-12T22:38:12  175.0 s  0
+238899.apptainer     1      1     0.0 %  2026-03-12T22:38:13  174.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 2.9 CPU minutes
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+238899             808.0        
+238899.batch       808.0     0.0
+238899.apptainer   808.0     6.1
+
+Job 238899 completed at Thu Mar 12 22:41:08 CET 2026

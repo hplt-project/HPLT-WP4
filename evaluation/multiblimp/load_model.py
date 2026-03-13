@@ -34,34 +34,39 @@ ENCODER_DECODER = "encoder-decoder"
 def load_hf_model(model_name: str, no_cache=False, arch=DECODER, **kwargs):
     model = None
     tokenizer = None
-
+    trust_remote_code = False
+    if "hplt" in model_name:
+        trust_remote_code = True    
     if no_cache:
         with tempfile.TemporaryDirectory() as tmpdirname:
             if arch == DECODER:
                 model = AutoModelForCausalLM.from_pretrained(
-                    model_name, cache_dir=tmpdirname, **kwargs
+                    model_name, cache_dir=tmpdirname, trust_remote_code=trust_remote_code, **kwargs,
                 )
             elif arch == ENCODER_DECODER:
                 model = AutoModelForSeq2SeqLM.from_pretrained(
-                    model_name, cache_dir=tmpdirname, trust_remote_code=True, **kwargs,
+                    model_name, cache_dir=tmpdirname, trust_remote_code=trust_remote_code, **kwargs,
                 )
             elif arch == ENCODER:
                 model = AutoModelForMaskedLM.from_pretrained(
-                    model_name, cache_dir=tmpdirname, trust_remote_code=True, **kwargs,
+                    model_name, cache_dir=tmpdirname, trust_remote_code=trust_remote_code, **kwargs,
                 )
             tokenizer = AutoTokenizer.from_pretrained(
                 model_name, cache_dir=tmpdirname, **kwargs
             )
     else:
         if arch == DECODER:
-            model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs)
+            print(kwargs["cache_dir"], flush=True)
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name, trust_remote_code=trust_remote_code, **kwargs,
+                )
         elif arch == ENCODER_DECODER:
             model = AutoModelForSeq2SeqLM.from_pretrained(
-                model_name, trust_remote_code=True, **kwargs,
+                model_name, trust_remote_code=trust_remote_code, **kwargs,
             )
         elif arch == ENCODER:
             model = AutoModelForMaskedLM.from_pretrained(
-                model_name, trust_remote_code=True, **kwargs,
+                model_name, trust_remote_code=trust_remote_code, **kwargs,
             )
         tokenizer = AutoTokenizer.from_pretrained(model_name, **kwargs)
     if 'hplt' in model_name:

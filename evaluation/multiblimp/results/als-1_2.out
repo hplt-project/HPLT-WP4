@@ -1,0 +1,43 @@
+Starting job 237947 on gpu-1-110 on Olivia at Thu Mar 12 14:03:34 CET 2026
+
+SLURM_TASKS_PER_NODE: 1
+SLURM_JOB_NODELIST: gpu-1-110
+SLURM_JOB_ID: 237947
+SLURM_NODELIST: gpu-1-110
+SLURM_NTASKS: 1
+--model_name HPLT/hplt_bert_base_sq --data_filename sqi/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
+INFO:    gocryptfs not found, will not be able to use gocryptfs
+/usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
+Namespace(model_name='HPLT/hplt_bert_base_sq', data_filename='sqi/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
+/cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/sqi
+Model loaded
+(243, 38)
+Pandas Apply:   0%|          | 0/243 [00:00<?, ?it/s]Pandas Apply:   3%|▎         | 7/243 [00:00<00:03, 64.82it/s]Pandas Apply:   6%|▌         | 14/243 [00:00<00:03, 60.41it/s]Pandas Apply:   9%|▊         | 21/243 [00:00<00:03, 57.66it/s]Pandas Apply:  12%|█▏        | 28/243 [00:00<00:03, 58.57it/s]Pandas Apply:  14%|█▍        | 34/243 [00:00<00:03, 57.98it/s]Pandas Apply:  16%|█▋        | 40/243 [00:00<00:03, 57.76it/s]Pandas Apply:  19%|█▉        | 46/243 [00:00<00:03, 58.31it/s]Pandas Apply:  21%|██▏       | 52/243 [00:00<00:03, 58.74it/s]Pandas Apply:  24%|██▍       | 58/243 [00:00<00:03, 58.00it/s]Pandas Apply:  26%|██▋       | 64/243 [00:01<00:03, 58.28it/s]Pandas Apply:  29%|██▉       | 70/243 [00:01<00:02, 58.35it/s]Pandas Apply:  31%|███▏      | 76/243 [00:01<00:02, 55.98it/s]Pandas Apply:  34%|███▎      | 82/243 [00:01<00:02, 57.02it/s]Pandas Apply:  36%|███▌      | 88/243 [00:01<00:02, 57.79it/s]Pandas Apply:  39%|███▊      | 94/243 [00:01<00:02, 56.16it/s]Pandas Apply:  41%|████      | 100/243 [00:01<00:02, 55.36it/s]Pandas Apply:  44%|████▎     | 106/243 [00:01<00:02, 56.35it/s]Pandas Apply:  47%|████▋     | 113/243 [00:01<00:02, 57.64it/s]Pandas Apply:  49%|████▉     | 120/243 [00:02<00:02, 58.42it/s]Pandas Apply:  52%|█████▏    | 126/243 [00:02<00:02, 58.25it/s]Pandas Apply:  54%|█████▍    | 132/243 [00:02<00:01, 58.55it/s]Pandas Apply:  57%|█████▋    | 138/243 [00:02<00:01, 58.91it/s]Pandas Apply:  59%|█████▉    | 144/243 [00:02<00:01, 58.71it/s]Pandas Apply:  62%|██████▏   | 150/243 [00:02<00:01, 58.93it/s]Pandas Apply:  64%|██████▍   | 156/243 [00:02<00:01, 59.02it/s]Pandas Apply:  67%|██████▋   | 162/243 [00:02<00:01, 57.60it/s]Pandas Apply:  69%|██████▉   | 168/243 [00:02<00:01, 57.32it/s]Pandas Apply:  72%|███████▏  | 174/243 [00:03<00:01, 57.88it/s]Pandas Apply:  74%|███████▍  | 180/243 [00:03<00:01, 58.14it/s]Pandas Apply:  77%|███████▋  | 186/243 [00:03<00:00, 58.09it/s]Pandas Apply:  79%|███████▉  | 192/243 [00:03<00:00, 55.61it/s]Pandas Apply:  81%|████████▏ | 198/243 [00:03<00:00, 56.71it/s]Pandas Apply:  84%|████████▍ | 205/243 [00:03<00:00, 57.93it/s]Pandas Apply:  87%|████████▋ | 211/243 [00:03<00:00, 58.28it/s]Pandas Apply:  89%|████████▉ | 217/243 [00:03<00:00, 58.19it/s]Pandas Apply:  92%|█████████▏| 223/243 [00:03<00:00, 57.84it/s]Pandas Apply:  94%|█████████▍| 229/243 [00:03<00:00, 57.75it/s]Pandas Apply:  97%|█████████▋| 235/243 [00:04<00:00, 58.26it/s]Pandas Apply:  99%|█████████▉| 241/243 [00:04<00:00, 58.26it/s]Pandas Apply: 100%|██████████| 243/243 [00:04<00:00, 57.61it/s]
+acc 0.938
+
+Job 237947 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+
+Submitted 2026-03-12T14:03:26; waited 8.0 seconds in the queue after becoming eligible to run.
+
+Requested wallclock time: 6.0 hours
+Elapsed wallclock time:   40.0 seconds
+
+Job exited normally.
+
+Task and CPU statistics:
+ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
+237947               1            0.0 %  2026-03-12T14:03:34   40.0 s  0
+237947.batch         1      1     0.2 %  2026-03-12T14:03:34   40.0 s  0
+237947.apptainer     1      1     0.0 %  2026-03-12T14:03:35   39.0 s  0
+
+Used CPU time:   0.1 CPU seconds
+Unused CPU time: 39.9 CPU seconds
+
+Memory statistics, in GiB:
+ID                 Alloc   Usage
+237947             808.0        
+237947.batch       808.0     0.1
+237947.apptainer   808.0     6.3
+
+Job 237947 completed at Thu Mar 12 14:04:14 CET 2026

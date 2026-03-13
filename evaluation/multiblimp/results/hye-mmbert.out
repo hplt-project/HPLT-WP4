@@ -1,68 +1,14 @@
-Starting job 235169 on gpu-1-69 on Olivia at Thu Mar 12 00:36:16 CET 2026
+Starting job 238646 on gpu-1-111 on Olivia at Thu Mar 12 20:03:14 CET 2026
 
 SLURM_TASKS_PER_NODE: 1
-SLURM_JOB_NODELIST: gpu-1-69
-SLURM_JOB_ID: 235169
-SLURM_NODELIST: gpu-1-69
+SLURM_JOB_NODELIST: gpu-1-111
+SLURM_JOB_ID: 238646
+SLURM_NODELIST: gpu-1-111
 SLURM_NTASKS: 1
 --model_name jhu-clsp/mmBERT-base --data_filename hye/data.tsv --mask_1 [MASK] --cache_dir /cluster/work/projects/nn9851k/hf_cache/
 INFO:    gocryptfs not found, will not be able to use gocryptfs
 /usr/bin/rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
 rm: cannot remove '/usr/local/cuda/compat/lib': Read-only file system
-
-A module that was compiled using NumPy 1.x cannot be run in
-NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
-versions of NumPy, modules must be compiled with NumPy 2.0.
-Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
-
-If you are a user of the module, the easiest solution will be to
-downgrade to 'numpy<2' or try to upgrade the affected module.
-We expect that some modules will need time to support NumPy 2.
-
-Traceback (most recent call last):  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 6, in <module>
-    import torch.cuda
-  File "/usr/local/lib/python3.12/dist-packages/torch/__init__.py", line 2242, in <module>
-    from torch import quantization as quantization  # usort: skip
-  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/__init__.py", line 2, in <module>
-    from .fake_quantize import *  # noqa: F403
-  File "/usr/local/lib/python3.12/dist-packages/torch/quantization/fake_quantize.py", line 10, in <module>
-    from torch.ao.quantization.fake_quantize import (
-  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/__init__.py", line 12, in <module>
-    from .pt2e._numeric_debugger import (  # noqa: F401
-  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/_numeric_debugger.py", line 9, in <module>
-    from torch.ao.quantization.pt2e.graph_utils import bfs_trace_with_node_process
-  File "/usr/local/lib/python3.12/dist-packages/torch/ao/quantization/pt2e/graph_utils.py", line 9, in <module>
-    from torch.export import ExportedProgram
-  File "/usr/local/lib/python3.12/dist-packages/torch/export/__init__.py", line 60, in <module>
-    from .decomp_utils import CustomDecompTable
-  File "/usr/local/lib/python3.12/dist-packages/torch/export/decomp_utils.py", line 5, in <module>
-    from torch._export.utils import (
-  File "/usr/local/lib/python3.12/dist-packages/torch/_export/__init__.py", line 48, in <module>
-    from .wrappers import _wrap_submodules
-  File "/usr/local/lib/python3.12/dist-packages/torch/_export/wrappers.py", line 7, in <module>
-    from torch._higher_order_ops.strict_mode import strict_mode
-  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/__init__.py", line 1, in <module>
-    from torch._higher_order_ops._invoke_quant import (
-  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/_invoke_quant.py", line 8, in <module>
-    from torch._higher_order_ops.base_hop import BaseHOP, FunctionWithNoFreeVars
-  File "/usr/local/lib/python3.12/dist-packages/torch/_higher_order_ops/base_hop.py", line 12, in <module>
-    from torch._subclasses.functional_tensor import disable_functional_mode
-  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 46, in <module>
-    class FunctionalTensor(torch.Tensor):
-  File "/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py", line 276, in FunctionalTensor
-    cpu = _conversion_method_template(device=torch.device("cpu"))
-/usr/local/lib/python3.12/dist-packages/torch/_subclasses/functional_tensor.py:276: UserWarning: Failed to initialize NumPy: 
-A module that was compiled using NumPy 1.x cannot be run in
-NumPy 2.0.0 as it may crash. To support both 1.x and 2.x
-versions of NumPy, modules must be compiled with NumPy 2.0.
-Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
-
-If you are a user of the module, the easiest solution will be to
-downgrade to 'numpy<2' or try to upgrade the affected module.
-We expect that some modules will need time to support NumPy 2.
-
- (Triggered internally at /opt/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:81.)
-  cpu = _conversion_method_template(device=torch.device("cpu"))
 Namespace(model_name='jhu-clsp/mmBERT-base', data_filename='hye/data.tsv', src_dir='./', results_dir=None, cache_dir='/cluster/work/projects/nn9851k/hf_cache/', hf_token=None, mask_1='[MASK]', mask_2='', eos='[SEP]')
 /cluster/home/mariiaf/.cache/huggingface/hub/datasets--jumelet--multiblimp/snapshots/de923efa8d2483d6b13364ee68e65308e990a991/hye
 Model loaded
@@ -71,10 +17,10 @@ Traceback (most recent call last):
   File "/usr/local/lib/python3.12/dist-packages/swifter/swifter.py", line 419, in apply
     tmp_df = func(sample, *args, **kwds)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 8, in run_score_pair
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 9, in run_score_pair
     sen_prob, wrong_prob = score_pair(
                            ^^^^^^^^^^^
-  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 50, in score_pair
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 52, in score_pair
     return scorer_model.sequence_score(stimuli, reduction=lambda x: x, PLL_metric='within_word_l2r')
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/usr/local/lib/python3.12/dist-packages/minicons/scorer.py", line 1218, in sequence_score
@@ -100,7 +46,7 @@ Traceback (most recent call last):
   File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/eval_model.py", line 75, in <module>
     df = score_tse(lm, fn=fn, arch=arch, mask_1=args.mask_1, mask_2=args.mask_2)
          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 29, in score_tse
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 30, in score_tse
     tse_df = tse_df.swifter.apply(run_score_pair, axis=1, result_type='expand', args=(model, mask_1, mask_2, arch))
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/usr/local/lib/python3.12/dist-packages/swifter/swifter.py", line 428, in apply
@@ -115,22 +61,22 @@ Traceback (most recent call last):
   File "<timeit-src>", line 6, in inner
   File "/usr/local/lib/python3.12/dist-packages/swifter/swifter.py", line 337, in wrapped
     self._obj.iloc[self._SAMPLE_INDEX].apply(
-  File "/usr/local/lib/python3.12/dist-packages/pandas/core/frame.py", line 10374, in apply
+  File "/usr/local/lib/python3.12/dist-packages/pandas/core/frame.py", line 12419, in apply
     return op.apply().__finalize__(self, method="apply")
            ^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 916, in apply
+  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 1015, in apply
     return self.apply_standard()
            ^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 1063, in apply_standard
+  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 1167, in apply_standard
     results, res_index = self.apply_series_generator()
                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+  File "/usr/local/lib/python3.12/dist-packages/pandas/core/apply.py", line 1183, in apply_series_generator
     results[i] = self.func(v, *self.args, **self.kwargs)
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 8, in run_score_pair
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 9, in run_score_pair
     sen_prob, wrong_prob = score_pair(
                            ^^^^^^^^^^^
-  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 50, in score_pair
+  File "/cluster/home/mariiaf/HPLT-WP4/evaluation/multiblimp/score.py", line 52, in score_pair
     return scorer_model.sequence_score(stimuli, reduction=lambda x: x, PLL_metric='within_word_l2r')
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/usr/local/lib/python3.12/dist-packages/minicons/scorer.py", line 1219, in sequence_score
@@ -139,72 +85,44 @@ Traceback (most recent call last):
   File "/usr/local/lib/python3.12/dist-packages/minicons/scorer.py", line 1147, in compute_stats
     output = self.model(token_ids, attention_mask=attention_masks)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
     return self._call_impl(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+  File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
     return forward_call(*args, **kwargs)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py", line 1077, in forward
-    self.compiled_head(last_hidden_state)
-  File "/usr/local/lib/python3.12/dist-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py", line 985, in compiled_head
-    @torch.compile(dynamic=True)
-  File "/usr/local/lib/python3.12/dist-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_functorch/aot_autograd.py", line 1201, in forward
-    return compiled_fn(full_args)
-           ^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 328, in runtime_wrapper
-    all_outs = call_func_at_runtime_with_args(
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
-    out = normalize_as_list(f(args))
-                            ^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 689, in inner_fn
-    outs = compiled_fn(args)
-           ^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 495, in wrapper
-    return compiled_fn(runtime_args)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_inductor/output_code.py", line 460, in __call__
-    return self.current_callable(inputs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/dist-packages/torch/_inductor/utils.py", line 2358, in run
-    return model(new_inputs)
-           ^^^^^^^^^^^^^^^^^
-  File "/tmp/torchinductor_mariiaf/tv/ctvefvywjgw4k45rwx6bsvsjgdc2syrbtiaub5ynfmtvzthsphkr.py", line 153, in call
-    buf5 = empty_strided_cuda((s0, 256000), (256000, 1), torch.float32)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 72.15 GiB. GPU 0 has a total capacity of 95.00 GiB of which 54.26 GiB is free. Including non-PyTorch memory, this process has 39.44 GiB memory in use. Of the allocated memory 1.61 GiB is allocated by PyTorch, and 37.12 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
-srun: error: gpu-1-69: task 0: Exited with exit code 1
-srun: Terminating StepId=235169.0
+  File "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py", line 1089, in forward
+    logits = _pad_modernbert_output(inputs=logits, indices=indices, batch=batch_size, seqlen=seq_len)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py", line 756, in _pad_modernbert_output
+    output = torch.zeros(batch * seqlen, *rest, dtype=inputs.dtype, device=inputs.device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 48.60 GiB. GPU 0 has a total capacity of 95.00 GiB of which 43.91 GiB is free. Including non-PyTorch memory, this process has 51.09 GiB memory in use. Of the allocated memory 50.07 GiB is allocated by PyTorch, and 324.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+srun: error: gpu-1-111: task 0: Exited with exit code 1
+srun: Terminating StepId=238646.0
 
-Job 235169 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
+Job 238646 consumed 0.0 billing hours and 0.0 GPU hours from project nn10029k.
 
-Submitted 2026-03-12T00:26:42; waited 9.6 minutes in the queue after becoming eligible to run.
+Submitted 2026-03-12T20:02:52; waited 22.0 seconds in the queue after becoming eligible to run.
 
 Requested wallclock time: 6.0 hours
-Elapsed wallclock time:   24.0 seconds
+Elapsed wallclock time:   38.0 seconds
 
 Job failed.
 
 Task and CPU statistics:
 ID                CPUs  Tasks  CPU util                Start  Elapsed  Exit status
-235169               1            0.0 %  2026-03-12T00:36:16   24.0 s  1
-235169.batch         1      1     0.3 %  2026-03-12T00:36:16   24.0 s  1
-235169.apptainer     1      1     0.0 %  2026-03-12T00:36:17   23.0 s  1
+238646               1            0.0 %  2026-03-12T20:03:14   38.0 s  1
+238646.batch         1      1     0.2 %  2026-03-12T20:03:14   38.0 s  1
+238646.apptainer     1      1     0.0 %  2026-03-12T20:03:15   37.0 s  1
 
 Used CPU time:   0.1 CPU seconds
-Unused CPU time: 23.9 CPU seconds
+Unused CPU time: 37.9 CPU seconds
 
 Memory statistics, in GiB:
 ID                 Alloc   Usage
-235169             808.0        
-235169.batch       808.0     0.0
-235169.apptainer   808.0     7.4
+238646             808.0        
+238646.batch       808.0     0.0
+238646.apptainer   808.0     7.8
 
-Job 235169 completed at Thu Mar 12 00:36:41 CET 2026
+Job 238646 completed at Thu Mar 12 20:03:52 CET 2026

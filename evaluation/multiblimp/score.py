@@ -1,5 +1,6 @@
 import pandas as pd
 import swifter
+import torch
 
 from load_model import DECODER, ENCODER_DECODER, ENCODER
 
@@ -47,4 +48,5 @@ def score_pair(scorer_model, sen, wrong_sen, arch, head, swap_head, mask_1, mask
             reduction=lambda x: x
         )
     elif arch == ENCODER:
-        return scorer_model.sequence_score(stimuli, reduction=lambda x: x, PLL_metric='within_word_l2r')
+        with torch.autocast(device_type="cuda"):
+            return scorer_model.sequence_score(stimuli, reduction=lambda x: x, PLL_metric='within_word_l2r')
