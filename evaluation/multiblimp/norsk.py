@@ -1,6 +1,10 @@
 from difflib import SequenceMatcher
 from functools import reduce
 
+import torch
+
+from load_model import ENCODER_DECODER, ENCODER, DECODER
+
 
 def mask(x1, x2, mask_symbol='▁<extra_id_$>', eos='</s>'):
     x1 += eos
@@ -48,23 +52,33 @@ def mask(x1, x2, mask_symbol='▁<extra_id_$>', eos='</s>'):
     return source_1.strip(), source_2.strip(), target_1.strip(), target_2.strip()
 
 
-def score_norsk(dataset, ilm_model, mask_symbol, eos, max_length=None):
+def score_norsk(dataset, model, mask_symbol, eos, arch, max_length=None):
     def score_norsk_pair(row):
-        sen_len = len(ilm_model.tokenizer.tokenize(row["source"]))
-        wrong_sen_len = len(ilm_model.tokenizer.tokenize(row["correction"]))
+        if arch == ENCODER_DECODER:
+            sen_len = len(model.tokenizer.tokenize(row["source"]))
+            wrong_sen_len = len(model.tokenizer.tokenize(row["correction"]))
 
-        if (max_length is not None) and (
-                (sen_len >= max_length) or (wrong_sen_len >= max_length)
-        ):
-            return 0.0, 0.0
-        wrong_sen, sen, wrong_target, target = mask(row["source"], row["correction"], mask_symbol, eos)
-        stimuli = [sen, wrong_sen]
-        answers = [target, wrong_target]
-        sen_prob, wrong_prob = ilm_model.conditional_score(
-            prefix=stimuli,
-            stimuli=answers,
-            reduction=lambda x: x
-        )
+            if (max_length is not None) and (
+                    (sen_len >= max_length) or (wrong_sen_len >= max_length)
+            ):
+                return 0.0, 0.0
+            wrong_sen, sen, wrong_target, target = mask(row["source"], row["correction"], mask_symbol, eos)
+            stimuli = [sen, wrong_sen]
+            answers = [target, wrong_target]
+            sen_prob, wrong_prob = model.conditional_score(
+                prefix=stimuli,
+                stimuli=answers,
+                reduction=lambda x: x
+            )
+        elif arch == ENCODER:
+            stimuli = [row["correction"], row["source"]]
+            with torch.autocast(device_type="cuda"):
+                sen_prob, wrong_prob = model.sequence_score(stimuli, reduction=lambda x: x, PLL_metric='within_word_l2r')
+        else:
+            stimuli = [row["correction"], row["source"]]
+            with torch.autocast(device_type="cuda"):
+                sen_prob, wrong_prob = model.sequence_score(stimuli, reduction=lambda x: x)
+
         sen_nll = -sen_prob.sum().item()
         wrong_nll = -wrong_prob.sum().item()
         delta = wrong_nll - sen_nll

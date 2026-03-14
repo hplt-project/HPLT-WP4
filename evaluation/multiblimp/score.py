@@ -5,9 +5,9 @@ import torch
 from load_model import DECODER, ENCODER_DECODER, ENCODER
 
 
-def run_score_pair(df_row_data, model, mask_1, mask_2, arch):
+def run_score_pair(df_row_data, model, mask_1, mask_2, arch, sen_name="sen", wrong_sen="wrong_sen"):
     sen_prob, wrong_prob = score_pair(
-            model, df_row_data.sen, df_row_data.wrong_sen, arch, df_row_data['head'], df_row_data.swap_head, mask_1, mask_2,
+            model, df_row_data[sen_name], df_row_data[wrong_sen], arch, df_row_data['head'], df_row_data.swap_head, mask_1, mask_2,
         )
 
     sen_nll = -sen_prob.sum().item()
@@ -20,21 +20,20 @@ def run_score_pair(df_row_data, model, mask_1, mask_2, arch):
         }
 
 
-def score_tse(model, fn: str, arch: str, mask_1: str, mask_2: str):
+def score_tse(model, fn: str, arch: str, mask_1: str, mask_2: str, sen_name: str, wrong_sen: str):
     tse_df = pd.read_csv(fn, sep="\t")
 
     tse_df["sen_prob"] = pd.Series(dtype=object).astype(object)
     tse_df["wrong_prob"] = pd.Series(dtype=object).astype(object)
 
     print(tse_df.shape, flush=True)
-    tse_df = tse_df.swifter.apply(run_score_pair, axis=1, result_type='expand', args=(model, mask_1, mask_2, arch))
+    tse_df = tse_df.swifter.apply(run_score_pair, axis=1, result_type='expand', args=(model, mask_1, mask_2, arch, sen_name, wrong_sen))
     tse_df["delta"] = tse_df.wrong_nll - tse_df.sen_nll
     return tse_df
 
 
 def score_pair(scorer_model, sen, wrong_sen, arch, head, swap_head, mask_1, mask_2):
     stimuli = [sen, wrong_sen]
-
     if arch == DECODER:
         return scorer_model.sequence_score(stimuli, reduction=lambda x: x)
     elif arch == ENCODER_DECODER:

@@ -65,6 +65,8 @@ if __name__ == "__main__":
         cache_dir=os.path.expanduser(args.cache_dir),
         device_map=0 if torch.cuda.is_available() else "cpu",
     )
+    sen_name = "sen"
+    wrong_sen = "wrong_sen"
     print("Model loaded")
     if not args.data_filename[:3] == 'nob':
         pair_files = glob(os.path.join(args.data_dir, "*.tsv"))
@@ -72,7 +74,7 @@ if __name__ == "__main__":
         pair_files = [data]
     for fn in sorted(pair_files):
         if isinstance(fn, str):
-            df = score_tse(lm, fn=fn, arch=arch, mask_1=args.mask_1, mask_2=args.mask_2)
+            df = score_tse(lm, fn=fn, arch=arch, mask_1=args.mask_1, mask_2=args.mask_2, sen_name=sen_name, wrong_sen=wrong_sen)
             results_dir = (
                 os.path.join("model_results", os.path.split(args.model_name)[-1])
                 if args.results_dir is None
@@ -88,4 +90,4 @@ if __name__ == "__main__":
             print(f"acc {round(df[df.delta>0].shape[0]/df.shape[0],3)}", flush=True)
         else:
             args.mask_1 = ' ' + args.mask_1 + ' '
-            score_norsk(fn, lm, mask_symbol=args.mask_1, eos=args.eos)
+            score_norsk(fn, lm, mask_symbol=args.mask_1, eos=args.eos, arch=arch)
