@@ -178,3 +178,5 @@ jhu-clsp/mmBERT-base	wikiann/ru	0.855
 jhu-clsp/mmBERT-base	wikiann/cs	0.904
 jhu-clsp/mmBERT-base	wikiann/id	0.914
 jhu-clsp/mmBERT-base	wikiann/ar	0.874
+jhu-clsp/mmBERT-base	wikiann/th	0.692
+jhu-clsp/mmBERT-base	wikiann/ta	0.854
