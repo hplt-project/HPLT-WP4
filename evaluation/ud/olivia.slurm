@@ -7,7 +7,7 @@
 #SBATCH --time=6:00:00
 #SBATCH --gpus=1
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=7
 #SBATCH --tasks-per-node=1
 #SBATCH --partition=accel
 #SBATCH --mem=0

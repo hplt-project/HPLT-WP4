@@ -16,6 +16,7 @@ from conllu import parse
 from transformers import AutoTokenizer
 
 from conll18_ud_eval import evaluate, load_conllu_file
+from constants import LANGS_MAPPING_IETF
 from dataset import Dataset
 from model import Model
 from lemma_rule import apply_lemma_rule
@@ -118,8 +119,8 @@ def load_data(args, tokenizer):
 def main():
     parser = ArgumentParser()
     parser.add_argument("--bidirectional", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--model", default="hplt", choices=("hplt", "mbert", "xlmr"))
-    parser.add_argument("--language", action="store", type=str, default="cs")
+    parser.add_argument("--model", default="hplt", choices=("hplt", "mbert", "xlmr", "mmbert"))
+    parser.add_argument("--language", action="store", type=str, default="ces_Latn")
     parser.add_argument("--batch_size", action="store", type=int, default=32)
     parser.add_argument("--lr", action="store", type=float, default=0.0005)
     parser.add_argument("--weight_decay", action="store", type=float, default=0.001)
@@ -145,24 +146,23 @@ def main():
         args.lr = 0.0001
         args.dropout = 0.5
         args.epochs = 60
-
+    if args.version == "1_2":
+        args.language = LANGS_MAPPING_IETF[args.language[:3] + args.language[-4]]
     if args.model == "hplt":
         if args.version == '3_0':
             args.model_path = os.path.join(
                 args.models_path, f"{args.language}_31250",
             )
         elif args.version == '1_2':
-            args.model_path = os.path.join(
-                args.models_path, f"hplt_bert_base_{args.language}",
-            )
+            args.model_path = f"HPLT/hplt_bert_base_{args.language}"
         else:
             args.model_path = os.path.join(args.models_path, args.language)
-        if not os.path.exists(args.model_path):
-            raise ValueError(f"Model {args.model_path} not found")
     elif args.model == "mbert":
-        args.model_path = f"bert-base-multilingual-cased"
+        args.model_path = "google-bert/bert-base-multilingual-cased"
     elif args.model == "xlmr":
-        args.model_path = f"xlm-roberta-base"
+        args.model_path = "FacebookAI/xlm-roberta-base"
+    elif args.model == "mmbert":
+        args.model_path = "jhu-clsp/mmBERT-base"
     else:
         raise ValueError(f"Unknown model {args.model}")
     print(args)

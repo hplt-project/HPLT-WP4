@@ -45,7 +45,7 @@ class Dataset(Dataset):
         self.random_mask = random_mask
 
         self.forms = [[current[1] for current in entry] for entry in entries]
-
+        self.offset = len(self.tokenizer.tokenize("|")) # 2 for xlm-roberta-base , 1 for mmbert, our models
         self.subwords, self.alignment = [], []
         n_splits, n = 0, 0
         for i_sentence, sentence in enumerate(self.forms):
@@ -54,17 +54,16 @@ class Dataset(Dataset):
                 space_before = (i == 0) or (not "SpaceAfter=No" in entries[i_sentence][i - 1][-1])
 
                 # very very ugly hack ;(
-                offset = 2 if "<mask>" == self.tokenizer.mask_token else 1
                 encoding = self.tokenizer(f"| {word}" if space_before else f"|{word}", add_special_tokens=False)
-                subwords += encoding.input_ids[offset:]
-                alignment += (len(encoding.input_ids) - offset) * [i + 1]
+                subwords += encoding.input_ids[self.offset:]
+                alignment += (len(encoding.input_ids) - self.offset) * [i + 1]
 
                 # assert len(encoding.input_ids) > offset, f"{word} {encoding.input_ids}"
                 # assert word == ''.join(tokenizer.decode(encoding.input_ids[offset:]).strip().split()), f"{word} != {tokenizer.decode(encoding.input_ids[offset:])}"
 
                 if not word.isalpha():
                     continue
-                n_splits += len(encoding.input_ids) - offset
+                n_splits += len(encoding.input_ids) - self.offset
                 n += 1
 
             if self.add_sep:
@@ -294,14 +293,13 @@ class Dataset(Dataset):
         for i, word in enumerate(self.forms[index]):
             space_before = (i == 0) or (not "SpaceAfter=No" in self.entries[index][i - 1][-1])
 
-            offset = 2 if "<mask>" == self.tokenizer.mask_token else 1
             encoding = self.tokenizer(f"| {word}" if space_before else f"|{word}", add_special_tokens=False)
             if self.random_mask and torch.rand([]).item() < 0.15:
-                subwords += (len(encoding.input_ids) - offset) * [self.tokenizer.mask_token_id]
+                subwords += (len(encoding.input_ids) - self.offset) * [self.tokenizer.mask_token_id]
             else:
-                subwords += encoding.input_ids[offset:]
+                subwords += encoding.input_ids[self.offset:]
 
-            alignment += (len(encoding.input_ids) - offset) * [i + 1]
+            alignment += (len(encoding.input_ids) - self.offset) * [i + 1]
 
         if len(subwords) > 512 - 1:
             assert len(self.forms[index]) <= 512 - 2
@@ -309,12 +307,11 @@ class Dataset(Dataset):
             for i, word in enumerate(self.forms[index]):
                 space_before = (i == 0) or (not "SpaceAfter=No" in self.entries[index][i - 1][-1])
 
-                offset = 2 if "<mask>" == self.tokenizer.mask_token else 1
                 encoding = self.tokenizer(f"| {word}" if space_before else f"|{word}", add_special_tokens=False)
                 if self.random_mask and torch.rand([]).item() < 0.15:
                     subwords += [self.tokenizer.mask_token_id]
                 else:
-                    subwords += encoding.input_ids[offset:offset+1]
+                    subwords += encoding.input_ids[self.offset:self.offset+1]
 
                 alignment += [i + 1]
 

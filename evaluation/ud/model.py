@@ -3,6 +3,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.amp import autocast
 from ufal.chu_liu_edmonds import chu_liu_edmonds
 from transformers import AutoModel
 
@@ -181,8 +182,10 @@ class EdgeClassifier(nn.Module):
 class Model(nn.Module):
     def __init__(self, args, dataset):
         super().__init__()
-
-        self.bert = AutoModel.from_pretrained(args.model_path, trust_remote_code=True)
+        if "hplt" in args.model_path:
+            self.bert = AutoModel.from_pretrained(args.model_path, trust_remote_code=True)
+        else:
+            self.bert = AutoModel.from_pretrained(args.model_path)
         try:
             self.n_layers = self.bert.config.num_hidden_layers
         except AttributeError:
@@ -217,10 +220,10 @@ class Model(nn.Module):
 
     def forward(self, x, alignment_mask, subword_lengths, word_lengths, upos_gold=None, head_gold=None):
         padding_mask = (torch.arange(x.size(1)).unsqueeze(0) < subword_lengths.unsqueeze(1)).to(x.device)
-        x = self.bert(x, padding_mask, output_hidden_states=True).hidden_states
+        with torch.autocast(device_type="cuda"):
+            x = self.bert(x, padding_mask, output_hidden_states=True).hidden_states
         x = torch.stack(x, dim=0)
         x = torch.einsum("lbsd,bst->lbtd", x, alignment_mask) / alignment_mask.sum(1).unsqueeze(-1).unsqueeze(0).clamp(min=1.0)
-
         # upos_x = torch.einsum("lbtd, l -> btd", x, torch.softmax(self.upos_layer_score, dim=0))
         upos_x = (x[:, :, 1:-1, :] * torch.softmax(self.upos_layer_score, dim=0).view(-1, 1, 1, 1)).sum(0)
         upos_x = self.dropout(self.layer_norm(upos_x))
