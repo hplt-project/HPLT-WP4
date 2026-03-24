@@ -13,7 +13,7 @@ bert-*.err
 */wandb/*
 
 tmp/
-
+*.bin
 # C extensions
 *.so
 
