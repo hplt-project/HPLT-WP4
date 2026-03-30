@@ -218,8 +218,7 @@ if __name__ == "__main__":
                         and not args.do_korean_pretokenization \
                         and not args.do_thai_pretokenization \
                         and not args.do_burmese_pretokenization \
-                        and not args.do_chinese_pretokenization \
-                        and not args.do_tamil_pretokenization:
+                        and not args.do_chinese_pretokenization:
                         yield text
                     else:
                         for i, paragraph in enumerate(text.split('\n')):

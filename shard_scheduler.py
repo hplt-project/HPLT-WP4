@@ -49,6 +49,7 @@ class ShardScheduler:
         self.filenames_not_first.reverse()
         self.filenames = [self.filenames[0]] + self.filenames_not_first # escape the situation of too large first batch
         self.olivia = args.olivia
+        self.n_validation_documents = args.n_validation_documents
         
 
     def _count_total_size(self):
@@ -76,7 +77,7 @@ class ShardScheduler:
         if self.olivia:
             script = "shard_worker_olivia"
         command = f"sbatch --job-name {self.language}-SHARD --chdir preprocessing --output {self.logs_dir}{self.language}-shard-%j.out preprocessing/{script}.sh" +  \
-        f" {','.join(self.current_input_files)} {self.shard_dir} {','.join(map(str, shards))} {self.sample_power}"
+        f" {','.join(self.current_input_files)} {self.shard_dir} {','.join(map(str, shards))} {self.sample_power} --n_validation_documents {self.n_validation_documents}"
         if not self.has_scheduled_validation:
             command += ' --create_validation'
         if self.n_training_documents:

@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --partition=normal
+#SBATCH --partition=small
 
 
 set -o errexit  # Exit the script on any error

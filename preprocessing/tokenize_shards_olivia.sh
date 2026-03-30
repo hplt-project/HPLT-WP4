@@ -4,7 +4,7 @@
 #SBATCH --time=20:00:00
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --partition=normal
+#SBATCH --partition=small
 #SBATCH --mem-per-cpu=7G
 
 set -o errexit  # Exit the script on any error

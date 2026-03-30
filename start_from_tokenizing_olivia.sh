@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --partition=normal
+#SBATCH --partition=small
 #SBATCH --output=/cluster/work/projects/nn9851k/mariiaf/hplt/logs/schedule-%j.out
 
 

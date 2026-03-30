@@ -19,10 +19,11 @@ def parse_args():
     parser.add_argument('--create_validation', action='store_true')
     parser.add_argument('--sample_power', type=float, default=0.0)
     parser.add_argument('--docs_to_pick', type=int, default=0)
+    parser.add_argument('--n_validation_documents', type=int, default=10_000)
     return parser.parse_args()
 
 
-def shard(input_files, output_dir, shards, create_validation=False, sample_power=0.0):
+def shard(input_files, output_dir, shards, create_validation=False, sample_power=0.0, n_validation_documents=10_000):
 
     random.seed(42)
 
@@ -35,7 +36,6 @@ def shard(input_files, output_dir, shards, create_validation=False, sample_power
     if create_validation:
         validation_file = gzip.open(os.path.join(output_dir, "validation.jsonl.gz"), "wt")
 
-    n_validation_documents = 10_000
     n_processed_documents = 0
     n_rejected_documents = 0
 
@@ -162,4 +162,4 @@ if __name__ == "__main__":
     if args.docs_to_pick:
         shard_sample(args.input_files, args.output_dir, args.shards, args, args.create_validation)
     else:
-        shard(args.input_files, args.output_dir, args.shards, args.create_validation, args.sample_power)
+        shard(args.input_files, args.output_dir, args.shards, args.create_validation, args.sample_power, args.n_validation_documents)
