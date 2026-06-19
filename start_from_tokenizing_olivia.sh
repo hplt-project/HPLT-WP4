@@ -10,20 +10,12 @@
 #SBATCH --partition=small
 #SBATCH --output=/cluster/work/projects/nn9851k/mariiaf/hplt/logs/schedule-%j.out
 
-
-if [ -z $SLURM_JOB_ID ]; then
-    mkdir -p /cluster/work/projects/nn9851k/mariiaf/hplt/logs
-    sbatch --job-name "${1}-SCHEDULE" --output "/cluster/work/projects/nn9851k/mariiaf/hplt/logs/${1}-schedule-%j.out" "$0" "$@"
-    exit
-fi
-
 set -o errexit  # Exit the script on any error
 set -o nounset  # Treat any unset variables as an error
 
-LANGS=${@}
+TOKENIZER_PATH=${1}
+LANG=${2}
+OTHER_ARGS=${@:3}
 # run the script
-for lang in $LANGS
-do
-  echo "Running schedule.py"
-  python3 start_from_tokenizing.py --language $lang --output_dir /cluster/work/projects/nn9851k/mariiaf/hplt/ --tokenize_train --olivia
-done
+echo "Running schedule.py"
+python3 start_from_tokenizing.py --language $LANG --output_dir /cluster/work/projects/nn9851k/mariiaf/hplt/ --tokenize_train --olivia --tokenizer $TOKENIZER_PATH $OTHER_ARGS

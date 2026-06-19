@@ -15,6 +15,8 @@ def parse_args():
     parser.add_argument('--tokenize_train', action='store_true')
     parser.add_argument('--run_training', action='store_true')
     parser.add_argument('--olivia', action='store_true')
+    parser.add_argument('--lowercase', action='store_true')
+    parser.add_argument('--tokenizer', default="")
     return parser.parse_args()
 
 
@@ -28,8 +30,13 @@ def schedule(language, output_dir, args):
     script = "tokenize_shards"
     if args.olivia:
         script = "tokenize_shards_olivia"
+    if not args.tokenizer:
+        tokenizer_path = os.path.join(output_dir, "tokenizer.json")
+    else:
+        tokenizer_path = args.tokenizer
     if args.tokenize_train:
         shard_files = os.listdir(shard_dir)
+        assert len(shard_files) > 0
         number_of_shards = len(shard_files)
         print(f"Number of shards: {number_of_shards}")
         if "validation.jsonl.gz" in shard_files:
@@ -51,8 +58,10 @@ def schedule(language, output_dir, args):
             n_files_in_batch = len(input_shard_files)
             input_shard_files = ",".join(input_shard_files)
             output_shard_files = ",".join(output_shard_files)
-            tokenizer_path = os.path.join(output_dir, "tokenizer.json")
+            
             command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node={n_files_in_batch} --chdir preprocessing --output /cluster/work/projects/nn9851k/mariiaf/hplt/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards_olivia.sh {input_shard_files} {output_shard_files} {tokenizer_path}"
+            if args.lowercase:
+                command += f" --lowercase"
             bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
             print(bash_output)
             tokenization_job_ids.append(bash_output.split()[-1])
@@ -63,8 +72,9 @@ def schedule(language, output_dir, args):
     input_shard_file = os.path.join(shard_dir, "validation.jsonl.gz")
     output_shard_file = os.path.join(tokenized_shard_dir, "validation.pt.gz")
     if not os.path.exists(output_shard_file):
-        tokenizer_path = os.path.join(output_dir, "tokenizer.json")
         command = f"sbatch --job-name {language}-TOKENIZE --ntasks-per-node=1 --chdir preprocessing --output /cluster/work/projects/nn9851k/mariiaf/hplt/logs/{language}-tokenize-%j.out preprocessing/tokenize_shards_olivia.sh {input_shard_file} {output_shard_file} {tokenizer_path}"
+        if args.lowercase:
+            command += f" --lowercase"
         bash_output = subprocess.check_output(command, shell=True).decode("utf-8")
         print(bash_output, flush=True)
         tokenization_job_ids.append(bash_output.split()[-1])
@@ -79,5 +89,5 @@ def schedule(language, output_dir, args):
 
 if __name__ == "__main__":
     args = parse_args()
-    print(args)
+    print(args, flush=True)
     schedule(args.language, args.output_dir, args)

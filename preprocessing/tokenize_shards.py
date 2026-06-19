@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument('--output_files', type=str, required=True)
     parser.add_argument('--tokenizer_path', type=str, required=True)
     parser.add_argument('--remove_original', action='store_true')
+    parser.add_argument('--lowercase', action="store_true")
     return parser.parse_args()
 
 
@@ -79,15 +80,18 @@ if __name__ == "__main__":
         except:
             print(f"Error parsing line {i} of {input_file}, skipping")
             continue
+        if (i == 0) and (rank == 0):
+            print("Example tokenized document:", flush=True)
+            print(document, flush=True)
+        if args.lowercase:
+            document = document.lower()
         tokenized_document = tokenize(tokenizer, document)
         tokenized_documents.append(tokenized_document)
         n_subwords += len(tokenized_document)
 
-        if i == 0:
-            print("Example tokenized document:")
-            print(document)
+        if (i == 0) and (rank == 0):
             for token in tokenized_document:
-                print(tokenizer.decode([token]))
+                print(tokenizer.decode([token]), flush=True)
             print(flush=True)
 
         if not timer.has_time_remaining():
