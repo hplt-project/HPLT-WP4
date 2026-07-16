@@ -8,11 +8,9 @@ tags:
 - HPLT
 - token-classification
 license: apache-2.0
-datasets:
-- HPLT/HPLT3.0
 ---
 
-# HPLT v3.0 GPT-BERT UD parser for English
+# HPLT v4.0 GPT-BERT UD parser for English
 
 <img src="https://hplt-project.org/_next/static/media/logo-hplt.d5e16ca5.svg" width=12.5%>
 
@@ -29,8 +27,8 @@ pip install transformers==4.57.6 ufal.chu_liu_edmonds==1.0.3
 
 ```shell
 curl -sSfL https://hf.co/git-xet/install.sh | sh
-git clone https://huggingface.co/HPLT/hplt_gpt_bert_base_3_0_eng_Latn-UD
-cd hplt_gpt_bert_base_3_0_eng_Latn-UD/
+git clone https://huggingface.co/HPLT/hplt_gpt_bert_base_4_0_eng_Latn-UD
+cd hplt_gpt_bert_base_4_0_eng_Latn-UD/
 ```
 
 ```python
@@ -46,16 +44,16 @@ sentences = [
     "I stopped and looked out over the fjord – the sun was setting, and the clouds turning blood red.",
 ]
 device = "cuda" if torch.cuda.is_available() else "cpu"
-tokenizer, model, predict_model = load_model(model_path="HPLT/hplt_gpt_bert_base_3_0_eng_Latn", device=device)
+tokenizer, model, predict_model = load_model(model_path="HPLT/hplt_gpt_bert_base_4_0_eng_Latn", device=device)
 predict_model.eval()
 preprocessor = Preprocessor(tokenizer=tokenizer)
 batch = preprocessor.preprocess(sentences)
 with torch.no_grad():
     lemma_p, upos_p, xpos_p, feats_p, _, __, dep_p, head_p = predict_model(
-                                batch["subwords"],
-                                batch["alignment"],
-                                batch["subword_lengths"],
-                                batch["word_lengths"],
+                                batch["subwords"].to(device),
+                                batch["alignment"].to(device),
+                                batch["subword_lengths"].to(device),
+                                batch["word_lengths"].to(device),
                             )
 for i in range(len(sentences)):
     for j, form in enumerate(batch["words"][i]):

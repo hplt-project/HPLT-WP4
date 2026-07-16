@@ -19,6 +19,7 @@ set -o nounset  # Treat any unset variables as an error
 
 module --quiet purge  # Reset the modules to the system default
 module --force swap StdEnv Zen2Env
+export LMOD_DISABLE_SAME_NAME_AUTOSWAP=no
 module use -a /cluster/shared/nlpl/software/eb/etc/all/
 module load nlpl-numpy/1.24.4-foss-2022b-Python-3.10.8
 module load nlpl-pytorch/2.1.2-foss-2022b-cuda-12.0.0-Python-3.10.8

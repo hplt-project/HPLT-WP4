@@ -18,7 +18,7 @@ class Classifier(nn.Module):
         super().__init__()
 
         self.transform = nn.Sequential(
-            nn.Linear(hidden_size, 2*2560),
+            nn.Linear(hidden_size, 2 * 2560),
             GEGLU(),
             nn.LayerNorm(2560, elementwise_affine=False),
             nn.Linear(2560, hidden_size, bias=False),
@@ -29,8 +29,8 @@ class Classifier(nn.Module):
 
     def initialize(self, hidden_size):
         std = math.sqrt(2.0 / (5.0 * hidden_size))
-        nn.init.trunc_normal_(self.transform[0].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.transform[-1].weight, mean=0.0, std=std, a=-2*std, b=2*std)
+        nn.init.trunc_normal_(self.transform[0].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.transform[-1].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
         self.transform[0].bias.data.zero_()
         self.transform[-1].bias.data.zero_()
 
@@ -51,14 +51,14 @@ class EdgeClassifier(nn.Module):
         super().__init__()
 
         self.head_dep_transform = nn.Sequential(
-            nn.Linear(hidden_size, 2*2560),
+            nn.Linear(hidden_size, 2 * 2560),
             GEGLU(),
             nn.LayerNorm(2560, elementwise_affine=False),
             nn.Linear(2560, hidden_size, bias=False),
             nn.Dropout(dropout)
         )
         self.head_root_transform = nn.Sequential(
-            nn.Linear(hidden_size, 2*2560),
+            nn.Linear(hidden_size, 2 * 2560),
             GEGLU(),
             nn.LayerNorm(2560, elementwise_affine=False),
             nn.Linear(2560, hidden_size, bias=False),
@@ -69,14 +69,14 @@ class EdgeClassifier(nn.Module):
         self.head_linear_root = nn.Linear(hidden_size, 1, bias=False)
 
         self.dep_dep_transform = nn.Sequential(
-            nn.Linear(hidden_size, 2*2560),
+            nn.Linear(hidden_size, 2 * 2560),
             GEGLU(),
             nn.LayerNorm(2560, elementwise_affine=False),
             nn.Linear(2560, dep_hidden_size, bias=False),
             nn.Dropout(dropout)
         )
         self.dep_root_transform = nn.Sequential(
-            nn.Linear(hidden_size, 2*2560),
+            nn.Linear(hidden_size, 2 * 2560),
             GEGLU(),
             nn.LayerNorm(2560, elementwise_affine=False),
             nn.Linear(2560, dep_hidden_size, bias=False),
@@ -95,15 +95,15 @@ class EdgeClassifier(nn.Module):
 
     def initialize(self, hidden_size):
         std = math.sqrt(2.0 / (5.0 * hidden_size))
-        nn.init.trunc_normal_(self.head_dep_transform[0].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.head_root_transform[0].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.dep_dep_transform[0].weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.dep_root_transform[0].weight, mean=0.0, std=std, a=-2*std, b=2*std)
+        nn.init.trunc_normal_(self.head_dep_transform[0].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.head_root_transform[0].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.dep_dep_transform[0].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.dep_root_transform[0].weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
 
-        nn.init.trunc_normal_(self.head_linear_dep.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.head_linear_root.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.dep_linear_dep.weight, mean=0.0, std=std, a=-2*std, b=2*std)
-        nn.init.trunc_normal_(self.dep_linear_root.weight, mean=0.0, std=std, a=-2*std, b=2*std)
+        nn.init.trunc_normal_(self.head_linear_dep.weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.head_linear_root.weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.dep_linear_dep.weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
+        nn.init.trunc_normal_(self.dep_linear_root.weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
 
         self.head_dep_transform[0].bias.data.zero_()
         self.head_root_transform[0].bias.data.zero_()
@@ -113,11 +113,13 @@ class EdgeClassifier(nn.Module):
     def forward(self, head_x, dep_x, lengths, head_gold=None):
         head_dep = self.head_dep_transform(head_x[:, 1:, :])
         head_root = self.head_root_transform(head_x)
-        head_prediction = torch.einsum("bkn,nm,blm->bkl", head_dep, self.head_bilinear, head_root / math.sqrt(self.hidden_size)) \
-            + self.head_linear_dep(head_dep) + self.head_linear_root(head_root).transpose(1, 2)
+        head_prediction = torch.einsum("bkn,nm,blm->bkl", head_dep, self.head_bilinear,
+                                       head_root / math.sqrt(self.hidden_size)) \
+                          + self.head_linear_dep(head_dep) + self.head_linear_root(head_root).transpose(1, 2)
 
-        mask = (torch.arange(head_x.size(1)).unsqueeze(0) >= lengths.unsqueeze(1)).unsqueeze(1).to(head_x.device)
-        mask = mask | (torch.ones(head_x.size(1) - 1, head_x.size(1), dtype=torch.bool, device=head_x.device).tril(1) & torch.ones(head_x.size(1) - 1, head_x.size(1), dtype=torch.bool, device=head_x.device).triu(1))
+        mask = (torch.arange(head_x.size(1), device=head_x.device).unsqueeze(0) >= lengths.unsqueeze(1)).unsqueeze(1)
+        mask = mask | (torch.ones(head_x.size(1) - 1, head_x.size(1), dtype=torch.bool, device=head_x.device).tril(
+            1) & torch.ones(head_x.size(1) - 1, head_x.size(1), dtype=torch.bool, device=head_x.device).triu(1))
         head_prediction = head_prediction.masked_fill(mask, self.mask_value)
 
         if head_gold is None:
@@ -133,11 +135,12 @@ class EdgeClassifier(nn.Module):
         dep_dep = self.dep_dep_transform(dep_x[:, 1:])
         dep_root = dep_x.gather(1, head_gold.unsqueeze(-1).expand(-1, -1, dep_x.size(-1)).clamp(min=0))
         dep_root = self.dep_root_transform(dep_root)
-        dep_prediction = torch.einsum("btm,mnl,btn->btl", dep_dep, self.dep_bilinear, dep_root / math.sqrt(self.dep_hidden_size)) \
-            + self.dep_linear_dep(dep_dep) + self.dep_linear_root(dep_root) + self.dep_bias
+        dep_prediction = torch.einsum("btm,mnl,btn->btl", dep_dep, self.dep_bilinear,
+                                      dep_root / math.sqrt(self.dep_hidden_size)) \
+                         + self.dep_linear_dep(dep_dep) + self.dep_linear_root(dep_root) + self.dep_bias
 
         return head_prediction, dep_prediction, head_gold
-    
+
     def max_spanning_tree(self, weight_matrix):
         weight_matrix = weight_matrix.clone()
         weight_matrix[weight_matrix == self.mask_value] = torch.nan
@@ -153,7 +156,7 @@ class EdgeClassifier(nn.Module):
         # check if the root is the parent of a single node
         if parents.count(0) == 1:
             return parents
-        
+
         # if not, we need to modify the weights and try all possibilities
         # we try to find the node that is the parent of the root
         best_score = float("-inf")
@@ -161,8 +164,8 @@ class EdgeClassifier(nn.Module):
 
         for i in range(len(parents)):
             weight_matrix_mod = weight_matrix.clone()
-            weight_matrix_mod[:i+1, 0] = torch.nan
-            weight_matrix_mod[i+2:, 0] = torch.nan
+            weight_matrix_mod[:i + 1, 0] = torch.nan
+            weight_matrix_mod[i + 2:, 0] = torch.nan
             parents, score = chu_liu_edmonds(weight_matrix_mod.numpy().astype(float))
             parents = parents[1:]
 
@@ -202,26 +205,33 @@ class Model(nn.Module):
 
         self.upos_embedding = nn.Embedding(len(dataset.upos_vocab), args.hidden_size)
         std = math.sqrt(2.0 / (5.0 * args.hidden_size))
-        nn.init.trunc_normal_(self.upos_embedding.weight, mean=0.0, std=std, a=-2*std, b=2*std)
+        nn.init.trunc_normal_(self.upos_embedding.weight, mean=0.0, std=std, a=-2 * std, b=2 * std)
 
         self.lemma_classifier = nn.ModuleDict({
-            cls: Classifier(args.hidden_size, max(len(dataset.lemma_vocab[cls]) - 1, 1), args.dropout) if len(dataset.lemma_vocab[cls]) > 2 else ZeroClassifier()
+            cls: Classifier(args.hidden_size, max(len(dataset.lemma_vocab[cls]) - 1, 1), args.dropout) if len(
+                dataset.lemma_vocab[cls]) > 2 else ZeroClassifier()
             for cls in dataset.lemma_vocab.keys()
         })
-        self.upos_classifier = Classifier(args.hidden_size, max(len(dataset.upos_vocab) - 1, 1), args.dropout) if len(dataset.upos_vocab) > 2 else ZeroClassifier()
-        self.xpos_classifier = Classifier(args.hidden_size, max(len(dataset.xpos_vocab) - 1, 1), args.dropout) if len(dataset.xpos_vocab) > 2 else ZeroClassifier()
-        self.feats_classifier = Classifier(args.hidden_size, max(len(dataset.feats_vocab) - 1, 1), args.dropout) if len(dataset.feats_vocab) > 2 else ZeroClassifier()
-        self.edge_classifier = EdgeClassifier(args.hidden_size, 128, max(len(dataset.arc_dep_vocab) - 1, 1), args.dropout)
+        self.upos_classifier = Classifier(args.hidden_size, max(len(dataset.upos_vocab) - 1, 1), args.dropout) if len(
+            dataset.upos_vocab) > 2 else ZeroClassifier()
+        self.xpos_classifier = Classifier(args.hidden_size, max(len(dataset.xpos_vocab) - 1, 1), args.dropout) if len(
+            dataset.xpos_vocab) > 2 else ZeroClassifier()
+        self.feats_classifier = Classifier(args.hidden_size, max(len(dataset.feats_vocab) - 1, 1), args.dropout) if len(
+            dataset.feats_vocab) > 2 else ZeroClassifier()
+        self.edge_classifier = EdgeClassifier(args.hidden_size, 128, max(len(dataset.arc_dep_vocab) - 1, 1),
+                                              args.dropout)
         self.aux_feats_classifiers = nn.ModuleDict({
-            cls: Classifier(args.hidden_size, max(len(dataset.feats_classes_vocab[cls]) - 1, 1), args.dropout) if len(dataset.feats_classes_vocab[cls]) > 2 else ZeroClassifier()
+            cls: Classifier(args.hidden_size, max(len(dataset.feats_classes_vocab[cls]) - 1, 1), args.dropout) if len(
+                dataset.feats_classes_vocab[cls]) > 2 else ZeroClassifier()
             for cls in dataset.feats_classes_vocab
         })
 
     def forward(self, x, alignment_mask, subword_lengths, word_lengths, upos_gold=None, head_gold=None):
-        padding_mask = (torch.arange(x.size(1)).unsqueeze(0) < subword_lengths.unsqueeze(1)).to(x.device)
+        padding_mask = torch.arange(x.size(1), device=x.device).unsqueeze(0) < subword_lengths.unsqueeze(1)
         x = self.bert(x, padding_mask, output_hidden_states=True).hidden_states
         x = torch.stack(x, dim=0)
-        x = torch.einsum("lbsd,bst->lbtd", x, alignment_mask) / alignment_mask.sum(1).unsqueeze(-1).unsqueeze(0).clamp(min=1.0)
+        x = torch.einsum("lbsd,bst->lbtd", x, alignment_mask) / alignment_mask.sum(1).unsqueeze(-1).unsqueeze(0).clamp(
+            min=1.0)
         # upos_x = torch.einsum("lbtd, l -> btd", x, torch.softmax(self.upos_layer_score, dim=0))
         upos_x = (x[:, :, 1:-1, :] * torch.softmax(self.upos_layer_score, dim=0).view(-1, 1, 1, 1)).sum(0)
         upos_x = self.dropout(self.layer_norm(upos_x))
